@@ -1,0 +1,23 @@
+# Hi - please dont edit this file directly, instead make changes in your .env file
+
+login: &login
+  adapter: postgresql
+  host: <%= ENV['POSTGRES_HOST'] %>
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  database: <%= ENV['POSTGRES_DB'] %>
+
+
+development:
+  <<: *login
+
+test:
+  <<: *login
+  database: <%= ENV['TEST_DB'] %>
+
+staging:
+  <<: *login
+
+
+production:
+  <<: *login
