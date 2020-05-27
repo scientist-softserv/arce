@@ -9,5 +9,5 @@ task :import, [:limit, :progress] => [:environment] do |t, args|
   progress = args[:progress] || true
   limit = args[:limit] || 20000000
   limit = limit.to_i
-  OralHistoryItem.import(limit: limit)
+  ArceItem.import(limit: limit)
 end
