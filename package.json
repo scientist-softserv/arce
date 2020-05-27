@@ -1,5 +1,5 @@
 {
-  "name": "oral_history",
+  "name": "arce",
   "private": true,
   "dependencies": {
     "@rails/webpacker": "^3.0.2",

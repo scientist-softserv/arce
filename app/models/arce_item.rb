@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'net/http'
 
-class OralHistoryItem
+class ArceItem
   attr_accessor :attributes, :new_record, :should_process_pdf_transcripts
 
   def initialize(attr={})
@@ -93,7 +93,7 @@ class OralHistoryItem
       return false
     end
     
-    history = OralHistoryItem.find_or_new(record.header.identifier.split('/').last) #Digest::MD5.hexdigest(record.header.identifier).to_i(16))
+    history = ArceItem.find_or_new(record.header.identifier.split('/').last) #Digest::MD5.hexdigest(record.header.identifier).to_i(16))
     history.attributes['id_t'] = record.header.identifier.split('/').last
     if record.header.datestamp
       history.attributes[:timestamp] = Time.parse(record.header.datestamp)
@@ -331,13 +331,13 @@ class OralHistoryItem
   end
 
   def self.find(id)
-    OralHistoryItem.new(SolrDocument.find(id))
+    ArceItem.new(SolrDocument.find(id))
   end
 
   def self.find_or_new(id)
     self.find(id)
   rescue Blacklight::Exceptions::RecordNotFound
-    OralHistoryItem.new(id: id)
+    ArceItem.new(id: id)
   end
 
   def self.generate_transcript(url)

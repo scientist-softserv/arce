@@ -3,6 +3,6 @@ class ProcessPeakJob < ApplicationJob
 
   def perform(id)
     puts "Processing peaks for: #{id}"
-    OralHistoryItem.find(id).generate_peaks
+    ArceItem.find(id).generate_peaks
   end
 end

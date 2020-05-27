@@ -4,7 +4,7 @@ class IndexPdfTranscriptJob < ApplicationJob
   def perform(id, pdf_text)
     puts "Processing pdf: #{id}"
     #find history
-    item = OralHistoryItem.find_or_new(id)
+    item = ArceItem.find_or_new(id)
     # make call to solr for extraction
     tmp_file = Tempfile.new
     

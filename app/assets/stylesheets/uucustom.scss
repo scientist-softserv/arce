@@ -197,9 +197,9 @@ h2>.hero-ribbon-blue, h3>.hero-ribbon-gray {
 }
 
 #header-navbar .navbar-brand {
-  background-image: image-url('logo.svg');
-  background-position: left center;
-  overflow: visible;
+  background-image: image-url('logo.png');
+  background-size: cover;
+  width: 325px;
 }
 
 .navbar-toggle .icon-bar {
