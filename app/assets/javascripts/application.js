@@ -23,4 +23,3 @@
 
 //= require_tree ./main
 //= require ./timestamp_links
-//= require ./full_text
