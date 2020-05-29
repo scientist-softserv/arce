@@ -13,12 +13,12 @@ class ArceItem
   end
 
   def self.client(args)
-    url = args[:url] || "http://digital2.library.ucla.edu/dldataprovider/oai2_0.do"
+    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
     OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods'
   end
 
   def self.fetch(args)
-    set = args[:set] || "oralhistory"
+    set = args[:set] || "luxor_1"
     response = client(args).list_records(set: set, metadata_prefix: 'mods')
   end
 
@@ -29,7 +29,7 @@ class ArceItem
 
   def self.fetch_first_id
     response = self.fetch({progress: false, limit:1})
-    response.full&.first&.header&.identifier&.split('/')&.last
+    response.full&.first&.header&.identifier&.split(':')&.last
   end
 
   def self.import(args)
@@ -49,9 +49,6 @@ class ArceItem
         begin
           history = process_record(record)
           history.index_record
-          if ENV['MAKE_WAVES'] && history.attributes["audio_b"] && history.should_process_peaks?
-            ProcessPeakJob.perform_later(history.id)
-          end
           new_record_ids << history.id
         rescue => exception
           Raven.capture_exception(exception)
@@ -82,9 +79,6 @@ class ArceItem
     record = self.get(identifier: id)&.record
     history = process_record(record)
     history.index_record
-    if ENV['MAKE_WAVES'] && history.attributes["audio_b"] && history.should_process_peaks?
-      ProcessPeakJob.perform_later(history.id)
-    end
     return history
   end
 
@@ -93,177 +87,81 @@ class ArceItem
       return false
     end
     
-    history = ArceItem.find_or_new(record.header.identifier.split('/').last) #Digest::MD5.hexdigest(record.header.identifier).to_i(16))
-    history.attributes['id_t'] = record.header.identifier.split('/').last
+    history = ArceItem.find_or_new(record.header.identifier.split(':').last) #Digest::MD5.hexdigest(record.header.identifier).to_i(16))
+    history.attributes['id_t'] = record.header.identifier.split(':').last
     if record.header.datestamp
       history.attributes[:timestamp] = Time.parse(record.header.datestamp)
     end
-
-    history.attributes["audio_b"] = false
     if record.metadata
-      record.metadata.children.each do |set|
-        next if set.class == REXML::Text
-        has_xml_transcripts = false
-        pdf_text = ''
-        history.attributes["children_t"] = []
-        history.attributes["transcripts_json_t"] = []
-        history.attributes["description_t"] = []
-        history.attributes['person_present_t'] = []
-        history.attributes['place_t'] = []
-        history.attributes['supporting_documents_t'] = []
-        history.attributes['interviewer_history_t'] = []
-        history.attributes['process_interview_t'] = []
-        history.attributes['links_t'] = []
-        set.children.each do |child|
+      record.metadata.children.each do |child|
         next if child.class == REXML::Text
-          if child.name == "titleInfo"
-            child.elements.each('mods:title') do |title|
-              title_text = title.text.to_s.strip
-              if(child.attributes["type"] == "alternative") && title_text.size > 0
-                history.attributes["subtitle_display"] ||= title_text
-                history.attributes["subtitle_t"] ||= []
-                if !history.attributes["subtitle_t"].include?(title_text)
-                  history.attributes["subtitle_t"] << title_text
-                end
-              elsif title_text.size > 0
-                history.attributes["title_display"] ||= title_text
-                history.attributes["title_t"] ||= []
-                if !history.attributes["title_t"].include?(title_text)
-                  history.attributes["title_t"] << title_text
-                end
+        child.elements.each do |element|
+          if element.name == 'title'
+            title_text = element.text.to_s.strip
+            if title_text.size > 0
+              history.attributes["title_display"] ||= title_text
+              history.attributes["title_t"] ||= []
+              if !history.attributes["title_t"].include?(title_text)
+                history.attributes["title_t"] << title_text
               end
             end
-          elsif child.name == "typeOfResource"
-            history.attributes["type_of_resource_display"] = child.text
-            history.attributes["type_of_resource_t"] ||= []
-            history.attributes["type_of_resource_t"] << child.text
-            history.attributes["type_of_resource_facet"] ||= []
-            history.attributes["type_of_resource_facet"] << child.text
-          elsif child.name == "accessCondition"
-            history.attributes["rights_display"] = [child.text]
-            history.attributes["rights_t"] = []
-            history.attributes["rights_t"] << child.text
-          elsif child.name == 'language'
-            child.elements.each('mods:languageTerm') do |e|
-              history.attributes["language_facet"] = LanguageList::LanguageInfo.find(e.text).try(:name)
-              history.attributes["language_sort"] = LanguageList::LanguageInfo.find(e.text).try(:name)
-              history.attributes["language_t"] = [LanguageList::LanguageInfo.find(e.text).try(:name)]
-            end
-          elsif child.name == "subject"
-            child.elements.each('mods:topic') do |e|
-              history.attributes["subject_topic_facet"] ||= []
-              history.attributes["subject_topic_facet"] << e.text
-              history.attributes["subject_t"] ||= []
-              history.attributes["subject_t"] << e.text
-            end
-          elsif child.name == "name"
-            if child.elements['mods:role/mods:roleTerm'].text == "interviewer"
-              history.attributes["author_display"] = child.elements['mods:namePart'].text
-              history.attributes["author_t"] ||= []
-              if !history.attributes["author_t"].include?(child.elements['mods:namePart'].text)
-                history.attributes["author_t"] << child.elements['mods:namePart'].text
-              end
-            elsif child.elements['mods:role/mods:roleTerm'].text == "interviewee"
-              history.attributes["interviewee_display"] = child.elements['mods:namePart'].text
-              history.attributes["interviewee_t"] ||= []
-              if !history.attributes["interviewee_t"].include?(child.elements['mods:namePart'].text)
-                history.attributes["interviewee_t"] << child.elements['mods:namePart'].text
-              end
-              history.attributes["interviewee_sort"] = child.elements['mods:namePart'].text
-            end
-          elsif child.name == "relatedItem" && child.attributes['type'] == "constituent"
-            time_log_url = ''
-            order = child.elements['mods:part'].present? ? child.elements['mods:part'].attributes['order'] : 1
-
-            if child.elements['mods:location/mods:url[@usage="timed log"]'].present?
-              time_log_url = child.elements['mods:location/mods:url[@usage="timed log"]'].text
-              transcript = self.generate_transcript(time_log_url)
-              history.attributes["transcripts_json_t"] << {
-                "transcript_t": transcript,
-                "order_i": order
-              }.to_json
-              history.attributes["transcripts_t"] = [] if has_xml_transcripts == false
-              has_xml_transcripts = true
-              transcript_stripped = ActionController::Base.helpers.strip_tags(transcript)
-              history.attributes["transcripts_t"] << transcript_stripped
-            end
-
-            child_document = {
-              'id': Digest::MD5.hexdigest(child.elements['mods:identifier'].text).to_i(16),
-              "id_t": child.elements['mods:identifier'].text,
-              "url_t": child.attributes['href'],
-              "title_t": child.elements['mods:titleInfo/mods:title'].text,
-              "order_i": order,
-              "description_t": child.elements['mods:tableOfContents'].present? ? child.elements['mods:tableOfContents'].text : "Content",
-              "time_log_t": time_log_url
-            }
-
-            if child.attributes['href'].present?
-              history.attributes["audio_b"] = true
-              history.attributes["audio_display"] = "Yes"
-            end
-            history.attributes["peaks_t"] ||= []
-            child_doc_json = child_document.to_json
-            history.attributes["peaks_t"] <<  child_doc_json unless history.attributes["peaks_t"].include? child_doc_json
-            history.attributes["children_t"] << child_doc_json
-          elsif child.name == "relatedItem" && child.attributes['type'] == "series"
-            history.attributes["series_facet"] = child.elements['mods:titleInfo/mods:title'].text
-            history.attributes["series_t"] = child.elements['mods:titleInfo/mods:title'].text
-            history.attributes["series_sort"] = child.elements['mods:titleInfo/mods:title'].text
-            history.attributes["abstract_display"] = child.elements['mods:abstract'].text
-            history.attributes["abstract_t"] = []
-            history.attributes["abstract_t"] << child.elements['mods:abstract'].text
-          elsif child.name == "note"
-            if child.attributes['type'].to_s.match('biographical')
-              history.attributes["biographical_display"] = child.text
-              history.attributes["biographical_t"] = []
-              history.attributes["biographical_t"] << child.text
-            end
-            if child.attributes['type'].to_s.match('personpresent')
-              history.attributes['person_present_display'] = child.text
-              history.attributes['person_present_t'] << child.text
-            end
-            if child.attributes['type'].to_s.match('place')
-              history.attributes['place_display'] = child.text
-              history.attributes['place_t'] << child.text
-            end
-            if child.attributes['type'].to_s.match('supportingdocuments')
-              history.attributes['supporting_documents_display'] = child.text
-              history.attributes['supporting_documents_t'] << child.text
-            end
-            if child.attributes['type'].to_s.match('interviewerhistory')
-              history.attributes['interviewer_history_display'] = child.text
-              history.attributes['interviewer_history_t'] << child.text
-            end
-            if child.attributes['type'].to_s.match('processinterview')
-              history.attributes['process_interview_display'] = child.text
-              history.attributes['process_interview_t'] << child.text
-            end
-            history.attributes["description_t"] << child.text
-          elsif child.name == 'location'
-            child.elements.each do |f|
-              history.attributes['links_t'] << [f.text, f.attributes['displayLabel']].to_json
-              if f.attributes['displayLabel'] && 
-                has_xml_transcripts == false && 
-                history.attributes["transcripts_t"].blank? && 
-                f.attributes['displayLabel'].match(/Transcript/) && 
-                f.text.match(/pdf/i)
-                history.should_process_pdf_transcripts = true
-                pdf_text = f.text
-              end
-            end
-          elsif child.name == 'physicalDescription'
-            history.attributes["extent_display"] = child.elements['mods:extent'].text
-            history.attributes['extent_t'] = []
-            history.attributes['extent_t'] << child.elements['mods:extent'].text
-          elsif child.name == 'abstract'
-            history.attributes['interview_abstract_display'] = child.text
-            history.attributes["interview_abstract_t"] = []
-            history.attributes["interview_abstract_t"] << child.text
           end
-        end
-        if !has_xml_transcripts && history.should_process_pdf_transcripts
-          IndexPdfTranscriptJob.perform_later(history.id, pdf_text)
+
+          if element.name == 'subject'
+            history.attributes["subject_topic_facet"] ||= []
+            history.attributes["subject_topic_facet"] << element.text
+            history.attributes["subject_t"] ||= []
+            history.attributes["subject_t"] << element.text
+          end
+
+          if element.name == 'description'
+            history.attributes["description_t"] ||= []
+            history.attributes["description_t"] << element.text
+          end
+
+          if element.name == 'date'
+            history.attributes["date_display"] = [element.text]
+            history.attributes["date_t"] ||= []
+            history.attributes["date_t"] << element.text
+          end
+
+          if element.name == 'type'
+            history.attributes["type_of_resource_display"] = element.text
+            history.attributes["type_of_resource_t"] ||= []
+            history.attributes["type_of_resource_t"] << element.text
+            history.attributes["type_of_resource_facet"] ||= []
+            history.attributes["type_of_resource_facet"] << element.text
+          end
+
+          if element.name == 'format'
+            history.attributes["extent_display"] = element.text
+            history.attributes['extent_t'] = []
+            history.attributes['extent_t'] << element.text
+          end
+
+          if element.name == 'identifier'
+            history.attributes["identifier_display"] = [element.text]
+            history.attributes["identifier_t"] ||= []
+            history.attributes["identifier_t"] << element.text
+          end
+
+          if element.name == 'relation'
+            history.attributes["relation_display"] = [element.text]
+            history.attributes["relation_t"] ||= []
+            history.attributes["relation_t"] << element.text
+          end
+
+          if element.name == 'coverage'
+            history.attributes["coverage_display"] = [element.text]
+            history.attributes["coverage_t"] ||= []
+            history.attributes["coverage_t"] << element.text
+          end
+
+          if element.name == 'rights'
+            history.attributes["rights_display"] = [element.text]
+            history.attributes["rights_t"] ||= []
+            history.attributes["rights_t"] << element.text
+          end
         end
       end
     end
@@ -324,12 +222,6 @@ class ArceItem
     @all_ids
   end
 
-  def generate_peaks
-    @peaks = Peaks::Processor.new()
-
-    @peaks.from_solr_document self
-  end
-
   def self.find(id)
     ArceItem.new(SolrDocument.find(id))
   end
@@ -355,22 +247,6 @@ class ArceItem
     client = OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods'
     response = client.list_records(set: set, metadata_prefix: 'mods')
     response.doc.elements['//resumptionToken'].attributes['completeListSize'].to_i
-  end
-
-  def has_peaks?
-    self.attributes["peaks_t"].each_with_index do |peak, i|
-      return false unless JSON.parse(peak)['peaks'].present?
-    end
-    
-    true
-  end
-  
-  def peak_job_queued?
-    Delayed::Job.where("handler LIKE ? ", "%job_class: ProcessPeakJob%#{self.id}%").present?
-  end
-
-  def should_process_peaks?
-    !has_peaks? && !peak_job_queued?
   end
 
   def self.create_import_tmp_file
