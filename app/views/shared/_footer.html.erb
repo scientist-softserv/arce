@@ -1,13 +1,89 @@
 <!-- Copyright Footer -->
-<footer class=" ">
-  <div class="g-bg-blue g-color-white-opacity-0_8 g-py-20">
-    <div class="container">
+<footer role="contentinfo">
+  <div class="g-bg-blue g-color-white g-py-20">
+    <div class="container contain">
       <div class="row">
-        <div class="col-md-12 text-center text-md-left g-mb-10 g-mb-0--md">
+        <div class="col-sm-6 text-md-left g-mb-10 g-mb-0--md">
+          <%= image_tag("stacked-logo.png", class: "footer-logo hidden-xs", alt: "ARCE") %>
+        </div>
+        <div class="col-sm-6 text-md-left g-mb-10 g-mb-0--md">
           <div class="d-lg-flex">
-            <small class="text-center d-block g-font-size-default g-mr-10 g-mb-10 g-mb-0--md">© <%= Time.now.year %> Arce | American Research Center in Egypt | <%= link_to 'Admin', admin_path %></small>
+            <ul class="social">
+              <li><a href="https://www.facebook.com/arcenational" target="_blank" class="soc"><i class="fa fa-facebook"></i></a></li>
+              <li><a href="https://twitter.com/ARCENational" target="_blank" class="soc"><i class="fa fa-twitter"></i></a></li>
+              <li><a href="https://www.instagram.com/arcenational/" target="_blank" class="soc"><i class="fa fa-instagram"></i></a></li>
+              <li><a href="https://www.youtube.com/user/ARCEinEgypt" target="_blank" class="soc"><i class="fa fa-youtube"></i></a></li>
+            </ul>
           </div>
         </div>
+      </div>
+      <div class="row flex">
+        <div class="col-md-6 col-sm-12 text-md-left g-mt-40 g-mb-10 g-mb-0--md">
+          <ul class="col lt small">
+            <li>
+              <a href="https://www.arce.org/about-us">About Us</a>
+            </li>
+            <li>
+              <a href="https://www.arce.org/discover-egypt">Discover Egypt</a>
+            </li>
+            <li>
+              <a href="https://www.arce.org/events">Events</a>
+            </li>
+            <li>
+              <a href="https://www.arce.org/programs-fieldwork">Programs &amp; Fieldwork</a>
+            </li>
+            <li>
+              <a href="https://www.arce.org/support-arce-today">Support Our Work</a>
+            </li>
+            <li>
+              <a href="https://www.arce.org/glossary">Glossary of Terms</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6 col-sm-12 g-mt-40 g-mb-10 g-mb-0--md">
+          <div class="col rt hidden-xs">
+            <p>Connect with ARCE</p>
+            <div class="address hidden-xs">
+              <span>US Office</span>
+              <a href="https://www.arce.org/" target="_blank" class="loc">
+                  909 North Washington St<br />
+                  Suite 320<br />
+                  Alexandria VA 22314<br />
+                  United States
+              </a>
+            </div>
+            <div class="address hidden-xs">
+              <span>Cairo Center</span>
+              <a href="https://www.arce.org/" target="_blank" class="loc">
+                  2 Midan Simon Bolivar<br />
+                  Garden City<br />
+                  Cairo Governorate 11461<br />
+                  Egypt
+              </a>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 text-md-left g-mb-10 g-mb-0--md">
+          <ul class="links">
+            <li>
+              <a href="https://www.arce.org/contact-us">Contact Us</a>
+            </li>
+            <li>
+              <a href="https://www.arce.org/privacy-policy">Privacy Policy</a>
+            </li>
+            <li>
+              © <%= Time.now.year %> American Research Center in Egypt 
+            </li>
+            <li>
+              <%= link_to 'Admin', admin_path %>
+            </li>
+          </ul>
+
+        </div>
+
       </div>
     </div>
   </div>
