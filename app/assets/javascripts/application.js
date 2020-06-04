@@ -17,6 +17,7 @@
 //= require jquery
 //= require vendor/jquery-migrate/jquery-migrate.min
 //= require vendor/jquery.easing/js/jquery.easing.min
+//= require vendor/hs.core.js
 
 //= require bootstrap-sprockets
 //= require blacklight/blacklight
