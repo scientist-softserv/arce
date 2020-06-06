@@ -13,12 +13,12 @@ class ArceItem
   end
 
   def self.client(args)
-    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
-    OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods'
+    url = args[:url] || "http://p-w-islandoraingest01.library.ucla.edu/oai2/"
+    OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods', verb: 'ListRecords'
   end
 
   def self.fetch(args)
-    set = args[:set] || "luxor_1"
+    set = args[:set] || "arce_1"
     response = client(args).list_records(set: set, metadata_prefix: 'mods')
   end
 
@@ -93,74 +93,159 @@ class ArceItem
       history.attributes[:timestamp] = Time.parse(record.header.datestamp)
     end
     if record.metadata
-      record.metadata.children.each do |child|
-        next if child.class == REXML::Text
-        child.elements.each do |element|
-          if element.name == 'title'
-            title_text = element.text.to_s.strip
-            if title_text.size > 0
-              history.attributes["title_display"] ||= title_text
+      record.metadata.children.each do |batch|
+        next if batch.class == REXML::Text
+        batch.children.each do |child|
+          next if child.class == REXML::Text
+          if child.attributes['displayLabel']  == 'File name'
+            file_name = child.text
+            history.attributes['file_name_t'] ||= file_name
+          end
+          if child.name == 'relatedItem'
+            if child.attributes['type'] == 'host'
+              child.children.each do |ch|
+                next if ch.class == REXML::Text
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  if c.name == 'title'
+                    history.attributes['title_display'] ||= c.text
+                    history.attributes['host_title_t'] ||= c.text
+                  end
+                end
+              end
+            end
+            if child.attributes['type'] == 'program'
+              child.children.each do |ch|
+                next if ch.class == REXML::Text
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  if c.name == 'title'
+                    history.attributes['program_title_display'] ||= c.text
+                    history.attributes['program_title_t'] ||= c.text
+                  end
+                end
+              end
+            end
+            if child.attributes['type'] == 'series'
+              child.children.each do |ch|
+                next if ch.class == REXML::Text
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  if c.name == 'title'
+                    history.attributes['series_title_display'] ||= c.text
+                    history.attributes['series_title_t'] ||= c.text
+                  end
+                end
+              end
+            end
+          end
+          if child.name == 'typeOfResource'
+            type_of_resource = child.text
+            history.attributes['type_of_resource_t'] ||= []
+            if !history.attributes['type_of_resource_t'].include?(type_of_resource)
+              history.attributes['type_of_resource_t'] << type_of_resource
+            end
+          end
+          if child.name == 'genre'
+            genre = child.text
+            history.attributes['genre_t'] ||= []
+            if !history.attributes['genre_t'].include?(genre)
+              history.attributes['genre_t'] << genre
+            end
+          end
+          if child.name == 'subject'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              if ch.name == 'topic'
+                topic = ch.text
+                history.attributes['subject_topic_facet'] ||= []
+                if !history.attributes['subject_topic_facet'].include?(topic)
+                  history.attributes['subject_topic_facet'] << topic
+                end
+                history.attributes['subject_topic_t'] ||= []
+                if !history.attributes['subject_topic_t'].include?(topic)
+                  history.attributes['subject_topic_t'] << topic
+                end
+              end
+              if ch.name == 'name'
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  subject_name = c.text
+                  history.attributes['subject_name_t'] ||= []
+                  if !history.attributes['subject_name_t'].include?(subject_name)
+                    history.attributes['subject_name_t'] << subject_name
+                  end
+                end
+              end
+              if ch.name == 'temporal'
+                temporal = ch.text
+                history.attributes['temporal_subject_t'] ||= []
+                if !history.attributes['temporal_subject_t'].include?(temporal)
+                  history.attributes['temporal_subject_t'] << temporal
+                end
+              end
+              if ch.name == 'geographic'
+                geographic = ch.text
+                history.attributes['geographic_subject_t'] ||= []
+                if !history.attributes['geographic_subject_t'].include?(geographic)
+                  history.attributes['geographic_subject_t'] << ch.text
+                end
+              end
+            end
+          end
+          if child.name == 'titleInfo'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              title_text = ch.text.to_s.strip
               history.attributes["title_t"] ||= []
               if !history.attributes["title_t"].include?(title_text)
                 history.attributes["title_t"] << title_text
               end
             end
           end
-
-          if element.name == 'subject'
-            history.attributes["subject_topic_facet"] ||= []
-            history.attributes["subject_topic_facet"] << element.text
-            history.attributes["subject_t"] ||= []
-            history.attributes["subject_t"] << element.text
+          if child.name == 'physicalDescription'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              extent = ch.text
+              history.attributes['extent_t'] ||= []
+              if !history.attributes['extent_t'].include?(extent)
+                history.attributes['extent_t'] << extent
+              end
+            end
           end
-
-          if element.name == 'description'
-            history.attributes["description_t"] ||= []
-            history.attributes["description_t"] << element.text
+          if child.name == 'note'
+            if child.attributes['type'] == 'statementofresponsibility'
+              history.attributes['statement_of_responsibility_t'] == child.text
+            end
+            if child.attributes['type'] == 'creation_production credits'
+              history.attributes['creation_production_credits_t'] == child.text
+            end
+            if child.attributes['type'] == 'conservation'
+              history.attributes['conservation_t'] == child.text
+            end
           end
-
-          if element.name == 'date'
-            history.attributes["date_display"] = [element.text]
-            history.attributes["date_t"] ||= []
-            history.attributes["date_t"] << element.text
+          if child.name == 'accessCondition'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              history.attributes['copyright_status_t'] == ch.attributes['copyright.status']
+              history.attributes['publication_status_t'] == ch.attributes['publication.status']
+            end
           end
-
-          if element.name == 'type'
-            history.attributes["type_of_resource_display"] = element.text
-            history.attributes["type_of_resource_t"] ||= []
-            history.attributes["type_of_resource_t"] << element.text
-            history.attributes["type_of_resource_facet"] ||= []
-            history.attributes["type_of_resource_facet"] << element.text
+          if child.name == 'originInfo'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              date = Date.parse(ch.text)
+              history.attributes['date_created_t'] ||= []
+              if !history.attributes['date_created_t'].include?(date)
+                history.attributes['date_created_t'] << date
+              end
+            end
           end
-
-          if element.name == 'format'
-            history.attributes["extent_display"] = element.text
-            history.attributes['extent_t'] = []
-            history.attributes['extent_t'] << element.text
-          end
-
-          if element.name == 'identifier'
-            history.attributes["identifier_display"] = [element.text]
-            history.attributes["identifier_t"] ||= []
-            history.attributes["identifier_t"] << element.text
-          end
-
-          if element.name == 'relation'
-            history.attributes["relation_display"] = [element.text]
-            history.attributes["relation_t"] ||= []
-            history.attributes["relation_t"] << element.text
-          end
-
-          if element.name == 'coverage'
-            history.attributes["coverage_display"] = [element.text]
-            history.attributes["coverage_t"] ||= []
-            history.attributes["coverage_t"] << element.text
-          end
-
-          if element.name == 'rights'
-            history.attributes["rights_display"] = [element.text]
-            history.attributes["rights_t"] ||= []
-            history.attributes["rights_t"] << element.text
+          if child.name == 'location'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              history.attributes['repository_t'] == ch.text
+            end
           end
         end
       end
