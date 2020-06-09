@@ -46,6 +46,8 @@ test:
     POSTGRES_HOST: postgres
     TEST_DB: arce
   script:
+    - echo $POSTGRES_HOST
+    - cat config/database.yml
     - cd /home/app/webapp && bundle exec rake db:create db:schema:load spec
   tags:
     - docker
