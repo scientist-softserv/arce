@@ -54,7 +54,7 @@ test:
     GIT_STRATEGY: none
 
 staging:
-  stage: staging
+  stage: deploy
   type: deploy
   script:
   - ./chart/bin/deploy staging $CI_COMMIT_REF_SLUG $STAGING_CONFIG_FILE
@@ -64,7 +64,7 @@ staging:
     - local
 
 production:
-  stage: production
+  stage: deploy
   type: deploy
   script:
   - ./chart/bin/deploy production $CI_COMMIT_REF_SLUG $PRODUCTION_CONFIG_FILE
