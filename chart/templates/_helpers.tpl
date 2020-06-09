@@ -59,6 +59,3 @@ Shorthand for component names
 {{- define "app.solr.name" -}}
 {{- .Release.Name -}}-solr-svc
 {{- end -}}
-{{- define "app.solr.collection" -}}
-{{- if eq .Values.env.configmap.SETTINGS__MULTITENANCY__ENABLED false }}single{{- end -}}
-{{- end -}}
