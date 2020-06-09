@@ -59,3 +59,6 @@ Shorthand for component names
 {{- define "app.solr.name" -}}
 {{- .Release.Name -}}-solr-svc
 {{- end -}}
+{{- define "app.solr.collection" -}}
+blacklight-core
+{{- end -}}
