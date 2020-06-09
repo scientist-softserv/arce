@@ -1,0 +1,14 @@
+apiVersion: v1
+appVersion: "0.0.1"
+description: A Helm chart for arce
+name: arce
+version: 0.0.1
+dependencies:
+  - name: solr 
+    version: 1.3.3
+    repository: https://storage.googleapis.com/kubernetes-charts-incubator
+  - name: postgresql
+    version: 8.1.2
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: postgresql.enabled
+
