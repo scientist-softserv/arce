@@ -45,7 +45,6 @@ test:
     POSTGRES_PASSWORD: password
     POSTGRES_HOST: postgres
     TEST_DB: arce
-    SITE_URI_BASE: TODO
   script:
     - cd /home/app/webapp && bundle exec rake db:create db:schema:load spec
   tags:
