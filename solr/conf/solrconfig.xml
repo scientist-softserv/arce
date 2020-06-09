@@ -28,10 +28,12 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>8.2.0</luceneMatchVersion>
+  <luceneMatchVersion>6.0.0</luceneMatchVersion>
 
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" />
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" />
+  <lib dir="${solr.install.dir:../../../..}/contrib/extraction/lib" regex=".*\.jar" />
+  <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-cell-\d.*\.jar" />
 
   <directoryFactory name="DirectoryFactory"
                     class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}">
@@ -41,11 +43,10 @@
 
   <schemaFactory class="ClassicIndexSchemaFactory"/>
 
-
   <dataDir>${solr.blacklight-core.data.dir:}</dataDir>
 
   <requestDispatcher handleSelect="true" >
-    <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" />
+    <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048000" />
   </requestDispatcher>
 
   <requestHandler name="/analysis/field" startup="lazy" class="solr.FieldAnalysisRequestHandler" />
@@ -54,6 +55,21 @@
   <admin>
     <defaultQuery>*:*</defaultQuery>
   </admin>
+
+  <updateHandler class="solr.DirectUpdateHandler2">
+    <updateLog>
+      <str name="dir">${solr.ulog.dir:}</str>
+    </updateLog>
+
+    <autoCommit>
+      <maxTime>${solr.autoCommit.maxTime:15000}</maxTime>
+      <openSearcher>false</openSearcher>
+    </autoCommit>
+
+    <autoSoftCommit>
+      <maxTime>${solr.autoSoftCommit.maxTime:-1}</maxTime>
+    </autoSoftCommit>
+  </updateHandler>
 
   <!-- SearchHandler
 
@@ -71,11 +87,11 @@
      <lst name="defaults">
        <str name="defType">edismax</str>
        <str name="echoParams">explicit</str>
-       <int name="rows">10</int>
-
        <str name="q.alt">*:*</str>
        <str name="mm">2&lt;-1 5&lt;-2 6&lt;90%</str>
-
+       <int name="qs">1</int>
+       <int name="ps">2</int>
+       <float name="tie">0.01</float>
        <!-- this qf and pf are used by default, if not otherwise specified by
             client. The default blacklight_config will use these for the
             "keywords" search. See the author_qf/author_pf, title_qf, etc
@@ -83,96 +99,40 @@
             those searches. You may also be interested in:
             http://wiki.apache.org/solr/LocalParams
        -->
+        <str name="qf">
+          id
+          active_fedora_model_ssi
+          title_tesim
+          author_tesim
+          subject_tesim
+        </str>
+        <str name="pf">
+          all_text_timv^10
+        </str>
 
-       <str name="qf">
-         collection_title_tesim^150
-         title_tesim^100
-         name_tesim^10
-         place_tesim^10
-         unitid_identifier_match^5
-         subject_tesim^2
-         text
+       <str name="author_qf">
+          author_tesim
        </str>
-       <str name="pf">
-         collection_title_tesim^150
-         title_tesim^100
-         name_tesim^10
-         place_tesim^10
-         unitid_identifier_match^5
-         subject_tesim^2
-         text
+       <str name="author_pf">
        </str>
-
-       <str name="qf_name">
-         name_tesim
+       <str name="title_qf">
+          title_tesim
        </str>
-       <str name="pf_name">
-         name_tesim
+       <str name="title_pf">
        </str>
-       <str name="qf_place">
-         place_tesim
+       <str name="subject_qf">
+          subject_tesim
        </str>
-       <str name="pf_place">
-         place_tesim
+       <str name="subject_pf">
        </str>
-       <str name="qf_subject">
-         subject_tesim
-       </str>
-       <str name="pf_subject">
-         subject_tesim
-       </str>
-       <str name="qf_title">
-         title_tesim
-       </str>
-       <str name="pf_title">
-         title_tesim
-       </str>
-
-       <int name="ps">3</int>
-       <float name="tie">0.01</float>
 
        <str name="fl">
-         id,
-         score,
-         abstract_ssm,
-         accessrestrict_ssm,
-         child_component_count_isim,
-         collection_ssm,
-         collection_unitid_ssm,
-         containers_ssim,
-         creator_ssm,
-         extent_ssm,
-         geogname_ssm,
-         has_online_content_ssim,
-         language_ssm,
-         level_ssm,
-         repository_ssm,
-         scopecontent_ssm,
-         title_ssm,
-         normalized_title_ssm,
-         normalized_date_ssm,
-         unitid_ssm,
-         parent_ssim,
-         parent_unittitles_ssm,
-         ead_ssi,
-         ref_ssm,
-         component_level_isim,
-         parent_access_restrict_ssm,
-         parent_access_terms_ssm,
-         names_coll_ssim
-         places_ssim
+         *,
+         score
        </str>
 
        <str name="facet">true</str>
        <str name="facet.mincount">1</str>
-       <str name="facet.field">level_sim</str>
-       <str name="facet.field">creator_sim</str>
-       <str name="facet.field">date_range_sim</str>
-       <str name="facet.field">names_sim</str>
-       <str name="facet.field">geogname_sim</str>
-       <str name="facet.field">access_subjects_sim</str>
-       <str name="facet.field">repository_sim</str>
-       <str name="facet.field">collection_sim</str>
 
        <str name="spellcheck">true</str>
        <str name="spellcheck.dictionary">default</str>
@@ -180,10 +140,41 @@
        <str name="spellcheck.extendedResults">true</str>
        <str name="spellcheck.collate">false</str>
        <str name="spellcheck.count">5</str>
+
      </lst>
     <arr name="last-components">
       <str>spellcheck</str>
     </arr>
+  </requestHandler>
+
+  <requestHandler name="permissions" class="solr.SearchHandler" >
+    <lst name="defaults">
+      <str name="facet">off</str>
+      <str name="echoParams">all</str>
+      <str name="rows">1</str>
+      <str name="q">{!raw f=id v=$id}</str> <!-- use id=666 instead of q=id:666 -->
+      <str name="fl">
+        id,
+        access_ssim,
+        discover_access_group_ssim,discover_access_person_ssim,
+        read_access_group_ssim,read_access_person_ssim,
+        edit_access_group_ssim,edit_access_person_ssim,
+        depositor_ti,
+        embargo_release_date_dtsi
+        inheritable_access_ssim,
+        inheritable_discover_access_group_ssim,inheritable_discover_access_person_ssim,
+        inheritable_read_access_group_ssim,inheritable_read_access_person_ssim,
+        inheritable_edit_access_group_ssim,inheritable_edit_access_person_ssim,
+        inheritable_embargo_release_date_dtsi
+      </str>
+    </lst>
+  </requestHandler>
+
+  <requestHandler name="standard" class="solr.SearchHandler">
+     <lst name="defaults">
+       <str name="echoParams">explicit</str>
+       <str name="defType">lucene</str>
+     </lst>
   </requestHandler>
 
   <!-- for requests to get a single document; use id=666 instead of q=id:666 -->
@@ -194,6 +185,17 @@
       <str name="rows">1</str>
       <str name="q">{!term f=id v=$id}</str> <!-- use id=666 instead of q=id:666 -->
     </lst>
+  </requestHandler>
+
+ <searchComponent name="termsComponent" class="solr.TermsComponent" />
+
+  <requestHandler name="/terms" class="solr.SearchHandler">
+    <lst name="defaults">
+      <bool name="terms">true</bool>
+    </lst>
+    <arr name="components">
+      <str>termsComponent</str>
+    </arr>
   </requestHandler>
 
 <!-- Spell Check
@@ -281,14 +283,13 @@
        </lst>
       -->
   </searchComponent>
-
+  <!-- TURN OFF SUGGEST - it causes performance issues -->
+  <!--
   <searchComponent name="suggest" class="solr.SuggestComponent">
     <lst name="suggester">
       <str name="name">mySuggester</str>
-      <str name="lookupImpl">AnalyzingInfixLookupFactory</str>
-      <str name="indexPath">suggester_infix_dir</str>
-      <str name="highlight">false</str>
-      <str name="suggestAnalyzerFieldType">text</str>
+      <str name="lookupImpl">FuzzyLookupFactory</str>
+      <str name="suggestAnalyzerFieldType">textSuggest</str>
       <str name="buildOnCommit">true</str>
       <str name="field">suggest</str>
     </lst>
@@ -304,5 +305,18 @@
       <str>suggest</str>
     </arr>
   </requestHandler>
-
+-->
+  <requestHandler name="/update/extract" class="org.apache.solr.handler.extraction.ExtractingRequestHandler">
+    <lst name="defaults">
+      <str name="fmap.Last-Modified">last_modified</str>
+      <str name="uprefix">ignored_</str>
+    </lst>
+    <!--Optional.  Specify a path to a tika configuration file. See the Tika docs for details.-->
+    <!-- <str name="tika.config">/my/path/to/tika.config</str> -->
+    <!-- Optional. Specify one or more date formats to parse. See DateUtil.DEFAULT_DATE_FORMATS
+         for default date formats -->
+    <!-- <lst name="date.formats"> -->
+    <!--   <str>yyyy&#45;MM&#45;dd</str> -->
+    <!-- </lst> -->
+  </requestHandler>
 </config>
