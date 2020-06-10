@@ -47,7 +47,7 @@ test:
     TEST_DB: arce
   script:
     - echo $POSTGRES_HOST
-    - cat config/database.yml
+    - cd /home/app/webapp && cat config/database.yml
     - cd /home/app/webapp && bundle exec rake db:create db:schema:load spec
   tags:
     - docker
@@ -55,7 +55,7 @@ test:
     GIT_STRATEGY: none
 
 staging:
-  stage: deploy
+  stage: test
   type: deploy
   script:
   - ./chart/bin/deploy staging $CI_COMMIT_REF_SLUG $STAGING_CONFIG_FILE
