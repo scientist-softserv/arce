@@ -50,15 +50,6 @@ Shorthand for component names
 {{- define "app.postgres-env.name" -}}
 {{- include "app.fullname" . -}}-postgres-env
 {{- end -}}
-{{- define "app.zookeeper.name" -}}
-{{- include "solr.zookeeper-service-name" . -}}
-{{- end -}}
-{{- define "app.zookeeper-env.name" -}}
-{{- include "app.fullname" . -}}-zookeeper-env
-{{- end -}}
 {{- define "app.solr.name" -}}
-{{- .Release.Name -}}-solr-svc
-{{- end -}}
-{{- define "app.solr.collection" -}}
-blacklight-core
+{{- include "app.fullname" . -}}-solr
 {{- end -}}

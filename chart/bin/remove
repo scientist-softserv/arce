@@ -11,5 +11,10 @@ then
     exit 1
 fi
 
-raise 'refusing to remove production' if $1 == 'production'
+if [ $1 == 'production' ]
+then
+    echo 'refusing to remove production'
+    exit 1
+fi
+
 helm uninstall --namespace $1-$NAMESPACE $1
