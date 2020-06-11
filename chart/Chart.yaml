@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "0.0.1"
+description: A Helm chart for arce
+name: arce
+version: 0.0.1
+dependencies:
+  - name: postgresql
+    version: 8.1.2
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: postgresql.enabled
+

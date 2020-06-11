@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/notch8/oral_history/base:latest
+FROM registry.gitlab.com/notch8/arce/base:latest
 ARG BRANCH
 
 ADD http://timejson.herokuapp.com build-time
