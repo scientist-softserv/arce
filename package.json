@@ -2,7 +2,7 @@
   "name": "arce",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "^3.0.2",
+    "@rails/webpacker": "^5.1.1",
     "babel-preset-react": "^6.24.1",
     "coffeescript": "1.12.7",
     "hls.js": "^0.10.1",
@@ -16,6 +16,6 @@
     "xslt": "^0.9.1"
   },
   "devDependencies": {
-    "webpack-dev-server": "^2.9.7"
+    "webpack-dev-server": "^3.11.0"
   }
 }

@@ -1,6 +1,6 @@
 Rails.application.configure do
     # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = true
+  # config.webpacker.check_yarn_integrity = false
 
   # Settings specified here will take precedence over those in config/application.rb.
   config.web_console.whitelisted_ips = ['172.16.0.0/12', '192.168.0.0/16', '127.0.0.1']
@@ -16,7 +16,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # disable integrity check in development
-  config.webpacker.check_yarn_integrity = false
+  # config.webpacker.check_yarn_integrity = false
 
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist?

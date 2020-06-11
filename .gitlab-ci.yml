@@ -1,0 +1,75 @@
+stages:
+  - build
+  - test
+  - deploy
+
+before_script:
+  - export TAG=${CI_COMMIT_SHORT_SHA}
+  - export BRANCH=${CI_COMMIT_REF_NAME}
+  - export REGISTRY_HOST=${CI_REGISTRY}
+  - export REGISTRY_URI="/${CI_PROJECT_PATH}"
+  - touch .env.development
+
+base:
+  stage: build
+  script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - sc build -s base
+    - sc push -s base
+  when: manual
+  tags:
+    - local
+
+build:
+  stage: build
+  script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - sc build
+    - sc push
+    - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  tags:
+    - local
+
+
+test:
+  stage: test
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  services:
+    - name: postgres:11.1
+    - name: solr:latest
+      entrypoint: ["docker-entrypoint.sh", "solr-precreate", "test"]
+  variables:
+    POSTGRES_DB: "arce"
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "password"
+    POSTGRES_HOST: "postgres"
+    TEST_DB: "arce"
+  script:
+    - echo "$POSTGRES_HOST"
+    - cd /home/app/webapp && bundle exec rake db:create db:schema:load spec
+  tags:
+    - docker
+  variables:
+    GIT_STRATEGY: none
+
+staging:
+  stage: test
+  type: deploy
+  script:
+  - ./chart/bin/deploy staging $CI_COMMIT_REF_SLUG $STAGING_CONFIG_FILE
+  only:
+    - master
+  tags:
+    - local
+
+production:
+  stage: deploy
+  type: deploy
+  script:
+  - ./chart/bin/deploy production $CI_COMMIT_REF_SLUG $PRODUCTION_CONFIG_FILE
+  when: manual
+  only:
+    - master
+  tags:
+    - local
