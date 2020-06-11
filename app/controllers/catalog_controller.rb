@@ -18,7 +18,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       rows: 10,
       :"hl" => true,
-      :"hl.fl" => "abstract_t, biographical_t, subject_t, description_t, audio_b, extent_t, language_t, author_t, interviewee_t, title_t, subtitle_t, series_t",
+      :"hl.fl" => "title_t, subject_topic_t, statement_of_responsibility_t, series_title_t, date_created_t, repository_t",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.fragsize" => 200,
@@ -42,7 +42,9 @@ class CatalogController < ApplicationController
       :"hl" => true,
       :"hl.fragsize" => 0,
       :"hl.preserveMulti" => true,
-      :"hl.fl" => "biographical_t, subject_t, description_t, person_present_t, place_t, supporting_documents_t, interviewer_history_t, process_interview_t, audio_b, extent_t, rights_t, language_t, author_t, interviewee_t, title_t, subtitle_t, series_t, links_t, abstract_t",
+      :"hl.fl" => "subject_topic_t, statement_of_responsibility_t, creation_production_credits_t, conservation_t, extent_t,
+      subject_name_t, temporal_subject_t, geographic_subject_t, series_title_t, genre_t, type_of_resource_t, date_created_t,
+      program_title_t, title_t, file_name_t, copyright_status_t, publication_status_t, repository_t",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.alternateField" => "dd"
@@ -82,16 +84,16 @@ class CatalogController < ApplicationController
     #  (useful when user clicks "more" on a large facet and wants to navigate alphabetically across a large set of results)
     # :index_range can be an array or range of prefixes that will be used to create the navigation (note: It is case sensitive when searching values)
 
-    #config.add_facet_field 'format', label: 'Format'
+    config.add_facet_field 'format', label: 'Format'
 #    config.add_facet_field 'pub_date', label: 'Publication Year', single: true
     config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
-    config.add_facet_field 'language_facet', label: 'Language', limit: true
+    # config.add_facet_field 'language_facet', label: 'Language', limit: true
     #config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
     #config.add_facet_field 'subject_geo_facet', label: 'Region'
 #    config.add_facet_field 'subject_era_facet', label: 'Era'
-    config.add_facet_field 'series_facet', label: 'Series'
-    #config.add_facet_field 'type_of_resource_facet', label: 'Type of Resource'
-    config.add_facet_field 'audio_b', label: 'Has Audio', helper_method: 'audio_icon_with_text'
+    # config.add_facet_field 'series_facet', label: 'Series'
+    # config.add_facet_field 'type_of_resource_facet', label: 'Type of Resource'
+    # config.add_facet_field 'audio_b', label: 'Has Audio', helper_method: 'audio_icon_with_text'
     #config.add_facet_field 'example_pivot_field', label: 'Pivot Field', :pivot => ['format', 'language_facet']
 
 #    config.add_facet_field 'example_query_facet_field', label: 'Publish Date', :query => {
@@ -108,51 +110,33 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results and bookmarks) view
     #   The ordering of the field names is the order of the display
-    # config.add_index_field 'subtitle_display', label: 'Subtitle'
-    config.add_index_field 'subject_t', label: 'Topic', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'biographical_t', label: 'Biographical Note', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.maxAlternateFieldLength" => 100, :"hl.highlightAlternate" => true  }, helper_method: 'index_filter'
-    config.add_index_field 'extent_t', label: 'Length', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'language_t', label: 'Language', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'audio_b', label: 'Audio', highlight: true, solr_params: { :"hl.alternateField" => "dd" }, helper_method: 'audio_icon'
-    config.add_index_field 'author_t', label: 'Interviewer', highlight: true, solr_params: { :"hl.alternateField" => "dd" } 
-    config.add_index_field 'interviewee_t', label: 'Interviewee', highlight: true, solr_params: { :"hl.alternateField" => "dd" } 
-    # config.add_index_field 'title_t', label: 'Title', highlight: true, solr_params: { :"hl.alternateField" => "dd" } 
-    config.add_index_field 'subtitle_t', label: 'Subtitle', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    # config.add_index_field 'series_t', label: 'Series Name', highlight: true, solr_params: { :"hl.alternateField" => "dd" } 
-    config.add_index_field 'description_t', label: 'Description', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.maxAlternateFieldLength" => 100, :"hl.highlightAlternate" => true  }, helper_method: 'index_filter' 
-    config.add_index_field 'abstract_t', label: 'Series Statement', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.maxAlternateFieldLength" => 100, :"hl.highlightAlternate" => true  }, helper_method: 'index_filter' 
+    config.add_index_field 'title_t', label: 'Title', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
+    config.add_index_field 'subject_topic_t', label: 'Topic', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
+    config.add_index_field 'statement_of_responsibility_t', label: 'Statement of responsibility', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
+    config.add_index_field 'series_title_t', label: 'Series name', highlight: true, solr_params: { :"hl.alternateField" => "dd" } 
+    config.add_index_field 'date_created_t', label: 'Date created', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true  } 
+    config.add_index_field 'repository_t', label: 'Repostory', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true  }
+
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
-    config.add_show_field 'subtitle_t', label: 'Subtitle', highlight: true
-    config.add_show_field 'series_t', label: 'Series', link_to_search: "series_facet", highlight: true, helper_method: 'highlightable_series_link'
-    config.add_show_field 'subject_t', label: 'Topic', helper_method: :split_multiple, highlight: true
-    config.add_show_field 'contributor_display', label: 'Interviewer', highlight: true
-    config.add_show_field 'author_t', label: 'Interviewer', highlight: true
-    config.add_show_field 'interviewee_t', label: 'Interviewee', highlight: true
-    config.add_show_field 'person_present_t', label: 'Persons Present', highlight: true
-    config.add_show_field 'place_t', label: 'Place Conducted', highlight: true
-    config.add_show_field 'supporting_documents_t', label: 'Supporting Documents', highlight: true
-    config.add_show_field 'interviewer_history_t', label: 'Interviewer Background and Preparation', highlight: true
-    config.add_show_field 'process_interview_t', label: 'Processing of Interview', highlight: true
-    config.add_show_field 'publisher_display', label: 'Publisher', highlight: true
-    config.add_show_field 'pub_date', label: 'Date', highlight: true
-    config.add_show_field 'extent_t', label: 'Length', highlight: true
-    config.add_show_field 'language_t', label: 'Language'
-    config.add_show_field 'coverage_display', label: 'Period Covered', highlight: true
-    config.add_show_field 'rights_t', label: 'Copyright', highlight: true
-    config.add_show_field 'audio_b', label: 'Audio', helper_method: 'audio_icon'
-    config.add_show_field 'links_t', label: 'Files', helper_method: 'file_links'
-    config.add_show_field 'abstract_t', label: 'Series Statement', highlight: true
-    config.add_show_field 'interview_abstract_t', label: 'Abstract'
- #   config.add_show_field 'author_vern_display', label: 'Author'
- #   config.add_show_field 'format', label: 'Format'
- #   config.add_show_field 'url_fulltext_display', label: 'URL'
- #   config.add_show_field 'url_suppl_display', label: 'More Information'
- #   config.add_show_field 'language_facet', label: 'Language'
- #   config.add_show_field 'published_display', label: 'Published'
- #   config.add_show_field 'published_vern_display', label: 'Published'
- #   config.add_show_field 'lc_callnum_display', label: 'Call number'
- #   config.add_show_field 'isbn_t', label: 'ISBN'
+    config.add_show_field 'subject_topic_t', label: 'Topic', helper_method: :split_multiple, highlight: true
+    config.add_show_field 'statement_of_responsibility_t', label: 'Statement of responsibility', highlight: true
+    config.add_show_field 'creation_production_credits_t', label: 'Creation production credits', highlight: true
+    config.add_show_field 'conservation_t', label: 'Conservation', highlight: true
+    config.add_show_field 'extent_t', label: 'Format', highlight: true
+    config.add_show_field 'subject_name_t', label: 'Subject', highlight: true
+    config.add_show_field 'temporal_subject_t', label: 'Temporal', highlight: true
+    config.add_show_field 'geographic_subject_t', label: 'Geographic', highlight: true
+    config.add_show_field 'series_title_t', label: 'Series'
+    config.add_show_field 'genre_t', label: 'Genre'
+    config.add_show_field 'type_of_resource_t', label: 'Type of resource', highlight: true
+    config.add_show_field 'date_created_t', label: 'Date created', highlight: true
+    config.add_show_field 'program_title_t', label: 'Program title', highlight: true
+    config.add_show_field 'title_t', label: 'Title', highlight: true
+    config.add_show_field 'file_name_t', label: 'File name', highlight: true
+    config.add_show_field 'copyright_status_t', label: 'Copyright', highlight: true
+    config.add_show_field 'publication_status_t', label: 'Publication Status', highlight: true
+    config.add_show_field 'repository_t', label: 'Repository', highlight: true
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
@@ -193,13 +177,13 @@ class CatalogController < ApplicationController
       }
     end
 
-    config.add_search_field('author') do |field|
-      field.solr_parameters = { :'spellcheck.dictionary' => 'author' }
-      field.solr_local_parameters = {
-        qf: '$author_qf',
-        pf: '$author_pf'
-      }
-    end
+    # config.add_search_field('author') do |field|
+    #   field.solr_parameters = { :'spellcheck.dictionary' => 'author' }
+    #   field.solr_local_parameters = {
+    #     qf: '$author_qf',
+    #     pf: '$author_pf'
+    #   }
+    # end
 
     # Specifying a :qt only to show it's possible, and so our internal automated
     # tests can test it. In this case it's the same as
@@ -214,13 +198,13 @@ class CatalogController < ApplicationController
     end
 
 
-    config.add_search_field('biographical') do |field|
-      field.solr_parameters = { :'spellcheck.dictionary' => 'biographical' }
-      field.solr_local_parameters = {
-        qf: '$biographical_qf',
-        pf: '$biographical_pf'
-      }
-    end
+    # config.add_search_field('biographical') do |field|
+    #   field.solr_parameters = { :'spellcheck.dictionary' => 'biographical' }
+    #   field.solr_local_parameters = {
+    #     qf: '$biographical_qf',
+    #     pf: '$biographical_pf'
+    #   }
+    # end
 
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and

@@ -55,8 +55,23 @@ Then visit http://0.0.0.0:8000 in your browser.  You should see a rails error pa
 sc be rake db:migrate import[100]
 ```
 
+7) Add seed data
+``` bash
+sc be rake db:seed
+```
+
 ## Development Notes
 When performing an import the system will attempt to download and process the audio files to create the peak files. This is very CPU & time intense. Change MAKE_WAVES in your .env to false (or delete it).
+
+### To clear data records
+``` bash
+sc be rake clear
+```
+
+### To run import from admin page
+Login to admin page using seed user info
+Press the import records button
+
 
 # Deploy a new release
 
