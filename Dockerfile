@@ -7,14 +7,14 @@ ADD ops/env.conf /etc/nginx/main.d/env.conf
 
 RUN echo $BRANCH
 RUN cd /home/app/webapp && \
-    /sbin/setuser app git fetch -ap && \
-    /sbin/setuser app git checkout -f $BRANCH && \
-    /sbin/setuser app git pull origin $BRANCH && \
-    /sbin/setuser app git clean -fd && \
-    chown -R app $APP_HOME && \
-    (/sbin/setuser app bundle check || /sbin/setuser app bundle install) && \
-    /sbin/setuser app bundle exec rake assets:precompile DB_ADAPTER=nulldb NODE_ENV=production && \
-    chown -R app $APP_HOME && \
-    rm -f /etc/service/nginx/down
+  /sbin/setuser app git fetch -ap && \
+  /sbin/setuser app git reset --hard && \
+  /sbin/setuser app git checkout -f $BRANCH && \
+  /sbin/setuser app git pull origin $BRANCH && \
+  /sbin/setuser app git clean -fd && \
+  chown -R app $APP_HOME && \
+  (/sbin/setuser app bundle check || /sbin/setuser app bundle install) && \
+  /sbin/setuser app bundle exec rake assets:precompile DB_ADAPTER=nulldb NODE_ENV=production && \
+  rm -f /etc/service/nginx/down
 
 CMD ["/sbin/my_init"]
