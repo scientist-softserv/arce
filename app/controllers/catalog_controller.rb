@@ -18,7 +18,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       rows: 10,
       :"hl" => true,
-      :"hl.fl" => "title_t, subject_topic_t, statement_of_responsibility_t, series_title_t, date_created_t, repository_t",
+      :"hl.fl" => "collection_t title_t geographic_subject_t temporal_subject_t",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.fragsize" => 200,
@@ -42,9 +42,7 @@ class CatalogController < ApplicationController
       :"hl" => true,
       :"hl.fragsize" => 0,
       :"hl.preserveMulti" => true,
-      :"hl.fl" => "subject_topic_t, statement_of_responsibility_t, creation_production_credits_t, conservation_t, extent_t,
-      subject_name_t, temporal_subject_t, geographic_subject_t, series_title_t, genre_t, type_of_resource_t, date_created_t,
-      program_title_t, title_t, file_name_t, copyright_status_t, publication_status_t, repository_t",
+      :"hl.fl" => "file_name_t collection_t series_title_t genre_t subject_topic_t geographic_subject_t temporal_subject_t title_t extent_t creation_production_credits_t conservation_t copyright_status_t date_created_t creator_t note_license_t note_rights_t subseries_title_t language_t",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.alternateField" => "dd"
@@ -56,7 +54,7 @@ class CatalogController < ApplicationController
     #config.index.thumbnail_field = 'thumbnail_path_ss'
 
     # solr field configuration for document/show views
-    #config.show.title_field = 'title_display'
+    config.show.title_field = 'title_display'
     #config.show.display_type_field = 'format'
     #config.show.thumbnail_field = 'thumbnail_path_ss'
 
@@ -84,17 +82,12 @@ class CatalogController < ApplicationController
     #  (useful when user clicks "more" on a large facet and wants to navigate alphabetically across a large set of results)
     # :index_range can be an array or range of prefixes that will be used to create the navigation (note: It is case sensitive when searching values)
 
-    config.add_facet_field 'format', label: 'Format'
-#    config.add_facet_field 'pub_date', label: 'Publication Year', single: true
+    config.add_facet_field 'collection_facet', label: 'Collection', limit: 20, index_range: 'A'..'Z'
+    config.add_facet_field 'series_facet', label: 'Series', limit: 20, index_range: 'A'..'Z'
     config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
-    # config.add_facet_field 'language_facet', label: 'Language', limit: true
-    #config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
-    #config.add_facet_field 'subject_geo_facet', label: 'Region'
-#    config.add_facet_field 'subject_era_facet', label: 'Era'
-    # config.add_facet_field 'series_facet', label: 'Series'
-    # config.add_facet_field 'type_of_resource_facet', label: 'Type of Resource'
-    # config.add_facet_field 'audio_b', label: 'Has Audio', helper_method: 'audio_icon_with_text'
-    #config.add_facet_field 'example_pivot_field', label: 'Pivot Field', :pivot => ['format', 'language_facet']
+    config.add_facet_field 'genre_facet', label: 'Genre', limit: 20, index_range: 'A'..'Z'
+    config.add_facet_field 'geographic_subject_facet', label: 'Location', limit: 20, index_range: 'A'..'Z'
+    config.add_facet_field 'temporal_subject_facet', label: 'Time Period', limit: 20, index_range: 'A'..'Z'
 
 #    config.add_facet_field 'example_query_facet_field', label: 'Publish Date', :query => {
 #       :years_5 => { label: 'within 5 Years', fq: "pub_date:[#{Time.zone.now.year - 5 } TO *]" },
@@ -110,33 +103,31 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results and bookmarks) view
     #   The ordering of the field names is the order of the display
-    config.add_index_field 'title_t', label: 'Title', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'subject_topic_t', label: 'Topic', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'statement_of_responsibility_t', label: 'Statement of responsibility', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'series_title_t', label: 'Series name', highlight: true, solr_params: { :"hl.alternateField" => "dd" } 
-    config.add_index_field 'date_created_t', label: 'Date created', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true  } 
-    config.add_index_field 'repository_t', label: 'Repostory', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true  }
+    config.add_index_field 'collection_t', label: 'Collection', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
+    config.add_index_field 'title_t', label: 'Description', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
+    config.add_index_field 'geographic_subject_t', label: 'Location', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
+    config.add_index_field 'temporal_subject_t', label: 'Time Period', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
-    config.add_show_field 'subject_topic_t', label: 'Topic', helper_method: :split_multiple, highlight: true
-    config.add_show_field 'statement_of_responsibility_t', label: 'Statement of responsibility', highlight: true
-    config.add_show_field 'creation_production_credits_t', label: 'Creation production credits', highlight: true
-    config.add_show_field 'conservation_t', label: 'Conservation', highlight: true
-    config.add_show_field 'extent_t', label: 'Format', highlight: true
-    config.add_show_field 'subject_name_t', label: 'Subject', highlight: true
-    config.add_show_field 'temporal_subject_t', label: 'Temporal', highlight: true
-    config.add_show_field 'geographic_subject_t', label: 'Geographic', highlight: true
-    config.add_show_field 'series_title_t', label: 'Series'
-    config.add_show_field 'genre_t', label: 'Genre'
-    config.add_show_field 'type_of_resource_t', label: 'Type of resource', highlight: true
-    config.add_show_field 'date_created_t', label: 'Date created', highlight: true
-    config.add_show_field 'program_title_t', label: 'Program title', highlight: true
-    config.add_show_field 'title_t', label: 'Title', highlight: true
     config.add_show_field 'file_name_t', label: 'File name', highlight: true
-    config.add_show_field 'copyright_status_t', label: 'Copyright', highlight: true
-    config.add_show_field 'publication_status_t', label: 'Publication Status', highlight: true
-    config.add_show_field 'repository_t', label: 'Repository', highlight: true
+    config.add_show_field 'collection_t', label: 'Collection', highlight: true
+    config.add_show_field 'series_title_t', label: 'Series', highlight: true
+    config.add_show_field 'genre_t', label: 'Genre', highlight: true
+    config.add_show_field 'subject_topic_t', label: 'Topic', highlight: true
+    config.add_show_field 'geographic_subject_t', label: 'Location', highlight: true
+    config.add_show_field 'temporal_subject_t', label: 'Time Period', highlight: true
+    config.add_show_field 'title_t', label: 'Description', highlight: true
+    config.add_show_field 'extent_t', label: 'Physical Description', highlight: true
+    config.add_show_field 'creation_production_credits_t', label: 'Photographer', highlight: true
+    config.add_show_field 'conservation_t', label: 'Conservation Note', highlight: true
+    config.add_show_field 'copyright_status_t', label: 'Copyright Status', highlight: true
+    config.add_show_field 'date_created_t', label: 'Date Created', highlight: true
+    config.add_show_field 'creator_t', label: 'Author', highlight: true
+    config.add_show_field 'note_license_t', label: 'Creative Commons License', highlight: true
+    config.add_show_field 'note_rights_t', label: 'Rights Statement', highlight: true
+    config.add_show_field 'subseries_title_t', label: 'Subseries', highlight: true
+    config.add_show_field 'language_t', label: 'Language', highlight: true
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
@@ -210,10 +201,8 @@ class CatalogController < ApplicationController
     # label in pulldown is followed by the name of the SOLR field to sort by and
     # whether the sort is ascending or descending (it must be asc or desc
     # except in the relevancy case).
-    config.add_sort_field 'score desc, pub_date_sort desc, title_sort asc', label: 'Relevance'
-    config.add_sort_field 'series_sort asc, title_sort asc', label: 'Series'
-    config.add_sort_field 'interviewee_sort asc, title_sort asc', label: 'Interviewee'
-    config.add_sort_field 'language_sort asc, title_sort asc', label: 'Language'
+    config.add_sort_field 'score desc, title_sort asc', label: 'Relevance'
+    config.add_sort_field 'collection_sort asc, title_sort asc', label: 'Collection'
 
     # If there are more than this many search results, no spelling ("did you
     # mean") suggestion is offered.

@@ -99,7 +99,24 @@ class ArceItem
           next if child.class == REXML::Text
           if child.attributes['displayLabel']  == 'File name'
             file_name = child.text
-            history.attributes['file_name_t'] ||= file_name
+            history.attributes['file_name_t'] ||= []
+            if !history.attributes['file_name_t'].include?(file_name)
+              history.attributes['file_name_t'] << file_name
+            end
+          end
+          if child.name == 'identifier'
+            if child.attributes['type'] == 'local'
+              if child.attributes['displayLabel'] == "Local ID"
+                child.children.each do |ch|
+                  next if ch.class == REXML::Text
+                  file_name = ch.text
+                  history.attributes['file_name_t'] ||= []
+                  if !history.attributes['file_name_t'].include?(file_name)
+                    history.attributes['file_name_t'] << file_name
+                  end
+                end
+              end
+            end
           end
           if child.name == 'relatedItem'
             if child.attributes['type'] == 'host'
@@ -108,8 +125,10 @@ class ArceItem
                 ch.children.each do |c|
                   next if c.class == REXML::Text
                   if c.name == 'title'
-                    history.attributes['title_display'] ||= c.text
-                    history.attributes['host_title_t'] ||= c.text
+                    history.attributes['collection_display'] ||= c.text
+                    history.attributes['collection_facet'] ||= c.text
+                    history.attributes['collection_sort'] ||= c.text
+                    history.attributes['collection_t'] ||= c.text
                   end
                 end
               end
@@ -133,7 +152,21 @@ class ArceItem
                   next if c.class == REXML::Text
                   if c.name == 'title'
                     history.attributes['series_title_display'] ||= c.text
+                    history.attributes['series_facet'] ||= c.text
                     history.attributes['series_title_t'] ||= c.text
+                  end
+                end
+              end
+            end
+            # subseries is not in feed yet, may need updating
+            if child.attributes['type'] == 'subseries'
+              child.children.each do |ch|
+                next if ch.class == REXML::Text
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  if c.name == 'title'
+                    history.attributes['subseries_title_display'] ||= c.text
+                    history.attributes['subseries_title_t'] ||= c.text
                   end
                 end
               end
@@ -152,11 +185,15 @@ class ArceItem
             if !history.attributes['genre_t'].include?(genre)
               history.attributes['genre_t'] << genre
             end
+            history.attributes['genre_facet'] ||= []
+            if !history.attributes['genre_facet'].include?(genre)
+              history.attributes['genre_facet'] << genre
+            end
           end
           if child.name == 'subject'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              if ch.name == 'topic'
+              if ch.name == 'topic' || ch.name == 'name'
                 topic = ch.text
                 history.attributes['subject_topic_facet'] ||= []
                 if !history.attributes['subject_topic_facet'].include?(topic)
@@ -167,21 +204,15 @@ class ArceItem
                   history.attributes['subject_topic_t'] << topic
                 end
               end
-              if ch.name == 'name'
-                ch.children.each do |c|
-                  next if c.class == REXML::Text
-                  subject_name = c.text
-                  history.attributes['subject_name_t'] ||= []
-                  if !history.attributes['subject_name_t'].include?(subject_name)
-                    history.attributes['subject_name_t'] << subject_name
-                  end
-                end
-              end
               if ch.name == 'temporal'
                 temporal = ch.text
                 history.attributes['temporal_subject_t'] ||= []
                 if !history.attributes['temporal_subject_t'].include?(temporal)
                   history.attributes['temporal_subject_t'] << temporal
+                end
+                history.attributes['temporal_subject_facet'] ||= []
+                if !history.attributes['temporal_subject_facet'].include?(temporal)
+                  history.attributes['temporal_subject_facet'] << temporal
                 end
               end
               if ch.name == 'geographic'
@@ -189,6 +220,10 @@ class ArceItem
                 history.attributes['geographic_subject_t'] ||= []
                 if !history.attributes['geographic_subject_t'].include?(geographic)
                   history.attributes['geographic_subject_t'] << ch.text
+                end
+                history.attributes['geographic_subject_facet'] ||= []
+                if !history.attributes['geographic_subject_facet'].include?(geographic)
+                  history.attributes['geographic_subject_facet'] << ch.text
                 end
               end
             end
@@ -200,6 +235,21 @@ class ArceItem
               history.attributes["title_t"] ||= []
               if !history.attributes["title_t"].include?(title_text)
                 history.attributes["title_t"] << title_text
+              end
+              history.attributes["title_display"] ||= []
+              if !history.attributes["title_display"].include?(title_text)
+                history.attributes["title_display"] << title_text
+              end
+            end
+          end
+          # creator is not in feed yet so this may need updating
+          if child.name == 'name'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              creator = ch.text
+              history.attributes['creator_t'] ||= []
+              if !history.attributes['creator_t'].include?(creator)
+                history.attributes['creator_t'] << creator
               end
             end
           end
@@ -215,13 +265,33 @@ class ArceItem
           end
           if child.name == 'note'
             if child.attributes['type'] == 'statementofresponsibility'
-              history.attributes['statement_of_responsibility_t'] == child.text
+              history.attributes['project_history_t'] == child.text
             end
             if child.attributes['type'] == 'creation_production credits'
               history.attributes['creation_production_credits_t'] == child.text
             end
             if child.attributes['type'] == 'conservation'
               history.attributes['conservation_t'] == child.text
+            end
+            # the next four items are not in feed yet so may need updating
+            if child.attributes['type'] == 'funding'
+              history.attributes['notes_funding_t'] == child.text
+            end
+            if child.attributes['type'] == 'license'
+              history.attributes['notes_license_t'] == child.text
+            end
+            if child.attributes['type'] == 'rights'
+              history.attributes['notes_rights_t'] == child.text
+            end
+            if child.attributes['type'] == 'related'
+              history.attributes['related_t'] == child.text
+            end
+          end
+          # not in feed yet so this will probably need updating
+          if child.name == 'language'
+            child.children.each do |ch|
+              next if ch.class == REXML::Text
+              history.attributes['language_t'] == ch.text
             end
           end
           if child.name == 'accessCondition'
