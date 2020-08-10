@@ -31,5 +31,6 @@ Rails.application.routes.draw do
   end
 
   get 'pages/about', to: 'pages#about', as: 'about'
+  get 'pages/policy', to: 'pages#policy', as: 'policy'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
