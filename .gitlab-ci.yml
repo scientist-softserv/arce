@@ -43,12 +43,13 @@ test:
     - echo "$POSTGRES_HOST"
     - cd /home/app/webapp && bundle exec rake db:create db:schema:load spec
   variables:
-    POSTGRES_DB: arce
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password
-    POSTGRES_HOST: postgres
-    TEST_DB: arce
     GIT_STRATEGY: none
+    POSTGRES_DB: arce
+    POSTGRES_HOST: postgres
+    POSTGRES_PASSWORD: password
+    POSTGRES_USER: postgres
+    SOLR_URL: http://solr:8983/solr/test
+    TEST_DB: arce
   tags:
     - docker
 
