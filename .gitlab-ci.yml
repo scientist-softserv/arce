@@ -26,8 +26,8 @@ build:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc build
     - sc push
-    - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   tags:
     - local
 
@@ -57,7 +57,7 @@ staging:
   stage: test
   type: deploy
   script:
-  - ./chart/bin/deploy staging $CI_COMMIT_REF_SLUG $STAGING_CONFIG_FILE
+  - ./chart/bin/deploy staging $CI_COMMIT_SHORT_SHA $STAGING_CONFIG_FILE
   only:
     - master
   tags:
@@ -67,7 +67,7 @@ production:
   stage: deploy
   type: deploy
   script:
-  - ./chart/bin/deploy production $CI_COMMIT_REF_SLUG $PRODUCTION_CONFIG_FILE
+  - ./chart/bin/deploy production $CI_COMMIT_SHORT_SHA $PRODUCTION_CONFIG_FILE
   when: manual
   only:
     - master
