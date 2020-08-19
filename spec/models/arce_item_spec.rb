@@ -2,7 +2,8 @@ require 'rails_helper'
 
 describe ArceItem do
   it 'gets the client' do
-    expect(ArceItem.client({url: 'http://www.example.com'})).to be true
+    client = ArceItem.client({url: 'http://www.example.com'})
+    expect(client.as_json['http_client']['url_prefix']).to eq 'http://www.example.com/'
   end
 
   it 'can import item' do
