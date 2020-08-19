@@ -39,19 +39,18 @@ test:
     - name: postgres:11.1
     - name: solr:latest
       entrypoint: ["docker-entrypoint.sh", "solr-precreate", "test"]
-  variables:
-    POSTGRES_DB: "arce"
-    POSTGRES_USER: "postgres"
-    POSTGRES_PASSWORD: "password"
-    POSTGRES_HOST: "postgres"
-    TEST_DB: "arce"
   script:
     - echo "$POSTGRES_HOST"
     - cd /home/app/webapp && bundle exec rake db:create db:schema:load spec
+  variables:
+    POSTGRES_DB: arce
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: password
+    POSTGRES_HOST: postgres
+    TEST_DB: arce
+    GIT_STRATEGY: none
   tags:
     - docker
-  variables:
-    GIT_STRATEGY: none
 
 staging:
   stage: test
