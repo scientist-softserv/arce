@@ -13,7 +13,7 @@ class ArceItem
   end
 
   def self.client(args)
-    url = args[:url] || "http://p-w-islandoraingest01.library.ucla.edu/oai2/"
+    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
     OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods', verb: 'ListRecords'
   end
 
@@ -314,7 +314,17 @@ class ArceItem
           if child.name == 'location'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              history.attributes['repository_t'] == ch.text
+              if ch.name == 'physicalLocation'
+                history.attributes['repository_t'] = ch.text
+              end
+              if ch.name == 'url'
+                if ch.attributes['access'] == 'preview'
+                  history.attributes['resource_preview_t'] = ch.text
+                end
+                if ch.attributes['access'] == 'raw object'
+                  history.attributes['resource_url_t'] = ch.text
+                end
+              end
             end
           end
         end

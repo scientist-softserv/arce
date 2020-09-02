@@ -10,12 +10,20 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-hls-player": "^0.0.5",
+    "universalviewer": "^3.0.16",
     "wavesurfer.js": "^2.0.6",
     "webpack-merge": "^4.1.1",
     "webpacker-react": "^0.3.2",
     "xslt": "^0.9.1"
   },
+  "scripts": {
+    "preinstall": "rm -rf ./public/uv",
+    "postinstall": "yarn run uv-install && yarn run uv-config",
+    "uv-install": "shx cp -r ./node_modules/universalviewer/dist ./public/uv",
+    "uv-config": "shx cp ./config/uv/uv.html ./public/uv/uv.html && shx cp ./config/uv/uv-config.json ./public/uv/"
+  },
   "devDependencies": {
+    "shx": "^0.3.2",
     "webpack-dev-server": "^3.11.0"
   }
 }

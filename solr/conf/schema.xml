@@ -499,6 +499,8 @@
    <field name="copyright_status_t" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="publication_status_t" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="repository_t" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="resource_preview_t" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="resource_url_t" type="text" indexed="true" stored="true" multiValued="false"/>
 
 
    <!-- these fields are also used for display, so they must be stored -->

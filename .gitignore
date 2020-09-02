@@ -24,6 +24,7 @@ public/packs/*
 .DS_Store
 .env.*
 .env.*
+/public/uv
 
 # Ignore local development history
 /.history

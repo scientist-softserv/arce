@@ -17,6 +17,7 @@ gem 'delayed_job_active_record'
 gem 'devise'
 gem 'devise-guests', '~> 0.6'
 gem 'font-awesome-rails'
+gem "iiif-presentation", "~> 1.0"
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'json-waveform'
