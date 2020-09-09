@@ -268,23 +268,23 @@ class ArceItem
               history.attributes['project_history_t'] == child.text
             end
             if child.attributes['type'] == 'creation_production credits'
-              history.attributes['creation_production_credits_t'] == child.text
+              history.attributes['creation_production_credits_t'] = child.text
             end
             if child.attributes['type'] == 'conservation'
-              history.attributes['conservation_t'] == child.text
+              history.attributes['conservation_t'] = child.text
             end
             # the next four items are not in feed yet so may need updating
             if child.attributes['type'] == 'funding'
-              history.attributes['notes_funding_t'] == child.text
+              history.attributes['notes_funding_t'] = child.text
             end
             if child.attributes['type'] == 'license'
-              history.attributes['notes_license_t'] == child.text
+              history.attributes['notes_license_t'] = child.text
             end
             if child.attributes['type'] == 'rights'
-              history.attributes['notes_rights_t'] == child.text
+              history.attributes['notes_rights_t'] = child.text
             end
             if child.attributes['type'] == 'related'
-              history.attributes['related_t'] == child.text
+              history.attributes['related_t'] = child.text
             end
           end
           # not in feed yet so this will probably need updating
@@ -297,17 +297,19 @@ class ArceItem
           if child.name == 'accessCondition'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              history.attributes['copyright_status_t'] == ch.attributes['copyright.status']
-              history.attributes['publication_status_t'] == ch.attributes['publication.status']
+              history.attributes['copyright_status_t'] = ch.attributes['copyright.status']
+              history.attributes['publication_status_t'] = ch.attributes['publication.status']
             end
           end
           if child.name == 'originInfo'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              date = Date.parse(ch.text)
-              history.attributes['date_created_t'] ||= []
-              if !history.attributes['date_created_t'].include?(date)
-                history.attributes['date_created_t'] << date
+              if ch.attributes.empty?
+                history.attributes['date_created_t'] ||= ch.text
+              end
+              if ch.attributes['encoding'].present?
+                date = Date.parse(ch.text)
+                history.attributes['date_created_sort'] ||= date
               end
             end
           end
