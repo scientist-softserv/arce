@@ -18,7 +18,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       rows: 10,
       :"hl" => true,
-      :"hl.fl" => "collection_t title_t geographic_subject_t temporal_subject_t",
+      :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t ",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.fragsize" => 200,
@@ -103,31 +103,33 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results and bookmarks) view
     #   The ordering of the field names is the order of the display
-    config.add_index_field 'collection_t', label: 'Collection', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
-    config.add_index_field 'title_t', label: 'Description', helper_method: :split_multiple, highlight: true, solr_params: { :"hl.alternateField" => "dd" }
+    config.add_index_field 'title_t', label: 'Description', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
     config.add_index_field 'geographic_subject_t', label: 'Location', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
     config.add_index_field 'temporal_subject_t', label: 'Time Period', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
+    config.add_index_field 'collection_t', label: 'Collection', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
-    config.add_show_field 'file_name_t', label: 'File name', highlight: true
-    config.add_show_field 'collection_t', label: 'Collection', highlight: true
-    config.add_show_field 'series_title_t', label: 'Series', highlight: true
-    config.add_show_field 'genre_t', label: 'Genre', highlight: true
-    config.add_show_field 'subject_topic_t', label: 'Topic', highlight: true
-    config.add_show_field 'geographic_subject_t', label: 'Location', highlight: true
-    config.add_show_field 'temporal_subject_t', label: 'Time Period', highlight: true
     config.add_show_field 'title_t', label: 'Description', highlight: true
     config.add_show_field 'extent_t', label: 'Physical Description', highlight: true
     config.add_show_field 'creation_production_credits_t', label: 'Photographer', highlight: true
+    config.add_show_field 'creator_t', label: 'Author', highlight: true
+    config.add_show_field 'date_created_t', label: 'Date Created', highlight: true
+    config.add_show_field 'language_t', label: 'Language', highlight: true
+    config.add_show_field 'collection_t', label: 'Collection', highlight: true
+    config.add_show_field 'series_title_t', label: 'Series', highlight: true
+    config.add_show_field 'subseries_title_t', label: 'Subseries', highlight: true
+    config.add_show_field 'geographic_subject_t', label: 'Location', highlight: true
+    config.add_show_field 'temporal_subject_t', label: 'Time Period', highlight: true
+    config.add_show_field 'subject_topic_t', label: 'Topic', highlight: true
+    config.add_show_field 'genre_t', label: 'Genre', highlight: true
     config.add_show_field 'conservation_t', label: 'Conservation Note', highlight: true
     config.add_show_field 'copyright_status_t', label: 'Copyright Status', highlight: true
-    config.add_show_field 'date_created_t', label: 'Date Created', highlight: true
-    config.add_show_field 'creator_t', label: 'Author', highlight: true
     config.add_show_field 'note_license_t', label: 'Creative Commons License', highlight: true
     config.add_show_field 'note_rights_t', label: 'Rights Statement', highlight: true
-    config.add_show_field 'subseries_title_t', label: 'Subseries', highlight: true
-    config.add_show_field 'language_t', label: 'Language', highlight: true
+    config.add_show_field 'file_name_t', label: 'Local ID', highlight: true
+    # config.add_show_field 'resource_preview_t', label: 'Image preview url'
+    # config.add_show_field 'resource_url_t', label: 'Resource url'
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
@@ -203,6 +205,7 @@ class CatalogController < ApplicationController
     # except in the relevancy case).
     config.add_sort_field 'score desc, title_sort asc', label: 'Relevance'
     config.add_sort_field 'collection_sort asc, title_sort asc', label: 'Collection'
+    config.add_sort_field 'date_created_sort asc, title_sort asc', label: 'Date Created'
 
     # If there are more than this many search results, no spelling ("did you
     # mean") suggestion is offered.

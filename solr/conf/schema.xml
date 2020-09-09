@@ -471,7 +471,7 @@
    <field name="geographic_subject_t" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="creator_t" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="extent_t" type="string" indexed="true" stored="true" multiValued="true"/>
-   <field name="date_created_t" type="string" indexed="true" stored="true" multiValued="true"/>
+   
    <!-- default, catch all search field -->
 
     "contributor_txt"=>["Sargent, Alvan J."], "creator_txt"=>["Parker, John E."]}
@@ -501,7 +501,7 @@
    <field name="repository_t" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="resource_preview_t" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="resource_url_t" type="text" indexed="true" stored="true" multiValued="false"/>
-
+   <field name="date_created_t" type="string" indexed="true" stored="true" multiValued="false"/>
 
    <!-- these fields are also used for display, so they must be stored -->
    <field name="collection_facet" type="text" indexed="true" stored="true" multiValued="false"/>
@@ -522,6 +522,7 @@
    <field name="series_facet" type="string" indexed="true" stored="true" multiValued="true" />
    <field name="series_sort" type="alphaOnlySort" indexed="true" stored="true" multiValued="false" />
    <field name="collection_sort" type="alphaOnlySort" indexed="true" stored="true" multiValued="false" />
+   <field name="date_created_sort" type="alphaOnlySort" indexed="true" stored="true" multiValued="false"/> 
 
    <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
         will be used if the name matches any of the patterns.

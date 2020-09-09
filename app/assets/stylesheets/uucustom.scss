@@ -358,7 +358,7 @@ body.blacklight-catalog.blacklight-catalog-show .hero-nav {
 
 section.g-pos-rel.hero-image-block {
   height: 130%;
-  background-image: image-url('arce-hero.jpg');
+  background-image: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.1)),image-url('arce-hero3.jpg');
   background-repeat: no-repeat;
   background-position: top;
   background-size: cover;
