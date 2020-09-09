@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-
+  
   mount DelayedJobWeb, at: "/delayed_job"
 
   get '/admin', to: 'admin#index', as: 'admin'
@@ -33,4 +33,9 @@ Rails.application.routes.draw do
   get 'pages/about', to: 'pages#about', as: 'about'
   get 'pages/policy', to: 'pages#policy', as: 'policy'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  # Route to the IIIF manifest.json for a particular image.
+  get "iiif/2/:id/manifest.json" => "images#manifest",
+    defaults: { format: 'json' },
+    as: 'riiif_manifest'
 end

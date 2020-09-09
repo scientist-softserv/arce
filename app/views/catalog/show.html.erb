@@ -1,4 +1,7 @@
-<%= render partial: '/shared/hero_header' %>
+<%= render partial: '/shared/sub_header' %>
+<% unless @document['resource_url_t'].first.include? ".pdf" %>
+  <%= render partial: 'uv', locals: { document_id: @document.id } %>
+<% end %>
 <div class="container">
   <div id="content" class="<%= show_content_classes %>">
     <%= render_document_main_content_partial %>
