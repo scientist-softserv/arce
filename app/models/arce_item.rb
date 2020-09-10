@@ -265,7 +265,7 @@ class ArceItem
           end
           if child.name == 'note'
             if child.attributes['type'] == 'statementofresponsibility'
-              history.attributes['project_history_t'] == child.text
+              history.attributes['project_history_t'] = child.text
             end
             if child.attributes['type'] == 'creation_production credits'
               history.attributes['creation_production_credits_t'] = child.text
@@ -291,7 +291,7 @@ class ArceItem
           if child.name == 'language'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              history.attributes['language_t'] == ch.text
+              history.attributes['language_t'] = ch.text
             end
           end
           if child.name == 'accessCondition'
