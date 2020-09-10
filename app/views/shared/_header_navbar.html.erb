@@ -1,12 +1,15 @@
-<div id="header-navbar"role="navigation">
-    <div class="navbar-header">
-    <button type="button" class="navbar-toggle btn collapsed" data-toggle="collapse" data-target="#user-util-collapse">
+<div id="header-navbar" class="" role="navigation">
+  <div class="navbar-header top-bar-navbar-header">
+    <button type="button" class="navbar-toggle top-nav-btn collapsed rounded-0" data-toggle="collapse" data-target="#mobile-collapse">
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <%= render partial: '/top_bar_nav'%>
-    </div>
+    <%= render partial: '/logo'%>
+    <a class="join text-right" href="https://www.arce.org/become-arce-member"><span>Join</span></a>
+  </div>
+  <%= render partial: '/top_bar_nav' %>
+  <%= render partial: '/mobile_nav' %>
+  
 </div>
-
