@@ -252,30 +252,32 @@ body.blacklight-catalog.blacklight-catalog-show .hero-nav {
       background: #fff;
     }
   }
-  .join {
-    font-family: "textbook-new",sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    min-height: 50px;
-    padding: 10px 30px;
-    text-align: center;
-    color: #000;
-    background: #fccf2d;
-    -webkit-transition: all 0.125s ease-in-out;
-    -moz-transition: all 0.125s ease-in-out;
-    -ms-transition: all 0.125s ease-in-out;
-    -o-transition: all 0.125s ease-in-out;
-    transition: all 0.125s ease-in-out;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
-  }
-  .join:hover {
-    -moz-transform: scale(1.25);
-    -o-transform: scale(1.25);
-    -ms-transform: scale(1.25);
-    -webkit-transform: scale(1.25);
-    transform: scale(1.25);
-    text-decoration: none;
-  }
+}
+
+.join {
+  font-family: "textbook-new",sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  min-height: 50px;
+  padding: 10px 30px;
+  text-align: center;
+  color: #000;
+  background: #fccf2d;
+  -webkit-transition: all 0.125s ease-in-out;
+  -moz-transition: all 0.125s ease-in-out;
+  -ms-transition: all 0.125s ease-in-out;
+  -o-transition: all 0.125s ease-in-out;
+  transition: all 0.125s ease-in-out;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+}
+
+.join:hover {
+  -moz-transform: scale(1.25);
+  -o-transform: scale(1.25);
+  -ms-transform: scale(1.25);
+  -webkit-transform: scale(1.25);
+  transform: scale(1.25);
+  text-decoration: none;
 }
 
 .navbar {
@@ -331,6 +333,92 @@ body.blacklight-catalog.blacklight-catalog-show .hero-nav {
   font-family: "Times New Roman";
 }
 
+/* MOBILE NAV */
+.navbar-toggle.top-nav-btn {
+  position: relative;
+  margin-right: 0;
+  float: left;
+  padding: 20px 20px;
+  margin-top: 0;
+  margin-bottom: 0;
+  background: #374c91;
+  background-image: none;
+  border: none;
+  .icon-bar {
+    background-color: #fff;
+  }
+}
+.nav .open > a, .nav .open > a:hover {
+  background-color: #fccf2d;
+  color:#243261;
+}
+
+#mobile-collapse {
+  background: #243261;
+}
+.hero-mobile-nav {
+  color: #fff;
+  a.dropdown-toggle {
+    line-height: 50px;
+    padding-bottom: 0;
+    font-size: 21px;
+    font-family: "orpheuspro", serif;
+    span.caret {
+      color: rgba(255, 255, 255, .5);
+    }
+  }
+  ul.dropdown-menu li a {
+    color: #fff;
+  }
+}
+
+.top-mobile-nav {
+  a.dropdown-toggle {
+    line-height: 50px;
+    padding-bottom: 0;
+    span.caret {
+      color: rgba(255, 255, 255, .5);
+    }
+  }
+  ul.dropdown-menu li a {
+    color: #fff;
+  }
+}
+
+.top-bar-navbar-header {
+  background: #243261;
+  .arce-logo {
+    width: 60px;
+    position: absolute;
+    left: 50%;
+    margin-left: -30px;
+    top: 2px;
+    margin-top: 0;
+  }
+  .join {
+    min-height: 40px;
+    padding: 8px 16px;
+    font-size: 16px;
+    position: absolute;
+    right: 20px;
+    top: 6px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .top-bar-navbar-header {
+    .arce-logo, .join {
+      display: none;
+    }
+  }
+  #mobile-collapse {
+    display:none !important;
+    height: auto !important;
+    padding-bottom: 0;
+    overflow: visible !important;
+  }
+}
+
 @media screen and (min-width: 768px) and (max-width: 1201px) {
   #header-navbar .navbar-brand {
     overflow: hidden;
@@ -338,10 +426,20 @@ body.blacklight-catalog.blacklight-catalog-show .hero-nav {
 }
 
 @media screen and (max-width: 767px) {
+  body {
+    padding-top: 0;
+  }
   #header-navbar .navbar-brand {
     background-position: left 5px center;
     width: 160px;
     overflow:hidden;
+  }
+  .top-nav {
+    display: none;
+  }
+
+  #hero-header, #sub-hero-header {
+    display: none;
   }
 
   /* HOME PAGE COLLECTION IMAGES */
@@ -352,6 +450,10 @@ body.blacklight-catalog.blacklight-catalog-show .hero-nav {
       }
     }
   }
+}
+
+img.img-fluid.w-100.u-block-hover__main--zoom-v1 {
+  width: 100%;
 }
 
 /* HERO SECTION ON HOME PAGE */
