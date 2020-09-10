@@ -128,8 +128,10 @@ class CatalogController < ApplicationController
     config.add_show_field 'note_license_t', label: 'Creative Commons License', highlight: true
     config.add_show_field 'note_rights_t', label: 'Rights Statement', highlight: true
     config.add_show_field 'file_name_t', label: 'Local ID', highlight: true
+    config.add_show_field 'project_history_t', label: 'Project History'
+    config.add_show_field 'notes_funding_t', label: 'Funding Agency'
     # config.add_show_field 'resource_preview_t', label: 'Image preview url'
-    # config.add_show_field 'resource_url_t', label: 'Resource url'
+    config.add_show_field 'resource_url_t', label: 'Resource url'
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields

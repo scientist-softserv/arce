@@ -1,0 +1,20 @@
+<%# partial to display resource_url_t if it is a pdf in catalog show view -%>
+<div class="container shortcode-html">
+  <div class="col-sm-12">
+    <div class="panel panel-primary rounded-0">
+    <% doc_presenter = show_presenter(document) %>
+    <% document_show_fields(document).each do |field_name, field| -%>
+      <% if field_name.parameterize == "resource_url_t" %>
+        <div class="panel-heading"><h4>View PDF:</h4></div>
+        <div class="panel-body">
+          <h4>
+            <a href="<%= doc_presenter.field_value field_name %>" target="_blank">
+              <%= doc_presenter.field_value field_name %>
+            </a>
+          </h4>
+        </div>
+      <% end %>
+    <% end -%>
+    </div>
+  </div>
+</div>

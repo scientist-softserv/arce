@@ -15,6 +15,10 @@ module ApplicationHelper
     document._source["type_of_resource_t"][0]
   end
 
+  def resource_is_pdf?(document)
+    document['resource_url_t'].first.include? ".pdf"
+  end
+
   def transcripts_from(document)
     from_helper "transcripts_json_t", document
   end
