@@ -1,6 +1,8 @@
+require 'iiif/presentation'
+require 'open-uri'
+
 class ImagesController < ApplicationController
   include Blacklight::Catalog
-  require 'iiif/presentation'
 
   def manifest
     @document = fetch params[:id]
