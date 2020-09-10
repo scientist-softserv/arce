@@ -308,8 +308,10 @@ class ArceItem
                 history.attributes['date_created_t'] ||= ch.text
               end
               if ch.attributes['encoding'].present?
-                date = Date.parse(ch.text)
-                history.attributes['date_created_sort'] ||= date
+                date = Date.parse(ch.text) rescue nil
+                if date
+                  history.attributes['date_created_sort'] ||= date
+                end
               end
             end
           end
