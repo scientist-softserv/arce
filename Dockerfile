@@ -5,6 +5,7 @@ ADD http://timejson.herokuapp.com build-time
 ADD ops/webapp.conf /etc/nginx/sites-enabled/webapp.conf
 ADD ops/env.conf /etc/nginx/main.d/env.conf
 COPY ops/nginx.sh /etc/service/nginx/run
+RUN chmod +x /etc/service/nginx/run
 
 RUN echo $BRANCH
 RUN cd /home/app/webapp && \
