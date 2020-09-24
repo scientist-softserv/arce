@@ -194,7 +194,8 @@ class ArceItem
             child.children.each do |ch|
               next if ch.class == REXML::Text
               if ch.name == 'topic' || ch.name == 'name'
-                topic = ch.text
+                topic = ch.text.to_s.strip
+                next if topic.empty?
                 history.attributes['subject_topic_facet'] ||= []
                 if !history.attributes['subject_topic_facet'].include?(topic)
                   history.attributes['subject_topic_facet'] << topic
@@ -242,14 +243,16 @@ class ArceItem
               end
             end
           end
-          # creator is not in feed yet so this may need updating
           if child.name == 'name'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              creator = ch.text
-              history.attributes['creator_t'] ||= []
-              if !history.attributes['creator_t'].include?(creator)
-                history.attributes['creator_t'] << creator
+              if ch.name == 'namePart'
+                creator = ch.text.to_s.strip
+                next if creator.empty?
+                history.attributes['creator_t'] ||= []
+                unless history.attributes['creator_t'].include?(creator)
+                  history.attributes['creator_t'] << creator
+                end
               end
             end
           end
@@ -280,8 +283,18 @@ class ArceItem
             if child.attributes['type'] == 'license'
               history.attributes['notes_license_t'] = child.text
             end
-            if child.attributes['type'] == 'rights'
-              history.attributes['notes_rights_t'] = child.text
+            history.attributes['notes_rights_t'] ||= []
+            if child.attributes['type'] == 'local_rights_statement'
+              rights_statement = child.text
+              unless history.attributes['notes_rights_t'].include?(rights_statement)
+                history.attributes['notes_rights_t'] = rights_statement
+              end
+            end
+            if child.attributes['type'] == 'rights_URI'
+              rights_statement = child.text
+              unless history.attributes['notes_rights_t'].include?(rights_statement)
+                history.attributes['notes_rights_t'] = rights_statement
+              end
             end
             if child.attributes['type'] == 'related'
               history.attributes['related_t'] = child.text
@@ -291,7 +304,9 @@ class ArceItem
           if child.name == 'language'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              history.attributes['language_t'] = ch.text
+              if ch.attributes['type'] == 'licence'
+                history.attributes['language_t'] = ch.text
+              end
             end
           end
           if child.name == 'accessCondition'

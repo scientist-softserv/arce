@@ -1,4 +1,5 @@
-$(document).ready(function() {
+$(document).on('turbolinks:load', function() {
+  
   $(".menu-item-about").hover(
       function() {
           $('ul.drop-about').stop(true, true).slideDown('medium');
