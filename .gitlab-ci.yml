@@ -64,7 +64,7 @@ staging:
     - local
 
 production:
-  stage: deploy
+  stage: test
   type: deploy
   script:
   - ./chart/bin/deploy production $CI_COMMIT_SHORT_SHA $PRODUCTION_CONFIG_FILE
