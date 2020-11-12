@@ -13,7 +13,7 @@ class ArceItem
   end
 
   def self.client(args)
-    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
+    url = args[:url] || "http://p-w-islandoraingest01.library.ucla.edu/oai2/"
     OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods', verb: 'ListRecords'
   end
 
