@@ -233,6 +233,8 @@ class ArceItem
             child.children.each do |ch|
               next if ch.class == REXML::Text
               title_text = ch.text.to_s.strip
+              a = title_text =~ /\p{Arabic}/
+              next if !a.nil?
               history.attributes["title_t"] ||= []
               if !history.attributes["title_t"].include?(title_text)
                 history.attributes["title_t"] << title_text
