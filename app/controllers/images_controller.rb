@@ -7,9 +7,9 @@ class ImagesController < ApplicationController
   def manifest
     @document = fetch params[:id]
     
-    info_json = @document.first.response['docs'].first['resource_url_t'].first
-    preview_url = @document.first.response['docs'].first['resource_preview_t'].first
-    
+    info_json = @document.first.response['docs'].first['resource_url_t']
+    preview_url = @document.first.response['docs'].first['resource_preview_t']
+
     # artefact holds the information you'd find in info.json.
     artefact = JSON.load(open(info_json))
     

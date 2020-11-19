@@ -13,7 +13,7 @@ class ArceItem
   end
 
   def self.client(args)
-    url = args[:url] || "http://p-w-islandoraingest01.library.ucla.edu/oai2/"
+    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
     OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods', verb: 'ListRecords'
   end
 
@@ -25,7 +25,6 @@ class ArceItem
   def self.get(args)
     response = client(args).get_record(identifier: args[:identifier], metadata_prefix: 'mods', )
   end
-
 
   def self.fetch_first_id
     response = self.fetch({progress: false, limit:1})
@@ -428,8 +427,8 @@ class ArceItem
   end
 
   def self.total_records(args = {})
-    url = args[:url] || "http://digital2.library.ucla.edu/dldataprovider/oai2_0.do"
-    set = args[:set] || "oralhistory"
+    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
+    set = args[:set] || "arce_1"
     client = OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods'
     response = client.list_records(set: set, metadata_prefix: 'mods')
     response.doc.elements['//resumptionToken'].attributes['completeListSize'].to_i
