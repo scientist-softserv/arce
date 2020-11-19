@@ -54,6 +54,13 @@ class SolrService
     @@connection.commit
   end
 
+  def self.all_ids
+    connect unless @@connection
+
+    res = @@connection.get("select", params: { rows: 2_000_000_000, fl: 'id' })
+    res&.[]('response')&.[]('docs')&.map { |v| v['id'] }
+  end
+
   def self.all_records
     connect unless @@connection
 
