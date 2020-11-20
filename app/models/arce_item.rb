@@ -8,8 +8,14 @@ class ArceItem
     if attr.is_a?(Hash)
       @attributes = attr.with_indifferent_access
     else
-      @attributes = attr
+      @attributes = attr.to_h.with_indifferent_access
     end
+  end
+
+  def self.index_logger
+    logger           = ActiveSupport::Logger.new(Rails.root.join('log', "indexing.log"))
+    logger.formatter = Logger::Formatter.new
+    @@index_logger ||= ActiveSupport::TaggedLogging.new(logger)
   end
 
   def self.client(args)
@@ -48,9 +54,14 @@ class ArceItem
         begin
           history = process_record(record)
           history.index_record
-          new_record_ids << history.id
+          if history.id
+            new_record_ids << history.id
+          else
+            ArceItem.index_logger.info("ID is nil for #{history.inspect}")
+          end
         rescue => exception
           Raven.capture_exception(exception)
+          ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
         end
         if true
           yield(total) if block_given?        
@@ -62,6 +73,8 @@ class ArceItem
         total += 1
         break if total >= limit
       end
+      # Hard commit now that we are done adding items, before we remove anything
+      SolrService.commit
       #verify there is no limit argument which would allow deletion of all records after the limit
       if args[:limit] == 20000000
         remove_deleted_records(new_record_ids)
@@ -69,6 +82,7 @@ class ArceItem
       return total
     rescue => exception
       Raven.capture_exception(exception)
+      ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
     ensure
       remove_import_tmp_file
     end
@@ -79,6 +93,9 @@ class ArceItem
     history = process_record(record)
     history.index_record
     return history
+  rescue => exception
+    Raven.capture_exception(exception)
+    ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
   end
 
   def self.process_record(record)
@@ -399,12 +416,7 @@ class ArceItem
   end
 
   def self.all_ids
-    return @all_ids if @all_ids.present?
-    @all_ids ||= []
-    SolrService.all_records do |record|
-      @all_ids << record["id"]
-    end
-    @all_ids
+    @all_ids ||= SolrService.all_ids
   end
 
   def self.find(id)
