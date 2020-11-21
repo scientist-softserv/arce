@@ -67,7 +67,7 @@ production:
   stage: test
   type: deploy
   script:
-    - export $KUBECONFIG=$KUBECONFIG_PROD
+    - export KUBECONFIG=$KUBECONFIG_PROD
     - ./chart/bin/deploy production $CI_COMMIT_SHORT_SHA $PRODUCTION_CONFIG_FILE
   when: manual
   only:
