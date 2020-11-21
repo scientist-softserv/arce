@@ -504,7 +504,7 @@
    <field name="date_created_t" type="string" indexed="true" stored="true" multiValued="false"/>
 
    <!-- these fields are also used for display, so they must be stored -->
-   <field name="collection_facet" type="text" indexed="true" stored="true" multiValued="false"/>
+   <field name="collection_facet" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="genre_facet" type="string" indexed="true" stored="true" multiValued="true" />
    <field name="subject_topic_facet" type="string" indexed="true" stored="true" multiValued="true" />
    <field name="geographic_subject_facet" type="string" indexed="true" stored="true" multiValued="true" />
