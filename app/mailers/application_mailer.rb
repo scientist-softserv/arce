@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'support@notch8.com'
+  default from: 'archives@arce.org'
   layout 'mailer'
 end
