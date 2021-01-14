@@ -1,115 +1,90 @@
+[Docker development setup](#docker-development-setup)
+[Bash into the container](#bash-into-the-container)
+[Deploy a new release](#deploy-a-new-release)
+[Clear data records](#clear-data-records)
+[Run import from admin page](#run-import-from-admin-page)
+
 # Docker development setup
-
-1) Install Docker.app 
-
-2) gem install stack_car
-
-3) We recommend committing .env to your repo with good defaults. .env.development, .env.production etc can be used for local overrides and should not be in the repo.
-
-4) sc up
-
-``` bash
-gem install stack_car
-sc up
-
-```
-
-# Deploy a new release
-
-``` bash
-sc release {staging | production} # creates and pushes the correct tags
-sc deploy {staging | production} # deployes those tags to the server
-```
-
-Releaese and Deployment are handled by the gitlab ci by default. See ops/deploy-app to deploy from locally, but note all Rancher install pull the currently tagged registry image
-# Docker development setup
+We recommend committing .env to your repo with good defaults. .env.development, .env.production etc can be used for local overrides and should not be in the repo.
 
 1) Install Docker.app
 
-2) Install SC
-``` bash
-gem install stack_car
-```
+2) Install stack car
+    ``` bash
+    gem install stack_car
+    ```
 
-3) We recommend committing .env to your repo with good defaults. .env.development, .env.production etc can be used for local overrides and should not be in the repo.
+3) Sign in with dory
+    ``` bash
+    dory up
+    ```
 
-4) Confirm or configure settings.  Sub your information for the examples.
+4) Install dependencies
+    ``` bash
+    yarn install
+    ```
+
+5) Start the server
+    ``` bash
+    sc up
+    ```
+
+6) Load the database
+    ``` bash
+    sc be rake db:migrate
+    ```
+
+7) Import data into the database. The `[100]` limits the number of records to 100. If you want to load more items, increase the number. If you wish to load all items, remove the brackets entirely.
+    ``` bash
+    sc exec bash
+    rake import[100]
+    ```
+
+8) Then visit http://arce.docker in your browser
+
+9) If you need a user or need to be an admin, load the seed data
+    ``` bash
+    sc be rake db:seed
+    ```
+
+### Troubleshooting Docker Development Setup
+Confirm or configure settings. Sub your information for the examples.
 ``` bash
 git config --global user.name example
 git config --global user.email example@example.com
 docker login registry.gitlab.com
 ```
 
-5) Build project and start up
-
+# Bash into the container
 ``` bash
-sc build
-sc up
+sc exec bash
 ```
 
-Then visit http://0.0.0.0:8000 in your browser.  You should see a rails error page suggesting a migration.
+### While in the container you can do the following
+- Run rspec
+    ``` bash
+    bundle exec rspec
+    ```
+- Access the rails console
+    ``` bash
+    bundle exec rails c
+    ```
 
-6) Load database and import data
-
+# Deploy a new release
 ``` bash
-sc be rake db:migrate import[100]
+sc release {staging | production} # creates and pushes the correct tags
+sc deploy {staging | production} # deploys those tags to the server
 ```
 
-7) Add seed data
-``` bash
-sc be rake db:seed
-```
+Release and Deployment are handled by the gitlab ci by default. See ops/deploy-app to deploy from locally, but note all Rancher install pull the currently tagged registry image
 
-## Development Notes
-When performing an import the system will attempt to download and process the audio files to create the peak files. This is very CPU & time intense. Change MAKE_WAVES in your .env to false (or delete it).
-
-### To clear data records
+# Clear data records
 ``` bash
 sc be rake clear
 ```
 
-### To run import from admin page
+# Run import from admin page
 Login to admin page using seed user info
 Press the import records button
 
-
-# Deploy a new release
-
-``` bash
-sc release {staging | production} # creates and pushes the correct tags
-sc deploy {staging | production} # deployes those tags to the server
-```
-
-Releaese and Deployment are handled by the gitlab ci by default. See ops/deploy-app to deploy from locally, but note all Rancher install pull the currently tagged registry image
-
-# Manually deploy to staging
-In Rancher, run an Upgrade on the web and worker containers and make sure to update the branch name at the end of the strings in the "Select Image*" text box and in the TAG text box. (update with the new branch name that you would like to deploy)
-
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-## Production Notes:
-Regarding docker-compose.production.yml: The delayed_job container is for scaling out processing of peaks for all of the audio files.
-However, the web container always has one worker. Stopping the delayed_job container will not stop jobs from being run.
+Release and Deployment are handled by the gitlab ci by default. See ops/deploy-app to deploy from locally, but note all Rancher install pull the currently tagged registry image
