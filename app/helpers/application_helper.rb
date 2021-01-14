@@ -16,7 +16,7 @@ module ApplicationHelper
   end
 
   def resource_is_pdf?(document)
-    document['resource_url_t'].first.include? ".pdf"
+    document['resource_url_t'].include? '.pdf'
   end
 
   def transcripts_from(document)
