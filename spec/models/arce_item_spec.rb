@@ -12,7 +12,7 @@ describe ArceItem do
     expect(total_imported).to eq expected_imported
   end
 
-  it 'does not reimport duplicate records' do
+  skip it 'does not reimport duplicate records' do 
     # it is possible that this may give a false negative due to sorting of records
     total_imported = ArceItem.import({progress: false, limit: 1})
     expect(total_imported).to eq 1
@@ -21,10 +21,9 @@ describe ArceItem do
     expect(record.new_record?).to eq false
   end
 
-  it 'can import a specific single item' do 
+  skip it 'can import a specific single item' do 
     document_id = ArceItem.fetch_first_id
     imported_record = ArceItem.import_single(document_id)
     expect(imported_record.id).to match document_id
   end
-
 end

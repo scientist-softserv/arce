@@ -13,6 +13,7 @@ before_script:
 base:
   stage: build
   script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc build -s base
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc push -s base
@@ -28,6 +29,7 @@ build:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc push
     - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   tags:
     - local

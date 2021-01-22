@@ -75,7 +75,7 @@ class ArceItem
       end
       # Hard commit now that we are done adding items, before we remove anything
       SolrService.commit
-      #verify there is no limit argument which would allow deletion of all records after the limit
+      # verify there is no limit argument which would allow deletion of all records after the limit
       if args[:limit] == 20000000
         remove_deleted_records(new_record_ids)
       end
@@ -175,6 +175,7 @@ class ArceItem
               end
             end
             # subseries is not in feed yet, may need updating
+            # relatedItem type="subseries"
             if child.attributes['type'] == 'subseries'
               child.children.each do |ch|
                 next if ch.class == REXML::Text
@@ -294,25 +295,8 @@ class ArceItem
             if child.attributes['type'] == 'conservation'
               history.attributes['conservation_t'] = child.text
             end
-            # the next four items are not in feed yet so may need updating
             if child.attributes['type'] == 'funding'
-              history.attributes['notes_funding_t'] = child.text
-            end
-            if child.attributes['type'] == 'license'
-              history.attributes['notes_license_t'] = child.text
-            end
-            history.attributes['notes_rights_t'] ||= []
-            if child.attributes['type'] == 'local_rights_statement'
-              rights_statement = child.text
-              unless history.attributes['notes_rights_t'].include?(rights_statement)
-                history.attributes['notes_rights_t'] = rights_statement
-              end
-            end
-            if child.attributes['type'] == 'rights_URI'
-              rights_statement = child.text
-              unless history.attributes['notes_rights_t'].include?(rights_statement)
-                history.attributes['notes_rights_t'] = rights_statement
-              end
+              history.attributes['note_funding_t'] = child.text
             end
             if child.attributes['type'] == 'related'
               history.attributes['related_t'] = child.text
@@ -322,12 +306,25 @@ class ArceItem
           if child.name == 'language'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              if ch.attributes['type'] == 'licence'
+              if ch.name == 'languageTerm' && ch.attributes['type'] == 'text'
                 history.attributes['language_t'] = ch.text
               end
             end
           end
           if child.name == 'accessCondition'
+            history.attributes['note_rights_t'] ||= []
+            if child.attributes['type'] == 'use and reproduction'
+              if child.attributes['displayLabel'] == 'rightsUri'
+                rights_statement = child.text
+                history.attributes['note_rights_t'] = rights_statement unless history.attributes['note_rights_t'].include?(rights_statement)
+              else
+                history.attributes['note_license_t'] = child.text
+              end
+            end
+            if child.attributes['type'] == 'local_rights_statement'
+              rights_statement = child.text
+              history.attributes['note_rights_t'] = rights_statement unless history.attributes['note_rights_t'].include?(rights_statement)
+            end
             child.children.each do |ch|
               next if ch.class == REXML::Text
               history.attributes['copyright_status_t'] = ch.attributes['copyright.status']
