@@ -312,18 +312,15 @@ class ArceItem
             end
           end
           if child.name == 'accessCondition'
-            history.attributes['note_rights_t'] ||= []
             if child.attributes['type'] == 'use and reproduction'
               if child.attributes['displayLabel'] == 'rightsUri'
-                rights_statement = child.text
-                history.attributes['note_rights_t'] = rights_statement unless history.attributes['note_rights_t'].include?(rights_statement)
+                history.attributes['rights_t'] = child.text
               else
                 history.attributes['note_license_t'] = child.text
               end
             end
-            if child.attributes['type'] == 'local_rights_statement'
-              rights_statement = child.text
-              history.attributes['note_rights_t'] = rights_statement unless history.attributes['note_rights_t'].include?(rights_statement)
+            if child.attributes['type'] == 'local rights statements'
+              history.attributes['note_rights_t'] = child.text
             end
             child.children.each do |ch|
               next if ch.class == REXML::Text
