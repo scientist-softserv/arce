@@ -22,5 +22,10 @@
 env 'BASH_ENV', '/container.env'
 
 every 12.hours do
-  rake "import"
+  rake 'import'
+end
+
+# Delete blacklight saved searches
+every :day, at: '11:55pm' do
+  rake 'blacklight:delete_old_searches[1]'
 end
