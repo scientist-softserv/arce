@@ -71,7 +71,7 @@ staging:
     - local
 
 production:
-  stage: test
+  stage: deploy
   type: deploy
   script:
     - export KUBECONFIG=$KUBECONFIG_PALS
