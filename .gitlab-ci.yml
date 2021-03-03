@@ -57,7 +57,7 @@ test:
     - docker
 
 staging:
-  stage: test
+  stage: deploy
   type: deploy
   script:
     - "keybase status | grep 'Logged in:     no' && keybase oneshot"
@@ -66,6 +66,7 @@ staging:
   after_script:
     - rm -f ./chart/*-values.yaml
     - keybase logout
+  when: manual
   tags:
     - local
 
