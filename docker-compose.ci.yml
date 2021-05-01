@@ -19,7 +19,7 @@ services:
       - mycore
     # docker-compose exec --user=solr solr bin/solr create_core -c CORENAME
   web:
-    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG:-master}"
+    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG:-main}"
     env_file:
       - .env
       rap.host: ${SITE_URI}

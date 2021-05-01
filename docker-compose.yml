@@ -36,7 +36,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - BRANCH=${BRANCH:-master}
+        - BRANCH=${BRANCH:-main}
     image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
     env_file:
       - .env.development
