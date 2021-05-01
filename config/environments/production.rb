@@ -67,23 +67,19 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
 
-  config.action_mailer.default_options={from: "support@notch8.com"}
-
-  config.action_mailer.default_url_options = {
-    :host => ENV['SMTP_HOST'],
-    :protocol => ENV['SMTP_PROTOCOL']
-  }
-
   config.action_mailer.smtp_settings = {
-    address: "email-smtp.us-west-2.amazonaws.com",
-    port: 587,
-    domain: ENV['SMTP_DOMAIN'],
-    authentication: "plain",
-    enable_starttls_auto: true,
-    user_name: ENV['SMTP_USER'],
-    password: ENV['SMTP_PASSWORD']
+    user_name: ENV['MAIL_USER'],
+    password: ENV['MAIL_PASS'],
+    address: ENV['MAIL_ADDRESS'],
+    domain: ENV['MAIL_DOMAIN'],
+    port: ENV['MAIL_PORT'],
+    authentication: ENV['MAIL_AUTHENITCATION']
   }
+  config.action_mailer.smtp_settings[:enable_starttls_auto] = true if ENV['MAIL_TLS'].to_s == 'true'
+  config.action_mailer.default_url_options = { protocol: 'https', host: ENV['MAIL_HOST'] }
+  config.action_mailer.default_options={from: "archives@arce.org"}
 
+  Rails.application.routes.default_url_options = { protocol: 'https',  host: ENV['MAIL_HOST'] }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

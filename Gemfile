@@ -11,6 +11,7 @@ gem "delayed_job_web"
 gem 'blacklight', '>= 6.1'
 gem 'blacklight-marc', '~> 6.1'
 gem 'byebug', platforms: [:mri, :mingw, :x64_mingw], group: [:development, :test]
+gem 'capybara', '3.1', group: [:development, :test]
 gem 'coffee-rails', '~> 4.2'
 gem 'daemons'
 gem 'delayed_job_active_record'
@@ -45,3 +46,4 @@ gem 'uglifier', '>= 1.3.0'
 gem 'web-console', '>= 3.3.0', group: [:development]
 gem 'whenever', require: false
 gem 'activerecord-nulldb-adapter'
+

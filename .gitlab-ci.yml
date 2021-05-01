@@ -13,6 +13,7 @@ before_script:
 base:
   stage: build
   script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc build -s base
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc push -s base
@@ -23,10 +24,12 @@ base:
 build:
   stage: build
   script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc build
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc push
     - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   tags:
     - local
@@ -54,23 +57,30 @@ test:
     - docker
 
 staging:
-  stage: test
+  stage: deploy
   type: deploy
   script:
-    - ./chart/bin/deploy staging $CI_COMMIT_SHORT_SHA $STAGING_CONFIG_FILE
-  only:
-    - master
+    - "keybase status | grep 'Logged in:     no' && keybase oneshot"
+    - ./chart/bin/decrypt staging
+    - ./chart/bin/deploy staging $CI_COMMIT_SHORT_SHA
+  after_script:
+    - rm -f ./chart/*-values.yaml
+    - keybase logout
+  when: manual
   tags:
     - local
 
 production:
-  stage: test
+  stage: deploy
   type: deploy
   script:
-    - export KUBECONFIG=$KUBECONFIG_PROD
-    - ./chart/bin/deploy production $CI_COMMIT_SHORT_SHA $PRODUCTION_CONFIG_FILE
+    - export KUBECONFIG=$KUBECONFIG_PALS
+    - "keybase status | grep 'Logged in:     no' && keybase oneshot"
+    - ./chart/bin/decrypt production
+    - ./chart/bin/deploy production $CI_COMMIT_SHORT_SHA
+  after_script:
+    - rm -f ./chart/*-values.yaml
+    - keybase logout
   when: manual
-  only:
-    - master
   tags:
     - local
