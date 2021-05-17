@@ -1,57 +1,11 @@
 <section class="hero-nav contain flex">
-  <%= render partial: '/logo' %>                  
+  <%= render partial: '/logo' %>
   <ul class="small small main-nav">
     <li class="menu-item top menu-item-cultural-heritage menu-item--active-trail">
-      <span class="exp visible-sm" onclick=""></span>
-      <a href="https://www.arce.org/fieldwork-egypt">Cultural Heritage Projects</a>
-      <ul class="drop-cultural-heritage">
-        <li class="menu-item">
-          <a href="https://www.arce.org/fieldwork-egypt">Projects in Egypt</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/virtual-tours" title="Explore past projects">Virtual Tours</a>
-        </li>
-      </ul>
+      <%= link_to "About Us and Our Collections", about_path %>
     </li>
     <li class="menu-item top menu-item-research">
-      <span class="exp visible-sm" onclick=""></span>
-      <a href="https://www.arce.org/programs-fieldwork">Research &amp; Programs</a>
-      <ul class="drop-research">
-        <li class="menu-item">
-          <a href="https://www.arce.org/grants" title="Antiquities Endowment Fund Grants">Grants</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/fellows">ARCE Fellows</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/fellowships" title="ARCE Research Fellowships">Fellowships</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/journal" title="JARCE">Academic Journal</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/library" title="Library">Library and Online Catalogue</a>
-        </li>
-      </ul>
-    </li>
-    <li class="menu-item top menu-item-membership">
-      <span class="exp visible-sm" onclick=""></span>
-      <a href="https://www.arce.org/support-our-work" title="Support Our Work">Support Our Work</a>
-      <ul class="drop-membership">
-        <li class="menu-item">
-          <a href="https://www.arce.org/donate">Donate</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/membership">Join or Renew</a>
-        </li>
-        <li class="menu-item">
-          <a href="https://www.arce.org/research-supporting-members">Institutional Membership</a>
-        </li>
-        <li class="menu-item">
-          <a href="http://giftplanning.arce.org/">More Ways to Give</a>
-        </li>
-      </ul>
+      <%= link_to "Archives Policy", policy_path %>
     </li>
   </ul>
-  <a class="join hidden-xs hidden-sm" href="https://www.arce.org/become-arce-member"><span>Join</span></a>
 </section>
