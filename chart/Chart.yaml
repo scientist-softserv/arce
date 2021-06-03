@@ -5,7 +5,6 @@ name: arce
 version: 0.0.1
 dependencies:
   - name: postgresql
-    version: 8.1.2
-    repository: https://kubernetes-charts.storage.googleapis.com/
+    version: 8.6.4
+    repository: https://charts.helm.sh/stable
     condition: postgresql.enabled
-
