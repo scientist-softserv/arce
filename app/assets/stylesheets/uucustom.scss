@@ -555,7 +555,7 @@ footer {
   .flex .col {
     width: 100%;
     border-top: 1px solid #fff;
-    padding-top: 40px; 
+    padding-top: 40px;
   }
   .col.rt {
     p {
@@ -732,6 +732,19 @@ a.footer-link {
     color: #db3b21 !important;
 }
 
+/* INDEX PAGE */
+.thumbnail-container {
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    padding-bottom: 15px;
+  }
+}
+.no-padding-left-title {
+  padding-left: 0px;
+}
+
 /* SHOW PAGE */
 #document.document h1{
   margin-top: 50px;
@@ -784,13 +797,13 @@ a.footer-link {
 
 @media (min-width: 768px) {
   .dl-horizontal dd {
-    margin-left: 220px;
+    margin-left: 90px;
   }
   .dl-horizontal dt {
     float: left;
-    width: 200px;
+    width: 90px;
     clear: left;
-    text-align: right;
+    text-align: left;
     overflow: visible;
     text-overflow: initial;
     white-space: normal;
