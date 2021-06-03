@@ -1,0 +1,25 @@
+<%# OVERRIDE: Blacklight v6.1.0 to add the thumbnail image on the search results page %>
+
+<div class="row">
+  <div class="col-sm-2 thumbnail-container">
+    <% doc_presenter = index_presenter(document) %>
+    <% index_fields(document).each do |field_name, field| -%>
+      <% if field_name == 'resource_preview_t' %>
+          <%= image_tag doc_presenter.field_value field %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="col-sm-10 no-padding-left-title">
+    <%# default partial to display solr document fields in catalog index view -%>
+    <dl class="document-metadata dl-horizontal dl-invert">
+      <% index_fields(document).each do |field_name, field| -%>
+        <% unless field_name == 'resource_preview_t' %>
+          <% if should_render_index_field? document, field %>
+            <dt class="blacklight-<%= field_name.parameterize %>"><%= render_index_field_label document, field: field_name %></dt>
+            <dd class="blacklight-<%= field_name.parameterize %>"><%= doc_presenter.field_value field %></dd>
+          <% end -%>
+        <% end -%>
+      <% end %>
+    </dl>
+  </div>
+</div>
