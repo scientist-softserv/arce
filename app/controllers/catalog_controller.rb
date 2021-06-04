@@ -19,7 +19,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       rows: 10,
       :"hl" => true,
-      :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t",
+      :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t ",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.fragsize" => 200,
