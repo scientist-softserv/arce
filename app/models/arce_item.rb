@@ -289,7 +289,7 @@ class ArceItem
             if child.attributes['type'] == 'statementofresponsibility'
               history.attributes['project_history_t'] = child.text
             end
-            if child.attributes['type'] == 'creation_production credits'
+            if child.attributes['type'] == 'creation_production_credits'
               history.attributes['creation_production_credits_t'] = child.text
             end
             if child.attributes['type'] == 'conservation'
