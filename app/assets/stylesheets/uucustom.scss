@@ -794,12 +794,27 @@ a.footer-link {
 .collapsed .u-accordion__control-icon i:nth-child(2) {
   display: none; }
 
-
 @media (min-width: 768px) {
   .dl-horizontal dd {
-    margin-left: 90px;
+    margin-left: 220px;
   }
   .dl-horizontal dt {
+    float: left;
+    width: 200px;
+    clear: left;
+    text-align: right;
+    overflow: visible;
+    text-overflow: initial;
+    white-space: normal;
+  }
+}
+
+/* CATALOG INDEX PAGE */
+@media (min-width: 768px) {
+  .dl-horizontal dd.catalog-index {
+    margin-left: 90px;
+  }
+  .dl-horizontal dt.catalog-index {
     float: left;
     width: 90px;
     clear: left;
