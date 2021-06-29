@@ -15,8 +15,8 @@
       <% index_fields(document).each do |field_name, field| -%>
         <% unless field_name == 'resource_preview_t' %>
           <% if should_render_index_field? document, field %>
-            <dt class="blacklight-<%= field_name.parameterize %>"><%= render_index_field_label document, field: field_name %></dt>
-            <dd class="blacklight-<%= field_name.parameterize %>"><%= doc_presenter.field_value field %></dd>
+            <dt class="catalog-index blacklight-<%= field_name.parameterize %>"><%= render_index_field_label document, field: field_name %></dt>
+            <dd class="catalog-index blacklight-<%= field_name.parameterize %>"><%= doc_presenter.field_value field %></dd>
           <% end -%>
         <% end -%>
       <% end %>
