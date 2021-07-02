@@ -6,19 +6,21 @@ class ImagesController < ApplicationController
 
   def manifest
     @document = fetch params[:id]
-    
+
     info_json = @document.first.response['docs'].first['resource_url_t']
+    info_json = info_json.first if info_json.is_a(Array)
     preview_url = @document.first.response['docs'].first['resource_preview_t']
+    preview_url = preview_url.first if preview_url.is_a(Array)
 
     # artefact holds the information you'd find in info.json.
     artefact = JSON.load(open(info_json))
-    
+
     seed = {
       '@id' => artefact['@id'],
       'label' => @document.first.response['docs'].first['title_display']
     }
 
-    # create a "service" resource. 
+    # create a "service" resource.
     service = IIIF::Presentation::Resource.new('@id' => artefact['@id'])
     service['@context'] = "http://iiif.io/api/image/2/context.json"
     service['profile'] = "http://iiif.io/api/image/2/level2.json"
@@ -29,7 +31,7 @@ class ImagesController < ApplicationController
     # Create a thumbnail and add that to the manifest object under the
     # "thumbnail" key.
     #
-    # The riiif_image_url gets an absolute URL to the IIIF Image 
+    # The riiif_image_url gets an absolute URL to the IIIF Image
     # served by riiif.
 
     thumbnail = IIIF::Presentation::Resource.new(
@@ -42,7 +44,7 @@ class ImagesController < ApplicationController
     thumbnail['service'] = service
     manifest['thumbnail'] = thumbnail
 
-    # IIIF manifest files have fixed structure: 
+    # IIIF manifest files have fixed structure:
     #
     #   manifest > sequence > canvas > images > image
     #
@@ -52,7 +54,7 @@ class ImagesController < ApplicationController
     sequence = IIIF::Presentation::Sequence.new()
 
     # A valid IIIF manifest identifies each sequence, canvas, resource,...
-    # with an @id that requires a valid HTTP url. The URL could resolve to 
+    # with an @id that requires a valid HTTP url. The URL could resolve to
     # that particular sequence fragment served from a remote location. It's
     # not a requirement though, so a random UUID based URL will do.
 
@@ -85,9 +87,9 @@ class ImagesController < ApplicationController
     resource['service'] = service
     image['resource'] = resource
     canvas['images'] = [ image ]
-    sequence['canvases'] = [ canvas ]     
+    sequence['canvases'] = [ canvas ]
     manifest.sequences << sequence
-  
+
     # Render the manifest variable into a valid JSON object to
     # send over HTTP.
     render json: manifest.to_json(pretty: true)
