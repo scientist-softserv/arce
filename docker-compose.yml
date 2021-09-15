@@ -11,7 +11,6 @@ services:
       - 'postgres:/var/lib/postgresql/data'
 
   solr:
-    image: "${REGISTRY_HOST}${REGISTRY_URI}/solr:latest"
     build: solr/
     ports:
       - '8983:8983'
@@ -28,9 +27,9 @@ services:
       args:
         DEPLOY_KEY: "${DEPLOY_KEY}"
     env_file:
-     - .env.development
-     - .env
- 
+      - .env
+      - .env.development
+
   main:
     build:
       context: .
@@ -39,8 +38,8 @@ services:
         - BRANCH=${BRANCH:-main}
     image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
     env_file:
-      - .env.development
       - .env
+      - .env.development
     volumes:
       - .:/home/app/webapp
 
