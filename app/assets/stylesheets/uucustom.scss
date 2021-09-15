@@ -839,3 +839,30 @@ a.footer-link {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
+
+/* BANNER */
+.banner-wrapper {
+  width: 1200px;
+  height: 40px;
+  overflow: hidden;
+  padding: 15px;
+  margin-right: 100px;
+  float: left;
+}
+
+.animation {
+  width: 100%;
+  height: 20px;
+  color: #ffffff;
+  position: relative;
+  animation-name: banner;
+  animation-duration: 16s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  font-weight: bold;
+}
+
+@keyframes banner {
+  0%   {left:1200px; top:0px;}
+  100%  {left:-1200px; top:0px;}
+}
