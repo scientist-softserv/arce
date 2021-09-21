@@ -8,9 +8,9 @@ class ImagesController < ApplicationController
     @document = fetch params[:id]
 
     info_json = @document.first.response['docs'].first['resource_url_t']
-    info_json = info_json.first if info_json.is_a(Array)
+    info_json = info_json.first if info_json.is_a?(Array)
     preview_url = @document.first.response['docs'].first['resource_preview_t']
-    preview_url = preview_url.first if preview_url.is_a(Array)
+    preview_url = preview_url.first if preview_url.is_a?(Array)
 
     # artefact holds the information you'd find in info.json.
     artefact = JSON.load(open(info_json))
