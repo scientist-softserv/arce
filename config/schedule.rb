@@ -26,11 +26,11 @@ every 12.hours do
 end
 
 every 1.day, at: ['12:30 am', '12:30 pm'] do
-  rake 'import[10000,tom_1]'
+  rake "import[10000,'tom_1']"
 end
 
 every 1.day, at: ['1:00 am', '1:00 pm'] do
-  rake 'import[10000,atp_1]'
+  rake "import[10000,'atp_1']"
 end
 
 # Delete blacklight saved searches
