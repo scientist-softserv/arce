@@ -25,6 +25,14 @@ every 12.hours do
   rake 'import'
 end
 
+every 1.day, at: ['12:30 am', '12:30 pm'] do
+  rake 'import[10000,tom_1]'
+end
+
+every 1.day, at: ['1:00 am', '1:00 pm'] do
+  rake 'import[10000,atp_1]'
+end
+
 # Delete blacklight saved searches
 every :day, at: '11:55pm' do
   rake 'blacklight:delete_old_searches[1]'
