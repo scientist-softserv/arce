@@ -34,10 +34,22 @@ We recommend committing .env to your repo with good defaults. .env.development, 
     sc be rake db:migrate
     ```
 
-7) Import data into the database. The `[100]` limits the number of records to 100. If you want to load more items, increase the number. If you wish to load all items, remove the brackets entirely.
+7) Import data into the database. The `[100]` limits the number of records to 100. If you want to load more items, increase the number. If you wish to load all items, remove the brackets entirely. If you want to import a specific set, you can pass the set in as the second argument. The default set is 'arce_1', which imports Shunet, RedMonestary, Aslam al-Silahdar, Luxor and Tomb of Anen collections.
     ``` bash
     sc exec bash
     rake import[100]
+    ```
+
+    To import 100 of the Tomb of Menna collection:
+    ```bash
+    sc exec bash
+    rake import[100,'tom_1']
+    ```
+
+    To import 100 of the Akhenaten Talatat Project:
+    ```bash
+    sc exec bash
+    rake import[100,'atp_1']
     ```
 
 8) Then visit http://arce.docker in your browser
