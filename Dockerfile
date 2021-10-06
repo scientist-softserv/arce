@@ -1,10 +1,14 @@
 FROM phusion/passenger-ruby25:1.0.19
 
 RUN echo 'Downloading Packages' && \
+    rm /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt && \
+    sed -e '/mozilla\/DST_Root_CA_X3.crt/d' -i  /etc/ca-certificates.conf && \
+    update-ca-certificates && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get update -qq && \
+    apt-get upgrade -y ca-certificates && \
     apt-get install -y  \
       build-essential \
       default-jdk \
