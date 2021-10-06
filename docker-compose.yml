@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: "${REGISTRY_HOST}${REGISTRY_URI}/arce:${TAG}"
+    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
     env_file:
       - .env
       - .env.development
@@ -46,10 +46,7 @@ services:
       - worker
 
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: "${REGISTRY_HOST}${REGISTRY_URI}/arce:${TAG}"
+    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
     env_file:
       - .env
       - .env.development
