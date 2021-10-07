@@ -9,7 +9,7 @@ describe ArceItem do
   it 'can import item' do
     expected_imported = 2
     total_imported = ArceItem.import({limit: expected_imported})
-    expect(total_imported).to eq true
+    expect(total_imported).to be
   end
 
   skip it 'does not reimport duplicate records' do
