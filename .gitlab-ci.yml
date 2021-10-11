@@ -10,17 +10,6 @@ before_script:
   - export REGISTRY_URI="/${CI_PROJECT_PATH}"
   - touch .env.development
 
-base:
-  stage: build
-  script:
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - sc build -s base
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - sc push -s base
-  when: manual
-  tags:
-    - local
-
 build:
   stage: build
   script:
@@ -32,7 +21,6 @@ build:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   tags:
     - local
-
 
 test:
   stage: test

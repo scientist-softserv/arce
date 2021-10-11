@@ -19,32 +19,16 @@ services:
     volumes:
       - solr:/solr_home
 
-  base:
-    image: "${REGISTRY_HOST}${REGISTRY_URI}/base:latest"
-    build:
-      context: .
-      dockerfile: Dockerfile.base
-      args:
-        DEPLOY_KEY: "${DEPLOY_KEY}"
-    env_file:
-      - .env
-      - .env.development
-
-  main:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - BRANCH=${BRANCH:-main}
     image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
     env_file:
       - .env
       - .env.development
     volumes:
       - .:/home/app/webapp
-
-  web:
-    extends: main
     # Keep the stdin open, so we can attach to our app container's process
     # and do things such as byebug, etc:
     stdin_open: true
@@ -62,7 +46,12 @@ services:
       - worker
 
   worker:
-    extends: main
+    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
+    env_file:
+      - .env
+      - .env.development
+    volumes:
+      - .:/home/app/webapp
     command: bin/delayed_job run
     depends_on:
       - postgres
