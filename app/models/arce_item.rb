@@ -64,9 +64,9 @@ class ArceItem
           ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
         end
         if true
-          yield(total) if block_given?        
+          yield(total) if block_given?
         end
-        
+
         if progress
           bar.increment!
         end
@@ -102,7 +102,7 @@ class ArceItem
     if record.header.blank? || record.header.identifier.blank?
       return false
     end
-    
+
     history = ArceItem.find_or_new(record.header.identifier.split(':').last) #Digest::MD5.hexdigest(record.header.identifier).to_i(16))
     history.attributes['id_t'] = record.header.identifier.split(':').last
     if record.header.datestamp
@@ -210,7 +210,7 @@ class ArceItem
           if child.name == 'subject'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              if ch.name == 'topic' || ch.name == 'name'
+              if ch.name == 'topic'
                 topic = ch.text.to_s.strip
                 next if topic.empty?
                 history.attributes['subject_topic_facet'] ||= []
@@ -220,6 +220,22 @@ class ArceItem
                 history.attributes['subject_topic_t'] ||= []
                 if !history.attributes['subject_topic_t'].include?(topic)
                   history.attributes['subject_topic_t'] << topic
+                end
+              end
+              if ch.name == 'name'
+                topic = ch.text.to_s.strip
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  if c.name == 'namePart'
+                    topic = c.text.to_s.strip
+                    next if topic.empty?
+                    if !history.attributes['subject_topic_facet'].include?(topic)
+                      history.attributes['subject_topic_facet'] << topic
+                    end
+                    if !history.attributes['subject_topic_t'].include?(topic)
+                      history.attributes['subject_topic_t'] << topic
+                    end
+                  end
                 end
               end
               if ch.name == 'temporal'
@@ -397,14 +413,14 @@ class ArceItem
   end
 
   def self.remove_deleted_records(new_record_ids)
-    current_records = all_ids 
+    current_records = all_ids
     new_record_ids.each do |id|
       current_records.delete(id)
     end
     if current_records.present?
       current_records.each do |id|
         SolrService.delete_by_id(id)
-        SolrService.commit 
+        SolrService.commit
       end
     end
   end
