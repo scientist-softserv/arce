@@ -14,27 +14,32 @@ We recommend committing .env to your repo with good defaults. .env.development, 
     gem install stack_car
     ```
 
-3) Sign in with dory
+3) Install dory and enable dory
     ``` bash
-    dory up
+    gem install dory
     ```
 
 4) Install dependencies
     ``` bash
-    yarn install
+    sc build
     ```
 
-5) Start the server
+5) Start dory
+    ``` bash
+    dory up
+    ```
+
+6) Start the server
     ``` bash
     sc up
     ```
 
-6) Load the database
+7) Load the database
     ``` bash
     sc be rake db:migrate
     ```
 
-7) Import data into the database. The `[100]` limits the number of records to 100. If you want to load more items, increase the number. If you wish to load all items, remove the brackets entirely. If you want to import a specific set, you can pass the set in as the second argument. The default set is 'arce_1', which imports all of the collections.
+8) Import data into the database. The `[100]` limits the number of records to 100. If you want to load more items, increase the number. If you wish to load all items, remove the brackets entirely. If you want to import a specific set, you can pass the set in as the second argument. The default set is 'arce_1', which imports all of the collections.
     ``` bash
     sc exec bash
     rake import[100]
@@ -46,9 +51,9 @@ We recommend committing .env to your repo with good defaults. .env.development, 
     rake import[100,'tom_1']
     ```
 
-8) Then visit http://arce.docker in your browser
+9) Then visit http://arce.docker in your browser
 
-9) If you need a user or need to be an admin, load the seed data
+10) If you need a user or need to be an admin, load the seed data
     ``` bash
     sc be rake db:seed
     ```
