@@ -851,7 +851,11 @@ a.footer-link {
 }
 
 .animation {
-  width: 1200px;
+  /* If you update the width of .animation div you will also need */
+  /* to update the keyframes ending value with the negative width */
+  /* value, ie: animation div width=1400px means that the keyframes */
+  /* end value is -1400px, seen below */
+  width: 1400px;
   height: 20px;
   color: #ffffff;
   position: relative;
@@ -864,5 +868,5 @@ a.footer-link {
 
 @keyframes banner {
   0%   {left:1200px; top:0px;}
-  100%  {left:-1200px; top:0px;}
+  100%  {left:-1400px; top:0px;}
 }
