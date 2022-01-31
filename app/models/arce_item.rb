@@ -347,10 +347,18 @@ class ArceItem
           if child.name == 'originInfo'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              if ch.attributes.empty?
+              if ch.attributes.empty? then
                 history.attributes['date_created_t'] ||= ch.text
-              end
-              if ch.attributes['encoding'].present?
+              elsif ch.attributes['point'].present? then
+                if ch.attributes['point'] == 'start'
+                  history.attributes['date_created_t'] ||= ch.text
+                  date = Date.parse(ch.text) rescue nil
+                  if date
+                    history.attributes['date_created_sort'] ||= date
+                  end
+                end
+              elsif ch.attributes['encoding'].present? then
+                history.attributes['date_created_t'] ||= ch.text
                 date = Date.parse(ch.text) rescue nil
                 if date
                   history.attributes['date_created_sort'] ||= date
