@@ -18,6 +18,8 @@ class CatalogController < ApplicationController
     ## Default parameters to send to solr for all search-like requests. See also SearchBuilder#processed_parameters
     config.default_solr_params = {
       rows: 10,
+      qt: "search",
+      qf: "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t",
       :"hl" => true,
       :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t ",
       :"hl.simple.pre" => "<span class='label label-warning'>",
