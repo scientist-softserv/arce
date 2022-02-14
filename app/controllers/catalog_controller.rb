@@ -19,9 +19,9 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       rows: 10,
       qt: "search",
-      qf: "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t",
+      qf: "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t subject_topic_t ",
       :"hl" => true,
-      :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t ",
+      :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t subject_topic_t ",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.fragsize" => 200,
@@ -109,6 +109,7 @@ class CatalogController < ApplicationController
     config.add_index_field 'title_t', label: 'Description', highlight: true, solr_params: { :"hl.alternateField" => "dd" }
     config.add_index_field 'geographic_subject_t', label: 'Location', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
     config.add_index_field 'temporal_subject_t', label: 'Time Period', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
+    config.add_index_field 'subject_topic_t', label: 'Topic', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
     config.add_index_field 'collection_t', label: 'Collection', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
     config.add_index_field 'resource_preview_t', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
 
