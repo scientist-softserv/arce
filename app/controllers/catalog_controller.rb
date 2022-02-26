@@ -111,7 +111,7 @@ class CatalogController < ApplicationController
     config.add_index_field 'temporal_subject_t', label: 'Time Period', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
     config.add_index_field 'subject_topic_t', label: 'Topic', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
     config.add_index_field 'collection_t', label: 'Collection', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
-    config.add_index_field 'resource_preview_t', highlight: true, solr_params: { :"hl.alternateField" => "dd", :"hl.highlightAlternate" => true }
+    config.add_index_field 'resource_preview_t'
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
