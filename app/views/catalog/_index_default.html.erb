@@ -5,7 +5,7 @@
     <% doc_presenter = index_presenter(document) %>
     <% index_fields(document).each do |field_name, field| -%>
       <% if field_name == 'resource_preview_t' %>
-          <%= image_tag doc_presenter.field_value field %>
+          <%= image_tag ActionView::Base.full_sanitizer.sanitize(doc_presenter.field_value field) %>
       <% end %>
     <% end %>
   </div>
