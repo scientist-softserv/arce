@@ -16,6 +16,15 @@ a:hover, a:focus {
   color: #1c6897;
 }
 
+a.doe-link {
+  color: #fff;
+  text-decoration: underline;
+}
+
+a.doe-link:hover, a.doe-link:focus {
+  color: #1c6897;
+}
+
 .hero-info {
   margin-top: 50px;
 }
