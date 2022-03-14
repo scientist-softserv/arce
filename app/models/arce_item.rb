@@ -229,9 +229,11 @@ class ArceItem
                   if c.name == 'namePart'
                     topic = c.text.to_s.strip
                     next if topic.empty?
+                    history.attributes['subject_topic_facet'] ||= [] unless history.attributes['subject_topic_facet'].present?
                     if !history.attributes['subject_topic_facet'].include?(topic)
                       history.attributes['subject_topic_facet'] << topic
                     end
+                    history.attributes['subject_topic_t'] ||= [] unless history.attributes['subject_topic_t'].present?
                     if !history.attributes['subject_topic_t'].include?(topic)
                       history.attributes['subject_topic_t'] << topic
                     end
@@ -316,6 +318,9 @@ class ArceItem
             end
             if child.attributes['type'] == 'related'
               history.attributes['related_t'] = child.text
+            end
+            if child.attributes['type'] == 'references'
+              history.attributes['references_t'] = child.text
             end
           end
           # not in feed yet so this will probably need updating

@@ -45,7 +45,7 @@ class CatalogController < ApplicationController
       :"hl" => true,
       :"hl.fragsize" => 0,
       :"hl.preserveMulti" => true,
-      :"hl.fl" => "file_name_t collection_t series_title_t genre_t subject_topic_t geographic_subject_t temporal_subject_t title_t extent_t creation_production_credits_t conservation_t copyright_status_t date_created_t creator_t note_license_t note_rights_t subseries_title_t language_t",
+      :"hl.fl" => "file_name_t collection_t series_title_t genre_t subject_topic_t geographic_subject_t temporal_subject_t title_t extent_t creation_production_credits_t conservation_t references_t copyright_status_t date_created_t creator_t note_license_t note_rights_t subseries_title_t language_t",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
       :"hl.alternateField" => "dd"
@@ -129,6 +129,7 @@ class CatalogController < ApplicationController
     config.add_show_field 'subject_topic_t', label: 'Topic', highlight: true
     config.add_show_field 'genre_t', label: 'Genre', highlight: true
     config.add_show_field 'conservation_t', label: 'Conservation Note', highlight: true
+    config.add_show_field 'references_t', label: 'References', highlight: true
     config.add_show_field 'copyright_status_t', label: 'Copyright Status', highlight: true
     config.add_show_field 'note_license_t', label: 'Creative Commons License', highlight: true, helper_method: 'external_link'
     config.add_show_field 'note_rights_t', label: 'Rights Statement', highlight: true
