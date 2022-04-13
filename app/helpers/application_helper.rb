@@ -16,7 +16,7 @@ module ApplicationHelper
   end
 
   def resource_is_pdf?(document)
-    document['resource_url_t'].include? '.pdf'
+    document['resource_url_t'][0].include? '.pdf'
   end
 
   def external_link(options = {})
