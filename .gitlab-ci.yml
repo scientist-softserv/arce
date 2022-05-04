@@ -1,7 +1,6 @@
 stages:
   - build
-  - test
-  - deploy
+  - go
 
 before_script:
   - export TAG=${CI_COMMIT_SHORT_SHA}
@@ -15,6 +14,7 @@ build:
   script:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc build
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
     - sc push
     - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
@@ -23,7 +23,7 @@ build:
     - local
 
 test:
-  stage: test
+  stage: go
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   services:
     - name: postgres:11.1
@@ -44,7 +44,7 @@ test:
     - docker
 
 staging:
-  stage: deploy
+  stage: go
   type: deploy
   script:
     - "keybase status | grep 'Logged in:     no' && keybase oneshot"
@@ -53,12 +53,15 @@ staging:
   after_script:
     - rm -f ./chart/*-values.yaml
     - keybase logout
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH != "main" && $CI_COMMIT_BRANCH
+      when: manual
   tags:
     - local
 
 production:
-  stage: deploy
+  stage: go
   type: deploy
   script:
     - export KUBECONFIG=$KUBECONFIG_PALS
