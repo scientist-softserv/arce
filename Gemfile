@@ -31,9 +31,17 @@ gem 'oai'
 gem 'pg', '~> 0.18'
 gem 'progress_bar'
 gem 'progress_job'
+gem 'pronto'
+gem 'pronto-brakeman', require: false
+gem 'pronto-flay', require: false
+gem 'pronto-rails_best_practices', require: false
+gem 'pronto-rails_schema', require: false
+gem 'pronto-rubocop', require: false
 gem 'puma', '~> 3.7'
 gem 'rsolr', '>= 1.0'
 gem 'rspec-rails', '~> 3.8', group: [:development, :test]
+gem 'rubocop', require: false
+gem 'rubocop-rspec', require: false
 gem 'ruby-audio', '~> 1.6.0'
 gem 'sass-rails', '~> 5.0'
 gem 'sentry-raven'

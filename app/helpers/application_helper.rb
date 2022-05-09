@@ -1,14 +1,8 @@
-module ApplicationHelper
-  def split_multiple(options={})
-    render 'shared/multiple', value: options[:value].uniq
-  end
+# frozen_string_literal: true
 
-  def from_helper(attr, document)
-    if document._source.present? && document._source[attr].present?
-      document._source[attr].map do |child|
-        JSON.parse(child)
-      end
-    end
+module ApplicationHelper
+  def split_multiple(options = {})
+    render 'shared/multiple', value: options[:value].uniq
   end
 
   def type_of_resource(document)

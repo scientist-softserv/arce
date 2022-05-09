@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 require 'nokogiri'
 require 'net/http'
 
+# rubocop:disable Metrics/ClassLength
 class ArceItem
-  attr_accessor :attributes, :new_record, :should_process_pdf_transcripts
+  attr_accessor :attributes, :new_record
 
-  def initialize(attr={})
+  def initialize(attr = {})
     if attr.is_a?(Hash)
       @attributes = attr.with_indifferent_access
     else
@@ -15,35 +18,50 @@ class ArceItem
   def self.index_logger
     logger           = ActiveSupport::Logger.new(Rails.root.join('log', "indexing.log"))
     logger.formatter = Logger::Formatter.new
+    # rubocop:disable Style/ClassVars
     @@index_logger ||= ActiveSupport::TaggedLogging.new(logger)
+    # rubocop:enable Style/ClassVars
   end
 
   def self.client(args)
     url = args[:url] || "https://dl.library.ucla.edu/oai2/"
-    OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods', verb: 'ListRecords'
+    # rubocop:disable Style/HashSyntax
+    OAI::Client.new url,
+      :headers => { "From" => "rob@notch8.com" },
+      :parser => 'rexml',
+      metadata_prefix: 'mods',
+      verb: 'ListRecords'
+    # rubocop:enable Style/HashSyntax
   end
 
   def self.fetch(args)
     set = args[:set] || "arce_1"
     response = client(args).list_records(set: set, metadata_prefix: 'mods')
+    response
   end
 
   def self.get(args)
-    response = client(args).get_record(identifier: args[:identifier], metadata_prefix: 'mods', )
+    response = client(args).get_record(identifier: args[:identifier], metadata_prefix: 'mods')
+    response
   end
 
   def self.fetch_first_id
-    response = self.fetch({progress: false, limit:1})
+    # rubocop:disable Style/RedundantSelf
+    response = self.fetch(progress: false, limit: 1)
+    # rubocop:enable Style/RedundantSelf
     response.full&.first&.header&.identifier&.split(':')&.last
   end
 
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
   def self.import(args)
     return false if !args[:override] && check_for_tmp_file
     begin
       create_import_tmp_file
       progress = args[:progress] || true
-      limit = args[:limit] || 20000000  # essentially no limit
+      limit = args[:limit] || 20_000_000 # essentially no limit
+      # rubocop:disable Style/RedundantSelf
       response = self.fetch(args)
+      # rubocop:enable Style/RedundantSelf
       if progress
         bar = ProgressBar.new(response.doc.elements['//resumptionToken'].attributes['completeListSize'].to_i)
       end
@@ -87,9 +105,12 @@ class ArceItem
       remove_import_tmp_file
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
 
   def self.import_single(id)
+    # rubocop:disable Style/RedundantSelf
     record = self.get(identifier: id)&.record
+    # rubocop:enable Style/RedundantSelf
     history = process_record(record)
     history.index_record
     return history
@@ -98,12 +119,15 @@ class ArceItem
     ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
   end
 
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
   def self.process_record(record)
     if record.header.blank? || record.header.identifier.blank?
       return false
     end
 
-    history = ArceItem.find_or_new(record.header.identifier.split(':').last) #Digest::MD5.hexdigest(record.header.identifier).to_i(16))
+    # rubocop:disable Metrics/LineLength
+    history = ArceItem.find_or_new(record.header.identifier.split(':').last) # Digest::MD5.hexdigest(record.header.identifier).to_i(16))
+    # rubocop:enable Metrics/LineLength
     history.attributes['id_t'] = record.header.identifier.split(':').last
     if record.header.datestamp
       history.attributes[:timestamp] = Time.parse(record.header.datestamp)
@@ -113,7 +137,7 @@ class ArceItem
         next if batch.class == REXML::Text
         batch.children.each do |child|
           next if child.class == REXML::Text
-          if child.attributes['displayLabel']  == 'File name'
+          if child.attributes['displayLabel'] == 'File name'
             file_name = child.text
             history.attributes['file_name_t'] ||= []
             if !history.attributes['file_name_t'].include?(file_name)
@@ -229,7 +253,9 @@ class ArceItem
                   if c.name == 'namePart'
                     topic = c.text.to_s.strip
                     next if topic.empty?
+                    # rubocop:disable Metrics/LineLength
                     history.attributes['subject_topic_facet'] ||= [] unless history.attributes['subject_topic_facet'].present?
+                    # rubocop:enable Metrics/LineLength
                     if !history.attributes['subject_topic_facet'].include?(topic)
                       history.attributes['subject_topic_facet'] << topic
                     end
@@ -352,9 +378,9 @@ class ArceItem
           if child.name == 'originInfo'
             child.children.each do |ch|
               next if ch.class == REXML::Text
-              if ch.attributes.empty? then
+              if ch.attributes.empty?
                 history.attributes['date_created_t'] ||= ch.text
-              elsif ch.attributes['point'].present? then
+              elsif ch.attributes['point'].present?
                 if ch.attributes['point'] == 'start'
                   history.attributes['date_created_t'] ||= ch.text
                   date = Date.parse(ch.text) rescue nil
@@ -362,7 +388,7 @@ class ArceItem
                     history.attributes['date_created_sort'] ||= date
                   end
                 end
-              elsif ch.attributes['encoding'].present? then
+              elsif ch.attributes['encoding'].present?
                 history.attributes['date_created_t'] ||= ch.text
                 date = Date.parse(ch.text) rescue nil
                 if date
@@ -390,24 +416,26 @@ class ArceItem
         end
       end
     end
-    return history
+    history
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
 
   def new_record?
+    # rubocop:disable Style/RedundantSelf
     self.attributes.is_a?(Hash)
+    # rubocop:enable Style/RedundantSelf
   end
 
   def id
+    # rubocop:disable Style/RedundantSelf
     self.attributes[:id]
+    # rubocop:enable Style/RedundantSelf
   end
 
   def id=(value)
+    # rubocop:disable Style/RedundantSelf
     self.attributes[:id] = value
-  end
-
-  def should_process_pdf_transcripts
-    @should_process_pdf_transcripts ||= false
-    @should_process_pdf_transcripts && !Delayed::Job.where("handler LIKE ? ", "%job_class: IndexPdfTranscriptJob%#{self.id}%").first
+    # rubocop:enable Style/RedundantSelf
   end
 
   def to_solr
@@ -415,13 +443,17 @@ class ArceItem
   end
 
   def index_record
+    # rubocop:disable Style/RedundantSelf
     SolrService.add(self.to_solr)
-    #TODO allow for search capturing
+    # rubocop:enable Style/RedundantSelf
+    # TODO: allow for search capturing
     SolrService.commit
   end
 
   def remove_from_index
+    # rubocop:disable Style/RedundantSelf
     SolrService.delete_by_id(self.id)
+    # rubocop:enable Style/RedundantSelf
     SolrService.commit
   end
 
@@ -447,7 +479,9 @@ class ArceItem
   end
 
   def self.find_or_new(id)
+    # rubocop:disable Style/RedundantSelf
     self.find(id)
+    # rubocop:enable Style/RedundantSelf
   rescue Blacklight::Exceptions::RecordNotFound
     ArceItem.new(id: id)
   end
@@ -464,20 +498,26 @@ class ArceItem
   def self.total_records(args = {})
     url = args[:url] || "https://dl.library.ucla.edu/oai2/"
     set = args[:set] || "arce_1"
-    client = OAI::Client.new url, :headers => { "From" => "rob@notch8.com" }, :parser => 'rexml', metadata_prefix: 'mods'
+    # rubocop:disable Style/HashSyntax
+    client = OAI::Client.new url,
+      :headers => { "From" => "rob@notch8.com" },
+      :parser => 'rexml',
+      metadata_prefix: 'mods'
+    # rubocop:enable Style/HashSyntax
     response = client.list_records(set: set, metadata_prefix: 'mods')
     response.doc.elements['//resumptionToken'].attributes['completeListSize'].to_i
   end
 
   def self.create_import_tmp_file
-    FileUtils.touch(Rails.root.join('tmp/importer.tmp'))
+    FileUtils.touch(Rails.root.join('tmp', 'importer.tmp'))
   end
 
   def self.remove_import_tmp_file
-    FileUtils.rm(Rails.root.join('tmp/importer.tmp'))
+    FileUtils.rm(Rails.root.join('tmp', 'importer.tmp'))
   end
 
   def self.check_for_tmp_file
-    File.exist?(File.join('tmp/importer.tmp'))
+    File.exist?(File.join('tmp', 'importer.tmp'))
   end
 end
+# rubocop:enable Metrics/ClassLength

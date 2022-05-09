@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class CatalogController < ApplicationController
 
+class CatalogController < ApplicationController
   include Blacklight::Catalog
   include Blacklight::Marc::Catalog
   before_action :setup_negative_captcha, only: [:email]
@@ -24,24 +24,24 @@ class CatalogController < ApplicationController
       :"hl.fl" => "title_t geographic_subject_t temporal_subject_t collection_t resource_preview_t subject_topic_t ",
       :"hl.simple.pre" => "<span class='label label-warning'>",
       :"hl.simple.post" => "</span>",
-      :"hl.fragsize" => 200,
+      :"hl.fragsize" => 200
     }
 
     # solr path which will be added to solr base url before the other solr params.
-    #config.solr_path = 'select'
+    # config.solr_path = 'select'
 
     # items to show per page, each number in the array represent another option to choose from.
-    #config.per_page = [10,20,50,100]
+    # config.per_page = [10,20,50,100]
 
     ## Default parameters to send on single-document requests to Solr. These settings are the Blackligt defaults (see SearchHelper#solr_doc_params) or
     ## parameters included in the Blacklight-jetty document requestHandler.
     #
     config.default_document_solr_params = {
-     #  qt: 'document',
-     ## These are hard-coded in the blacklight 'document' requestHandler
-     # fl: '*',
-     # rows: 1,
-     # q: '{!term f=id v=$id}'
+      #  qt: 'document',
+      ## These are hard-coded in the blacklight 'document' requestHandler
+      # fl: '*',
+      # rows: 1,
+      # q: '{!term f=id v=$id}'
       :"hl" => true,
       :"hl.fragsize" => 0,
       :"hl.preserveMulti" => true,
@@ -54,12 +54,12 @@ class CatalogController < ApplicationController
     # solr field configuration for search results/index views
     config.index.title_field = 'title_display'
     config.index.display_type_field = 'format'
-    #config.index.thumbnail_field = 'thumbnail_path_ss'
+    # config.index.thumbnail_field = 'thumbnail_path_ss'
 
     # solr field configuration for document/show views
     config.show.title_field = 'title_display'
-    #config.show.display_type_field = 'format'
-    #config.show.thumbnail_field = 'thumbnail_path_ss'
+    # config.show.display_type_field = 'format'
+    # config.show.thumbnail_field = 'thumbnail_path_ss'
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
@@ -92,12 +92,11 @@ class CatalogController < ApplicationController
     config.add_facet_field 'geographic_subject_facet', label: 'Location', limit: 20, index_range: 'A'..'Z'
     config.add_facet_field 'temporal_subject_facet', label: 'Time Period', limit: 20, index_range: 'A'..'Z'
 
-#    config.add_facet_field 'example_query_facet_field', label: 'Publish Date', :query => {
-#       :years_5 => { label: 'within 5 Years', fq: "pub_date:[#{Time.zone.now.year - 5 } TO *]" },
-#       :years_10 => { label: 'within 10 Years', fq: "pub_date:[#{Time.zone.now.year - 10 } TO *]" },
-#       :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
-#    }
-
+    #  config.add_facet_field 'example_query_facet_field', label: 'Publish Date', :query => {
+    #     :years_5 => { label: 'within 5 Years', fq: "pub_date:[#{Time.zone.now.year - 5 } TO *]" },
+    #     :years_10 => { label: 'within 10 Years', fq: "pub_date:[#{Time.zone.now.year - 10 } TO *]" },
+    #     :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
+    #  }
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -159,7 +158,6 @@ class CatalogController < ApplicationController
 
     config.add_search_field 'all_fields', label: 'All Fields'
 
-
     # Now we see how to over-ride Solr request handler defaults, in this
     # case for a BL "search field", which is really a dismax aggregate
     # of Solr search fields.
@@ -198,7 +196,6 @@ class CatalogController < ApplicationController
       }
     end
 
-
     # config.add_search_field('biographical') do |field|
     #   field.solr_parameters = { :'spellcheck.dictionary' => 'biographical' }
     #   field.solr_local_parameters = {
@@ -224,23 +221,24 @@ class CatalogController < ApplicationController
     # config.autocomplete_path = 'suggest'
 
     config.add_field_configuration_to_solr_request!
-
   end
 
   # Override to add highlighing to show
+  # rubocop:disable Metrics/AbcSize
   def show
-    @response, @document = fetch params[:id], {
-      :"hl.q" => current_search_session.try(:query_params).try(:[], "q"),
-      :df => blacklight_config.try(:default_document_solr_params).try(:[], :"hl.fl")
-    }
+    @response, @document = fetch params[:id],
+                                 :"hl.q" => current_search_session.try(:query_params).try(:[], "q"),
+                                 :df => blacklight_config.try(:default_document_solr_params).try(:[], :"hl.fl")
     respond_to do |format|
       format.html { setup_next_and_previous_documents }
       format.json { render json: { response: { document: @document } } }
       additional_export_formats(@document, format)
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   # override from blacklight 6.12 to handle captcha
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def email
     @response, @documents = action_documents
 
@@ -263,40 +261,44 @@ class CatalogController < ApplicationController
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
-  def setup_negative_captcha
-    @captcha = NegativeCaptcha.new(
-      # A secret key entered in environment.rb. 'rake secret' will give you a good one.
-      secret: ENV["NEGATIVE_CAPTCHA_SECRET"],
-      spinner: request.remote_ip,
-      # Whatever fields are in your form
-      fields: [:to, :message],
-      # If you wish to override the default CSS styles (position: absolute; left: -2000px;) used to position the fields off-screen
-      # css: "display: none",
-      params: params
-    )
-  end
 
-  # Email Action (this will render the appropriate view on GET requests and process the form and send the email on POST requests)
-  def email_action documents
-    mail = RecordMailer.email_record(documents, {:to => @captcha.values[:to], :message => @captcha.values[:message]}, url_options)
-    if mail.respond_to? :deliver_now
-      mail.deliver_now
-    else
-      mail.deliver
-    end
-  end
-
-  def validate_email_params
-    if !@captcha.valid?
-      flash[:error] = @captcha.message
-    elsif @captcha.values[:to].blank?
-      flash[:error] = I18n.t('blacklight.email.errors.to.blank')
-    elsif !@captcha.values[:to].match(Blacklight::Engine.config.email_regexp)
-      flash[:error] = I18n.t('blacklight.email.errors.to.invalid', :to => @captcha.values[:to])
+    def setup_negative_captcha
+      @captcha = NegativeCaptcha.new(
+        # A secret key entered in environment.rb. 'rake secret' will give you a good one.
+        secret: ENV["NEGATIVE_CAPTCHA_SECRET"],
+        spinner: request.remote_ip,
+        # Whatever fields are in your form
+        fields: %i[to message],
+        # If you wish to override the default CSS styles (position: absolute; left: -2000px;) used to position the fields off-screen
+        # css: "display: none",
+        params: params
+      )
     end
 
-    flash[:error].blank?
-  end
+    # Email Action (this will render the appropriate view on GET requests and process the form and send the email on POST requests)
+    def email_action(documents)
+      mail = RecordMailer.email_record(documents, { :to => @captcha.values[:to], :message => @captcha.values[:message] }, url_options)
+      if mail.respond_to? :deliver_now
+        mail.deliver_now
+      else
+        mail.deliver
+      end
+    end
+
+    # rubocop:disable Metrics/AbcSize
+    def validate_email_params
+      if !@captcha.valid?
+        flash[:error] = @captcha.message
+      elsif @captcha.values[:to].blank?
+        flash[:error] = I18n.t('blacklight.email.errors.to.blank')
+      elsif !@captcha.values[:to].match(Blacklight::Engine.config.email_regexp)
+        flash[:error] = I18n.t('blacklight.email.errors.to.invalid', :to => @captcha.values[:to])
+      end
+
+      flash[:error].blank?
+    end
+  # rubocop:enable Metrics/AbcSize
 end

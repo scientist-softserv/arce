@@ -11,6 +11,7 @@ RUN echo 'Downloading Packages' && \
     apt-get upgrade -y ca-certificates && \
     apt-get install -y  \
       build-essential \
+      cmake \
       default-jdk \
       ffmpeg \
       imagemagick \

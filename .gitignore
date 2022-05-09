@@ -28,3 +28,4 @@ public/packs/*
 
 # Ignore local development history
 /.history
+examples.txt

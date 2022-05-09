@@ -1,0 +1,118 @@
+inherit_from: .rubocop_todo.yml
+
+# Turn on RSpec cops
+require: rubocop-rspec
+# inherit_from: .rubocop_todo.yml
+
+RSpec/DescribedClass:
+  Enabled: false
+
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'bin/**/*'
+    - 'chart/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'lib/tasks/*'
+    - 'node_modules/**/*'
+    - 'ops/**/*'
+    - 'public/**/*'
+    - 'spec/fixtures/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'app/controllers/concerns/blacklight/bookmarks.rb'
+
+Rails:
+  Enabled: true
+
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_user_key
+
+Metrics/LineLength:
+  Max: 120
+  Exclude:
+    - 'app/controllers/catalog_controller.rb'
+
+Layout/IndentationConsistency:
+  EnforcedStyle: rails
+
+Layout/DotPosition:
+  EnforcedStyle: leading
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false
+
+Metrics/ClassLength:
+  Exclude:
+    - 'app/controllers/catalog_controller.rb'
+
+Metrics/ModuleLength:
+  Max: 200
+
+Rails/HasAndBelongsToMany:
+  Exclude:
+
+Style/HashSyntax:
+  Exclude:
+    - 'app/controllers/catalog_controller.rb'
+    - 'app/models/arce_item.rb'
+
+Style/SymbolLiteral:
+  Exclude:
+    - 'app/controllers/catalog_controller.rb'
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/InstanceVariable:
+  Exclude:
+
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Exclude:
+    
+Rails/FilePath:
+  Exclude:
+    
+RSpec/ExpectActual:
+  Exclude:
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/MessageExpectation:
+  Enabled: false
+
+# By default RSpec/MessageSpies has the following:
+#   Prefer have_received for setting message expectations. Setup form as a spy using allow or instance_spy.
+RSpec/MessageSpies:
+  Enabled: true
+  EnforcedStyle: receive
+
+RSpec/ExampleLength:
+  Max: 16
+
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'app/controllers/catalog_controller.rb'
+

@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class SolrService
+  # rubocop:disable Style/ClassVars
   @@connection = false
 
   def self.connect
@@ -16,6 +19,7 @@ class SolrService
     @@connection.commit
   end
 
+  # rubocop:disable Metrics/MethodLength
   def self.extract(params)
     connect unless @@connection
     path = params.delete(:path)
@@ -25,23 +29,24 @@ class SolrService
 
     # "/solr/techproducts/update/extract"
     conn = Faraday.new(url: 'http://solr:8983/solr/blacklight-core') do |faraday| # TODO @@connection.uri
-      faraday.request :multipart #make sure this is set before url_encoded
+      faraday.request :multipart # make sure this is set before url_encoded
       faraday.request :url_encoded
       faraday.adapter Faraday.default_adapter
     end
 
     file = Faraday::UploadIO.new(path, 'application/octet-stream')
-    
-    payload = { 
-      'file' => file, 
-      'extractOnly' => true, 
+
+    payload = {
+      'file' => file,
+      'extractOnly' => true,
       'extractFormat' => 'text',
       'wt' => 'json'
     }
-    
+
     raw_response = conn.post('update/extract', payload).body
     JSON.parse(raw_response) if raw_response.present?
   end
+  # rubocop:enable Metrics/MethodLength
 
   def self.delete_by_id(id)
     connect unless @@connection
@@ -61,6 +66,7 @@ class SolrService
     res&.[]('response')&.[]('docs')&.map { |v| v['id'] }
   end
 
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def self.all_records
     connect unless @@connection
 
@@ -77,8 +83,7 @@ class SolrService
       remaining_records -= 1
     end
 
-
-    while remaining_records > 0
+    while remaining_records.positive?
       res = @@connection.get 'select', params: { start: cursor, rows: page_size }
 
       res["response"]["docs"].each do |ref|
@@ -90,9 +95,12 @@ class SolrService
       cursor += page_size
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def self.total_record_count
     res = @@connection.get 'select', params: { start: cursor, rows: page_size }
     remaining_records = res["response"]["numFound"].to_i
+    remaining_records
   end
+  # rubocop:enable Style/ClassVars
 end

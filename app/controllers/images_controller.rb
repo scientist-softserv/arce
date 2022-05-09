@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'iiif/presentation'
 require 'open-uri'
 
 class ImagesController < ApplicationController
   include Blacklight::Catalog
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def manifest
     @document = fetch params[:id]
 
@@ -12,8 +15,10 @@ class ImagesController < ApplicationController
     preview_url = @document.first.response['docs'].first['resource_preview_t']
     preview_url = preview_url.first if preview_url.is_a?(Array)
 
+    # rubocop:disable Security/JSONLoad
     # artefact holds the information you'd find in info.json.
     artefact = JSON.load(open(info_json))
+    # rubocop:enable Security/JSONLoad
 
     seed = {
       '@id' => artefact['@id'],
@@ -35,7 +40,7 @@ class ImagesController < ApplicationController
     # served by riiif.
 
     thumbnail = IIIF::Presentation::Resource.new(
-        '@id' => preview_url
+      '@id' => preview_url
     )
     thumbnail['@type'] = 'dctypes:Image'
     thumbnail['format'] = 'image/jpeg'
@@ -50,8 +55,8 @@ class ImagesController < ApplicationController
     #
     # Create a new sequence and a canvas
 
-    canvas = IIIF::Presentation::Canvas.new()
-    sequence = IIIF::Presentation::Sequence.new()
+    canvas = IIIF::Presentation::Canvas.new
+    sequence = IIIF::Presentation::Sequence.new
 
     # A valid IIIF manifest identifies each sequence, canvas, resource,...
     # with an @id that requires a valid HTTP url. The URL could resolve to
@@ -86,13 +91,13 @@ class ImagesController < ApplicationController
     # Combine everything together in one big Ruby variable.
     resource['service'] = service
     image['resource'] = resource
-    canvas['images'] = [ image ]
-    sequence['canvases'] = [ canvas ]
+    canvas['images'] = [image]
+    sequence['canvases'] = [canvas]
     manifest.sequences << sequence
 
     # Render the manifest variable into a valid JSON object to
     # send over HTTP.
     render json: manifest.to_json(pretty: true)
-
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

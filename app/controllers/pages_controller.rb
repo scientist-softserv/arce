@@ -1,13 +1,12 @@
+# frozen_string_literal: true
+
 # frozen string literal
 class PagesController < ApplicationController
-	include Blacklight::Catalog
+  include Blacklight::Catalog
 
-	def about
-	end
+  def about; end
 
-	def policy
-	end
+  def policy; end
 
-	def explore_videos
-	end
+  def explore_videos; end
 end
