@@ -43,9 +43,24 @@ test:
   tags:
     - docker
 
+lint:
+  stage: go
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  variables:
+    PRONTO_GITLAB_API_ENDPOINT: "https://gitlab.com/api/v4"
+  before_script:
+    - export PRONTO_GITLAB_API_PRIVATE_TOKEN=$GITLAB_API_TOKEN
+  allow_failure: false
+  script:
+    - git fetch && git checkout main && git checkout ${CI_COMMIT_SHORT_SHA}
+    - bundle check || bundle
+    - bundle exec pronto run -f gitlab -c origin/main
+    - cd /home/app/webapp && bundle exec rubocop -P
+  tags:
+    - docker
+
 staging:
   stage: go
-  type: deploy
   script:
     - "keybase status | grep 'Logged in:     no' && keybase oneshot"
     - ./chart/bin/decrypt staging
@@ -62,7 +77,6 @@ staging:
 
 production:
   stage: go
-  type: deploy
   script:
     - export KUBECONFIG=$KUBECONFIG_PALS
     - "keybase status | grep 'Logged in:     no' && keybase oneshot"

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'catalog/show.html.erb' do
+RSpec.describe 'catalog/show.html.erb', type: :view do
   include BlacklightHelper
   include CatalogHelper
 

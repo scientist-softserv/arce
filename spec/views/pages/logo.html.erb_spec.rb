@@ -1,11 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'pages/logo.html.erb', type: :view do
-
   include Capybara::RSpecMatchers
-  
-  before :each do
-    render :partial => 'logo'
+
+  before do
+    render partial: 'logo'
   end
 
   describe 'logo link' do
