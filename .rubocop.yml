@@ -78,6 +78,8 @@ RSpec/AnyInstance:
 RSpec/InstanceVariable:
   Exclude:
 
+RSpec/RepeatedExample:
+  Enabled: false
 
 RSpec/NamedSubject:
   Enabled: false
@@ -89,7 +91,7 @@ Rails/FilePath:
   Exclude:
     
 RSpec/ExpectActual:
-  Exclude:
+  Enabled: false
 
 RSpec/VerifiedDoubles:
   Enabled: false
