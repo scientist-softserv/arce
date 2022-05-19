@@ -5,13 +5,13 @@ require 'rails_helper'
 RSpec.describe CollectionsController, type: :controller do
 
   let(:valid_attributes) {
-    title: 'Collection Title', content: 'Collection Content', video_embed_link: 'Collection Video',
-    arts_and_culture_embed: 'Collection Arts and Culture', preview: true
+    { title: 'Collection Title', content: 'Collection Content', video_embed_link: 'Collection Video',
+    arts_and_culture_embed: 'Collection Arts and Culture', preview: true }
   }
 
   let(:invalid_attributes) {
-    bad_attribute: 'Invalid attribute', title: '', video_embed_link: '',
-    arts_and_culture_embed: '', preview: ''
+    { bad_attribute: 'Invalid attribute', title: '', video_embed_link: '',
+    arts_and_culture_embed: '', preview: '' }
   }
 
   # This should return the minimal set of values that should be in the session
@@ -43,7 +43,7 @@ RSpec.describe CollectionsController, type: :controller do
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Collection" do
-        expect { post :create, params: { collection: valid_attributes }, 
+        expect { post :create, params: { collection: valid_attributes },
         session: valid_session }.to change(Collection, :count).by(1)
       end
 
@@ -92,7 +92,7 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "DELETE #destroy" do
       it "destroys the requested collection" do
-        expect { delete :destroy, params: { id: collection.to_param, collection: valid_attributes }, 
+        expect { delete :destroy, params: { id: collection.to_param, collection: valid_attributes },
         session: valid_session }.to change(Collection, :count).by(-1)
       end
 
