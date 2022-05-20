@@ -17,7 +17,7 @@ RSpec.describe CollectionsController, type: :routing do
     end
 
     it "routes to #edit" do
-      expect(get: "/collections/1").to route_to(
+      expect(get: "/collections/1/edit").to route_to(
         controller: 'collections',
         action: 'edit',
         id: '1'

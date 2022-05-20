@@ -3,16 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe CollectionsController, type: :controller do
-
-  let(:valid_attributes) {
+  let(:valid_attributes) do
     { title: 'Collection Title', content: 'Collection Content', video_embed_link: 'Collection Video',
-    arts_and_culture_embed: 'Collection Arts and Culture', preview: true }
-  }
+      arts_and_culture_embed: 'Collection Arts and Culture', private: true }
+  end
 
-  let(:invalid_attributes) {
+  let(:invalid_attributes) do
     { bad_attribute: 'Invalid attribute', title: '', video_embed_link: '',
-    arts_and_culture_embed: '', preview: '' }
-  }
+      arts_and_culture_embed: '', private: '' }
+  end
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -21,6 +20,7 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "GET #show" do
     it "returns a success response" do
+      collection = Collection.create(valid_attributes)
       get :show, params: { id: collection.to_param, collection: valid_attributes }
       expect(response).to be_successful
     end
@@ -35,7 +35,8 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "GET #edit" do
     it "returns a success response" do
-      get :edit, params: { id: collection.to_param }, session: valid_session
+      collection = Collection.create(valid_attributes)
+      get :edit, params: { id: collection.id }, session: valid_session
       expect(response).to be_successful
     end
   end
@@ -43,8 +44,10 @@ RSpec.describe CollectionsController, type: :controller do
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Collection" do
-        expect { post :create, params: { collection: valid_attributes },
-        session: valid_session }.to change(Collection, :count).by(1)
+        expect do
+          post :create, params: { collection: valid_attributes },
+                        session: valid_session
+        end.to change(Collection, :count).by(1)
       end
 
       it "redirects to the created collection" do
@@ -63,27 +66,19 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) {
-        { title: "My New Collection Title", content: 'Collection Content', video_embed_link: 'Collection Video',
-        arts_and_culture_embed: 'Collection Arts and Culture', preview: true }
-      }
-
-      it "updates the requested collection" do
-        put :update, params: { id: collection.to_param, collection: new_attributes }, session: valid_session
+      it "redirects to the collection after update" do
+        collection = Collection.create(valid_attributes)
+        patch :update,
+              params: { id: collection.id, collection: { title: "New Collection Name" } },
+              session: valid_session
         collection.reload
-        if collection.valid?
-          expect(response).to be_successful
-        end
-      end
-
-      it "redirects to the collection" do
-        put :update, params: { id: collection.to_param, collection: valid_attributes }, session: valid_session
         expect(response).to redirect_to(collection)
       end
     end
 
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
+        collection = Collection.create(valid_attributes)
         put :update, params: { id: collection.to_param, collection: invalid_attributes }, session: valid_session
         expect(response).to be_successful
       end
@@ -91,15 +86,18 @@ RSpec.describe CollectionsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-      it "destroys the requested collection" do
-        expect { delete :destroy, params: { id: collection.to_param, collection: valid_attributes },
-        session: valid_session }.to change(Collection, :count).by(-1)
-      end
+    it "destroys the requested collection" do
+      collection = Collection.create(valid_attributes)
+      expect do
+        delete :destroy, params: { id: collection.to_param, collection: valid_attributes },
+                         session: valid_session
+      end.to change(Collection, :count).by(-1)
+    end
 
-      it "redirects to the admin index page" do
-        delete :destroy, params: { id: collection.to_param, collection: valid_attributes }, session: valid_session
-        expect(response).to redirect_to(admin_path)
-      end
+    it "redirects to the admin index page" do
+      collection = Collection.create(valid_attributes)
+      delete :destroy, params: { id: collection.to_param, collection: valid_attributes }, session: valid_session
+      expect(response).to redirect_to(admin_path)
+    end
   end
-
 end
