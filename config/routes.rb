@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     concerns :exportable
   end
 
+  resources :collections, except: :index
+
   resources :bookmarks do
     concerns :exportable
 
