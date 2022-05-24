@@ -1,5 +1,8 @@
-<h1>New Collection</h1>
-
-<%= render 'form', collection: @collection %>
-
-<%= link_to 'Back', admin_path %>
+<%= render partial: '/shared/sub_header' %>
+<div class="container import">
+  <div class="u-heading-v2-5--bottom g-brd-primary">
+    <h2 class="u-heading-v2__title text-uppercase g-font-weight-300 g-mb-30 g-mt-40">New Collection</h2>
+  </div>
+  <%= render 'form', collection: @collection %>
+  <%= link_to 'Back', admin_path %>
+</div>
