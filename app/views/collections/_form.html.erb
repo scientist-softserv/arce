@@ -11,24 +11,28 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :title %>
-    <%= form.text_field :title, id: :collection_title %>
+  <div class="form-group g-mb-20">
+    <%= form.label :title %> 
+    <%= form.text_field :title, id: :collection_title, class: "form-control form-control-md rounded-0",
+    placeholder: "Enter Title" %>
   </div>
 
-  <div class="field">
-    <%= form.label :content %>
-    <%= form.text_area :content, id: :collection_content %>
+  <div class="form-group mb-20">
+    <%= form.label :content, "Content of the Collection" %>
+    <%= form.text_area :content, id: :collection_content, class: "form-control form-control-md rounded-0",
+     placeholder: "Enter Content of the Collection" %>
   </div>
 
-  <div class="field">
-    <%= form.label :video_embed_link %>
-    <%= form.text_field :video_embed_link, id: :collection_video_embed_link %>
+  <div class="form-group g-mb-20">
+      <%= form.label :video_embed_link, "Video Embedded Link" %>
+      <%= form.text_field :video_embed_link, id: :collection_video_embed_link,
+      class: "form-control form-control-md rounded-0", placeholder: "Enter Link" %>
   </div>
 
-  <div class="field">
-    <%= form.label :arts_and_culture_embed %>
-    <%= form.text_field :arts_and_culture_embed, id: :collection_arts_and_culture_embed %>
+  <div class="form-group g-mb-20">
+      <%= form.label :arts_and_culture_embed, "Arts and Culture Embedded" %>
+      <%= form.text_field :arts_and_culture_embed, id: :collection_arts_and_culture_embed,
+      class: "form-control form-control-md rounded-0", placeholder: "Enter Link" %>
   </div>
 
   <div class="field">
@@ -37,6 +41,6 @@
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class: "btn btn-lg btn-primary" %>
   </div>
 <% end %>
