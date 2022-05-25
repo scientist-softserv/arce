@@ -1,5 +1,6 @@
-Rails.application.routes.draw do
+# frozen_string_literal: true
 
+Rails.application.routes.draw do
   mount DelayedJobWeb, at: "/delayed_job"
 
   get '/admin', to: 'admin#index', as: 'admin'
@@ -34,11 +35,9 @@ Rails.application.routes.draw do
 
   get 'pages/about', to: 'pages#about', as: 'about'
   get 'pages/policy', to: 'pages#policy', as: 'policy'
-  get'pages/explore_videos', to: 'pages#explore_videos', as: 'explore_videos'
+  get 'pages/explore_videos', to: 'pages#explore_videos', as: 'explore_videos'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # Route to the IIIF manifest.json for a particular image.
-  get "iiif/2/:id/manifest.json" => "images#manifest",
-    defaults: { format: 'json' },
-    as: 'riiif_manifest'
+  get "iiif/2/:id/manifest.json" => "images#manifest", defaults: { format: 'json' }, as: 'riiif_manifest'
 end

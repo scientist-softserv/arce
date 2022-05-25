@@ -20,5 +20,8 @@
   <%= @collection.arts_and_culture_embed %>
 </p>
 
+<% if current_user && !current_user.guest? %>
 <%= link_to 'Edit', edit_collection_path(@collection) %> |
+<%= link_to 'Delete Collection', @collection, method: :delete, data: { confirm: 'Are you sure?' } %> |
+<% end %>
 <%= link_to 'Back', root_path %>
