@@ -18,6 +18,13 @@ RSpec.describe CollectionsController, type: :controller do
   # CollectionsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
+  let(:user) do
+    User.create(
+      email: 'test@testing.com',
+      guest: false
+    )
+  end
+
   describe "GET #show" do
     it "returns a success response" do
       collection = Collection.create(valid_attributes)
@@ -28,6 +35,7 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "GET #new" do
     it "returns a success response" do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
     end
@@ -35,6 +43,7 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "GET #edit" do
     it "returns a success response" do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       collection = Collection.create(valid_attributes)
       get :edit, params: { id: collection.id }, session: valid_session
       expect(response).to be_successful
@@ -67,6 +76,7 @@ RSpec.describe CollectionsController, type: :controller do
   describe "PUT #update" do
     context "with valid params" do
       it "redirects to the collection after update" do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
         collection = Collection.create(valid_attributes)
         patch :update,
               params: { id: collection.id, collection: { title: "New Collection Name" } },
@@ -78,6 +88,7 @@ RSpec.describe CollectionsController, type: :controller do
 
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
         collection = Collection.create(valid_attributes)
         put :update, params: { id: collection.to_param, collection: invalid_attributes }, session: valid_session
         expect(response).to be_successful
@@ -87,6 +98,7 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "DELETE #destroy" do
     it "destroys the requested collection" do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       collection = Collection.create(valid_attributes)
       expect do
         delete :destroy, params: { id: collection.to_param, collection: valid_attributes },
@@ -95,6 +107,7 @@ RSpec.describe CollectionsController, type: :controller do
     end
 
     it "redirects to the admin index page" do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       collection = Collection.create(valid_attributes)
       delete :destroy, params: { id: collection.to_param, collection: valid_attributes }, session: valid_session
       expect(response).to redirect_to(admin_path)

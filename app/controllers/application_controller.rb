@@ -8,6 +8,11 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
   before_action :set_raven_context
+  helper_method :current_user, :logged_in?, :herd_user
+
+  def herd_user
+    redirect_to root_path, notice: "You do not have permission to access this page." if current_user.nil?
+  end
 
   private
 

@@ -2,6 +2,7 @@
 
 class CollectionsController < ApplicationController
   before_action :set_collection, only: %i[show edit update destroy]
+  before_action :herd_user, only: %i[new edit update destroy]
 
   # GET /collections/1
   # GET /collections/1.json
