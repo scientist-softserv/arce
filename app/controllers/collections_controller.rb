@@ -8,6 +8,11 @@ class CollectionsController < ApplicationController
   # GET /collections/1.json
   def show
     @collection = Collection.find(params[:id])
+    if @collection.private?
+      redirect_to root_path, notice: "Collection not avaliable" unless current_user && !current_user.guest
+    else
+      @collection = Collection.find(params[:id])
+    end
   end
 
   # GET /collections/new

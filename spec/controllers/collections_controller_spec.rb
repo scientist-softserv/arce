@@ -27,9 +27,16 @@ RSpec.describe CollectionsController, type: :controller do
 
   describe "GET #show" do
     it "returns a success response" do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       collection = Collection.create(valid_attributes)
       get :show, params: { id: collection.to_param, collection: valid_attributes }
       expect(response).to be_successful
+    end
+
+    it "returns an unsuccesful response for private collections" do
+      collection = Collection.create(valid_attributes)
+      get :show, params: { id: collection.to_param, collection: valid_attributes }
+      expect(response).not_to be_successful
     end
   end
 
