@@ -5,6 +5,7 @@ class AdminController < ApplicationController
 
   def index
     @job_running = ArceItem.check_for_tmp_file
+    @collections = Collection.all
   end
 
   def run_import
