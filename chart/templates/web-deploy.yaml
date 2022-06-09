@@ -44,6 +44,13 @@ spec:
             - mountPath: /home/app/webapp/public/system
               name: shared
               subPath: system
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           readinessProbe:
             tcpSocket:
               port: 80
