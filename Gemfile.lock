@@ -130,6 +130,8 @@ GEM
       sexp_processor (~> 4.0)
     font-awesome-rails (4.7.0.2)
       railties (>= 3.2, < 5.2)
+    friendly_id (5.4.2)
+      activerecord (>= 4.0.0)
     gitlab (4.18.0)
       httparty (~> 0.18)
       terminal-table (>= 1.5.1)
@@ -444,6 +446,7 @@ DEPENDENCIES
   devise
   devise-guests (~> 0.6)
   font-awesome-rails
+  friendly_id (~> 5.4.0)
   iiif-presentation (~> 1.0)
   jbuilder (~> 2.5)
   jquery-rails

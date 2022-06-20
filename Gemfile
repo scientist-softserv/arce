@@ -18,6 +18,7 @@ gem 'delayed_job_active_record'
 gem 'devise'
 gem 'devise-guests', '~> 0.6'
 gem 'font-awesome-rails'
+gem 'friendly_id', '~> 5.4.0'
 gem "iiif-presentation", "~> 1.0"
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
