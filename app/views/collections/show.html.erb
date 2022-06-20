@@ -2,14 +2,17 @@
 <%= render partial: '/shared/sub_header' %>
 <!-- Title -->
 <div class="container">
-  <div class="u-heading-v2-5--bottom g-brd-primary g-mb-40">
+  <div class="u-heading-v2-5--bottom g-brd-primary g-mb-40 col-md-12">
     <h1 class="u-heading-v2__title text-uppercase g-font-weight-300 mb-0 g-mt-40">
       <%= @collection.title.html_safe %>
     </h1>
   </div>
 
   <!-- Content -->
-  <div class="card-body">
+  <div class="card-body col-md-12">
+    <div>        
+      <%= link_to "View Items in Collection", root_path(f:{collection_facet: [@collection.title]}) %>
+    </div>
     <div class="g-mb-60">
       <%= @collection.content.html_safe %>
     </div>
