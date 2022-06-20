@@ -7,11 +7,10 @@ class CollectionsController < ApplicationController
   # GET /collections/1
   # GET /collections/1.json
   def show
-    @collection = Collection.find(params[:id])
     if @collection.private?
       redirect_to root_path, notice: "Collection not avaliable" unless current_user && !current_user.guest
     else
-      @collection = Collection.find(params[:id])
+      @collection = Collection.friendly.find(params[:id])
     end
   end
 
@@ -21,9 +20,7 @@ class CollectionsController < ApplicationController
   end
 
   # GET /collections/1/edit
-  def edit
-    @collection = Collection.find(params[:id])
-  end
+  def edit; end
 
   # POST /collections
   # POST /collections.json
@@ -68,7 +65,7 @@ class CollectionsController < ApplicationController
   private
 
     def set_collection
-      @collection = Collection.find(params[:id])
+      @collection = Collection.friendly.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
