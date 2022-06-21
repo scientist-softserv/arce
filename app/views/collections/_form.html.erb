@@ -19,7 +19,7 @@
 
   <div class="form-group mb-20">
     <%= form.label :content, "Content of the Collection" %>
-    <%= form.text_area :content, id: :collection_content, class: "form-control form-control-md rounded-0",
+    <%= form.text_area :content, id: :collection_content, class: "form-control form-control-md rounded-0 tinymce", rows: 40, cols: 120,
      placeholder: "Enter Content of the Collection" %>
   </div>
 
@@ -44,3 +44,5 @@
     <%= form.submit class: "btn btn-lg btn-primary" %>
   </div>
 <% end %>
+
+<%= tinymce %>
