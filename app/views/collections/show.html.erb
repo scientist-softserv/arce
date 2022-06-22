@@ -7,12 +7,20 @@
       <%= @collection.title.html_safe %>
     </h1>
   </div>
+</div>
+<div class="container">
+  <!-- Search results link -->
+  <section class="g-brd-around g-brd-2 g-brd-gray-light-v4 g-pa-30 g-mb-30">
+    <div class="d-md-flex justify-content-md-center text-center">
+      <div class="align-self-md-center">
+        <%= link_to "Search Items in this Collection", root_path(f:{collection_facet: [@collection.title]}), class: 'btn btn-md rounded-0 btn-primary' %>
+      </div>
+    </div>
+  </section>
+  <!-- End search results link -->
 
   <!-- Content -->
   <div class="card-body col-md-12">
-    <div>        
-      <%= link_to "View Items in Collection", root_path(f:{collection_facet: [@collection.title]}) %>
-    </div>
     <div class="g-mb-60">
       <%= @collection.content.html_safe %>
     </div>
