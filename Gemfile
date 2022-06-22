@@ -49,6 +49,7 @@ gem 'sentry-raven'
 gem 'solr_wrapper', '>= 0.3', group: [:development, :test]
 gem 'spring', group: [:development]
 gem 'spring-watcher-listen', '~> 2.0.0', group: [:development]
+gem 'tinymce-rails'
 gem 'turbolinks', '~> 5'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'uglifier', '>= 1.3.0'

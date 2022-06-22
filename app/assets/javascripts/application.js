@@ -22,5 +22,7 @@
 //= require bootstrap-sprockets
 //= require blacklight/blacklight
 
+//= require tinymce
+
 //= require_tree ./main
 //= require ./timestamp_links

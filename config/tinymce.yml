@@ -1,0 +1,20 @@
+toolbar:
+  - undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help
+plugins:
+  - advlist
+  - autolink
+  - fullscreen
+  - help
+  - image
+  - lists
+  - link
+  - media
+  - preview
+  - searchreplace
+  - table
+  - tinymcespellchecker
+  - visualblocks
+  - wordcount
+  - charmap'
+  - anchor
+  - insertdatetime
