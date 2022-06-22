@@ -4,7 +4,7 @@
 <div class="container">
   <div class="u-heading-v2-5--bottom g-brd-primary g-mb-40 col-md-12">
     <h1 class="u-heading-v2__title text-uppercase g-font-weight-300 mb-0 g-mt-40">
-      <%= @collection.title.html_safe %>
+      <%= @collection.title %>
     </h1>
   </div>
 </div>
@@ -20,29 +20,33 @@
   <!-- End search results link -->
 
   <!-- Content -->
-  <div class="card-body col-md-12">
+  <div class="col-md-12">
     <div class="g-mb-60">
+      <%= link_to "View Items in Collection", root_path(f:{collection_facet: [@collection.title]}) %>
       <%= @collection.content.html_safe %>
+      <%= image_tag(@collection.image_url(:thumb).to_s) if @collection.image.present? %>
     </div>
   </div>
   <!-- End Content -->
-  <!-- picture section to be added later -->
-  <!-- picture section to be added later -->
-  <!-- Video box -->
 
-  <div class="col-md-12 g-mb-60">
-    <div class="embed-responsive embed-responsive-16by9">
-      <iframe width="100%" src="<%= @collection.video_embed_link %>" frameborder="0" allowfullscreen=""></iframe>
+  <!-- Video box -->
+  <% if @collection.video_embed_link.present? %>
+    <div class="col-md-12 g-mb-60">
+      <div class="embed-responsive embed-responsive-16by9">
+        <iframe width="100%" src="<%= @collection.video_embed_link %>" frameborder="0" allowfullscreen=""></iframe>
+      </div>
     </div>
-  </div>
-  
-  <!-- End Youtube Example -->
-  <!-- arts and cultrure embed -->
-  <div class="col-md-12 g-mb-60">
-    <%= @collection.arts_and_culture_embed.html_safe %>
-    
-  </div>
-  <!-- arts and cultrure embed -->
+  <% end %>
+  <!-- End Video box -->
+
+  <!-- arts and culture embed -->
+  <% if @collection.arts_and_culture_embed.present? %>
+    <div class="col-md-12 g-mb-60">
+      <%= @collection.arts_and_culture_embed.html_safe %> 
+    </div>
+  <% end %>
+  <!-- arts and culture embed -->
+
   <!--buttons-->
   <div class="col-md-12">
     <% if current_user && !current_user.guest? %>

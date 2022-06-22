@@ -70,6 +70,7 @@ class CollectionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def collection_params
-      params.require(:collection).permit(:title, :content, :video_embed_link, :arts_and_culture_embed, :private)
+      params.require(:collection)
+            .permit(:title, :content, :video_embed_link, :arts_and_culture_embed, :image, :remote_image_url, :private)
     end
 end

@@ -1,5 +1,5 @@
 <%= render partial: '/shared/sub_header' %>
-<div class="container import">
+<div class="container import g-mb-70">
   <div class="u-heading-v2-5--bottom g-brd-primary ">
     <h2 class="u-heading-v2__title text-uppercase g-font-weight-300 mb-0 g-mt-40">Manage Library</h2>
   </div>
@@ -20,9 +20,11 @@
   <% end %>
 </div>
 
+<hr class="u-divider-db-solid g-brd-gray-light-v3 g-my-50" />
+
 <div class="container import">
   <div class="u-heading-v2-5--bottom g-brd-primary">
-    <h2 class="u-heading-v2__title text-uppercase g-font-weight-300 g-mb-30 g-mt-40">Collections</h1>
+    <h2 class="u-heading-v2__title text-uppercase g-font-weight-300 g-mt-30">Collections</h1>
   </div>
   <div class="table-responsive">
     <table class="table">
@@ -50,6 +52,7 @@
         <% end %>
       </tbody>
     </table>
+    <%= link_to "Add New Collection", new_collection_path, class: "btn btn-lg btn-primary g-mb-30" %>
   </div>
 </div>
 
