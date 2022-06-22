@@ -469,11 +469,10 @@ img.img-fluid.w-100.u-block-hover__main--zoom-v1 {
 
 section.g-pos-rel.hero-image-block {
   height: 130%;
-  background-image: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.1)),image-url('arce-hero3.jpg');
+  background-image: linear-gradient(to bottom, rgba(0,0,0,.5), rgba(0,0,0,.2)),image-url('arce-hero.jpg');
   background-repeat: no-repeat;
   background-position: top;
   background-size: cover;
-
 }
 
 section.g-pos-rel.hero-image-block:before {
