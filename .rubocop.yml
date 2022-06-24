@@ -63,6 +63,10 @@ Metrics/ModuleLength:
 Rails/HasAndBelongsToMany:
   Exclude:
 
+Rails/LexicallyScopedActionFilter:
+  Excluce:
+    - 'app/controllers/catalog_controller.rb'
+
 Style/HashSyntax:
   Exclude:
     - 'app/controllers/catalog_controller.rb'

@@ -4,6 +4,7 @@ class CatalogController < ApplicationController
   include Blacklight::Catalog
   include Blacklight::Marc::Catalog
   before_action :setup_negative_captcha, only: [:email]
+  before_action :set_collections, only: [:index] # rubocop:disable Rails/LexicallyScopedActionFilter
 
   configure_blacklight do |config|
     ## Class for sending and receiving requests from a search index
@@ -300,5 +301,10 @@ class CatalogController < ApplicationController
 
       flash[:error].blank?
     end
-  # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize
+
+    def set_collections
+      @public_collections = Collection.where(private: false)
+      @private_collections = Collection.where(private: true)
+    end
 end
