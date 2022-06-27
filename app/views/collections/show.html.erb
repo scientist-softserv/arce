@@ -16,13 +16,19 @@
         <%= link_to "Search Items in this Collection", root_path(f:{collection_facet: [@collection.title]}), class: 'btn btn-md rounded-0 btn-primary' %>
       </div>
     </div>
+    <p> 
+    </p>
+    <div class="d-md-flex justify-content-md-center text-center">
+      <div class="align-self-md-center">
+      <%= link_to "View Items in Collection", root_path(f:{collection_facet: [@collection.title]}), class: 'btn btn-md rounded-0 btn-primary' %>
+      </div>
+    </div>
   </section>
   <!-- End search results link -->
 
   <!-- Content -->
   <div class="col-md-12">
     <div class="g-mb-60">
-      <%= link_to "View Items in Collection", root_path(f:{collection_facet: [@collection.title]}) %>
       <%= @collection.content.html_safe %>
       <%= image_tag(@collection.image_url(:thumb).to_s) if @collection.image.present? %>
     </div>
