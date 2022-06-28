@@ -47,6 +47,7 @@ gem 'rubocop-rspec', require: false
 gem 'ruby-audio', '~> 1.6.0'
 gem 'sass-rails', '~> 5.0'
 gem 'sentry-raven'
+gem 'shoulda-matchers', '~> 4.5.1', group: [:development, :test]
 gem 'solr_wrapper', '>= 0.3', group: [:development, :test]
 gem 'spring', group: [:development]
 gem 'spring-watcher-listen', '~> 2.0.0', group: [:development]

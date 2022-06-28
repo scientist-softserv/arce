@@ -17,10 +17,13 @@ class CollectionsController < ApplicationController
   # GET /collections/new
   def new
     @collection = Collection.new
+    @collection.gac_embeds.build
   end
 
   # GET /collections/1/edit
-  def edit; end
+  def edit
+    @collection.gac_embeds.build
+  end
 
   # POST /collections
   # POST /collections.json
@@ -68,9 +71,11 @@ class CollectionsController < ApplicationController
       @collection = Collection.friendly.find(params[:id])
     end
 
+    # rubocop:disable Style/SymbolArray
     # Never trust parameters from the scary internet, only allow the white list through.
     def collection_params
-      params.require(:collection)
-            .permit(:title, :content, :video_embed_link, :arts_and_culture_embed, :image, :remote_image_url, :private)
+      params.require(:collection).permit(:title, :content, :video_embed_link, :image, :remote_image_url, :private,
+                                         gac_embeds_attributes: [:id, :embed, :_destroy])
     end
+  # rubocop:enable Style/SymbolArray
 end

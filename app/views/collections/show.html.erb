@@ -16,13 +16,6 @@
         <%= link_to "Search Items in this Collection", root_path(f:{collection_facet: [@collection.title]}), class: 'btn btn-md rounded-0 btn-primary' %>
       </div>
     </div>
-    <p> 
-    </p>
-    <div class="d-md-flex justify-content-md-center text-center">
-      <div class="align-self-md-center">
-      <%= link_to "View Items in Collection", root_path(f:{collection_facet: [@collection.title]}), class: 'btn btn-md rounded-0 btn-primary' %>
-      </div>
-    </div>
   </section>
   <!-- End search results link -->
 
@@ -45,14 +38,14 @@
   <% end %>
   <!-- End Video box -->
 
-  <!-- arts and culture embed -->
-  <% if @collection.arts_and_culture_embed.present? %>
+  <!-- arts and cultrure embeds -->
+  <% @collection.gac_embeds.each do |gac| %>
     <div class="col-md-12 g-mb-60">
-      <%= @collection.arts_and_culture_embed.html_safe %> 
+     <%= gac.embed.html_safe %>
     </div>
   <% end %>
-  <!-- arts and culture embed -->
 
+  <!-- arts and cultrure embed -->
   <!--buttons-->
   <div class="col-md-12">
     <% if current_user && !current_user.guest? %>

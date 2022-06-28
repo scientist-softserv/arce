@@ -20,4 +20,13 @@ module ApplicationHelper
 
     link_to options[:value].first, options[:value].first, target: '_blank'
   end
+
+  def link_to_add_gac_fields(name, form, association)
+    new_object = form.object.send(association).klass.new
+    id = new_object.object_id
+    fields = form.fields_for(association, new_object, child_index: id) do |builder|
+      render("gac_embed_fields", form: builder)
+    end
+    link_to(name, '#', class: "add_fields", data: { id: id, fields: fields })
+  end
 end
