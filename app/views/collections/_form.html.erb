@@ -49,18 +49,27 @@
       class: "form-control form-control-md rounded-0", placeholder: "Enter Link" %>
   </div>
 
-  <div class="form-group g-mb-20">
-      <%= form.label :arts_and_culture_embed, "Arts and Culture Embedded" %>
-      <%= form.text_field :arts_and_culture_embed, id: :collection_arts_and_culture_embed,
-      class: "form-control form-control-md rounded-0", placeholder: "Enter Link" %>
+  <div class="h4 gac_embed_label g-font-weight-700">
+    Google Arts and Culture Embeds
+  </div>
+  <%= form.fields_for :gac_embeds do |builder| %>
+    <%= render 'gac_embed_fields', form: builder %>
+  <% end %>
+
+  <div class="g-mb-30">
+    <div class="new_fields"></div>
+    <%= link_to_add_gac_fields "Add another Google Arts and Culture Embed", form, :gac_embeds %>
   </div>
 
-  <div class="field form-group g-mb-20">
-    <%= form.label :private %>
-    <%= form.check_box :private, id: :collection_private %>
-  </div>
+  <label class="form-check-inline u-check g-pl-25">
+    <%= form.check_box :private, id: :collection_private, class: "g-hidden-xs-up g-pos-abs g-top-0 g-left-0"  %>
+    <div class="u-check-icon-checkbox-v6 g-absolute-centered--y g-left-0">
+      <i class="fa" data-check-icon=""></i>
+    </div>
+    Private
+  </label>
 
-  <div class="actions g-mb-20 g-mb-20">
+  <div class="actions g-mt-20 g-mb-20">
     <%= form.submit class: "btn btn-lg btn-primary" %>
   </div>
 <% end %>

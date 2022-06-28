@@ -25,4 +25,4 @@
 //= require tinymce
 
 //= require_tree ./main
-//= require ./timestamp_links
+//= require ./new_gac_embed_fields
