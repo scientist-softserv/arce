@@ -27,6 +27,6 @@ module ApplicationHelper
     fields = form.fields_for(association, new_object, child_index: id) do |builder|
       render("gac_embed_fields", form: builder)
     end
-    link_to(name, '#', class: "add_fields", data: { id: id, fields: fields })
+    link_to(name, '#', class: "add_fields", data: { id: id, fields: fields.gsub("/n", "") })
   end
 end

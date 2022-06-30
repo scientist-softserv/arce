@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe GacEmbed, type: :model do
-  subject { described_class.new(embed: "embedded link", collection_id: collection.id) }
+  subject { described_class.new(embed: "embedded link", title: "title", collection_id: collection.id) }
 
   let(:collection) { Collection.create!(title: "Test Collection") }
 
