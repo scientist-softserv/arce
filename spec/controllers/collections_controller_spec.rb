@@ -4,13 +4,12 @@ require 'rails_helper'
 
 RSpec.describe CollectionsController, type: :controller do
   let(:valid_attributes) do
-    { title: 'Collection Title', content: 'Collection Content', video_embed_link: 'Collection Video',
-      arts_and_culture_embed: 'Collection Arts and Culture', private: true }
+    { title: 'Collection Title', content: 'Collection Content', video_embed_link: 'Collection Video', private: true }
   end
 
   let(:invalid_attributes) do
     { bad_attribute: 'Invalid attribute', title: '', video_embed_link: '',
-      arts_and_culture_embed: '', private: '' }
+      private: '' }
   end
 
   # This should return the minimal set of values that should be in the session

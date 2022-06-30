@@ -41,7 +41,8 @@
   <!-- arts and cultrure embeds -->
   <% @collection.gac_embeds.each do |gac| %>
     <div class="col-md-12 g-mb-60">
-     <%= gac.embed.html_safe %>
+      <div class="h4 g-font-weight-700"><%= gac.title %></div>
+      <%= gac.embed.html_safe %>
     </div>
   <% end %>
 

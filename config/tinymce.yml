@@ -15,6 +15,6 @@ plugins:
   - tinymcespellchecker
   - visualblocks
   - wordcount
-  - charmap'
+  - charmap
   - anchor
   - insertdatetime

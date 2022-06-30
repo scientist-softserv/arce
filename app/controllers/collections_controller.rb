@@ -75,7 +75,7 @@ class CollectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def collection_params
       params.require(:collection).permit(:title, :content, :video_embed_link, :image, :remote_image_url, :private,
-                                         gac_embeds_attributes: [:id, :embed, :_destroy])
+                                         gac_embeds_attributes: [:id, :title, :embed, :_destroy])
     end
   # rubocop:enable Style/SymbolArray
 end

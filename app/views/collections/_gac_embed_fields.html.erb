@@ -8,12 +8,12 @@
         </div>
         Remove this Google Arts and Culture embed from this Collection
       </label>
-      <div class="col-md-12 g-mb-20">
-        <%= form.object.embed.html_safe %>
-      </div>
     <% else %>
       Add Google Arts and Culture embed to this collection
-      <%= form.text_area :embed, class: "form-control form-control-md rounded-0", placeholder: "Enter Embed" %>
     <% end %>
+      <div class="col-md-12 g-mb-20">
+        <%= form.text_field :title, class: "form-control form-control-md rounded-0", placeholder: "Title" %>
+        <%= form.text_area :embed, class: "form-control form-control-md rounded-0", placeholder: "Enter Embed" %>
+      </div>
   </div>
 </div>
