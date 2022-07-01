@@ -4,7 +4,7 @@
       <h2><%= pluralize(collection.errors.count, "error") %> prohibited this collection from being saved:</h2>
 
       <ul>
-      <% collection.errors.full_messages.each do |message| %>
+      <% collection.errors.messages.values.flatten.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>
