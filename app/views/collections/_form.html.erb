@@ -43,10 +43,16 @@
     <%= form.text_field :remote_image_url, id: :remote_image_url, class: "form-control form-control-md rounded-0" %>
   </div>
 
-  <div class="form-group g-mb-20">
-      <%= form.label :video_embed_link, "Video Embedded Link" %>
-      <%= form.text_field :video_embed_link, id: :collection_video_embed_link,
-      class: "form-control form-control-md rounded-0", placeholder: "Enter Link" %>
+  <div class="h4 gac_embed_label g-font-weight-700">
+    Video Links
+  </div>
+  <%= form.fields_for :video_links do |builder| %>
+    <%= render 'video_link_fields', form: builder %>
+  <% end %>
+
+  <div class="g-mb-30">
+    <div class="new_fields"></div>
+    <%= link_to_add_video_link_fields "Add another Video Link", form, :video_links %>
   </div>
 
   <div class="h4 gac_embed_label g-font-weight-700">

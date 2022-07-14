@@ -23,16 +23,18 @@
   <div class="col-md-12">
     <div class="g-mb-60">
       <%= @collection.content.html_safe %>
-      <%= image_tag(@collection.image_url(:thumb).to_s) if @collection.image.present? %>
     </div>
   </div>
   <!-- End Content -->
 
   <!-- Video box -->
-  <% if @collection.video_embed_link.present? %>
+  <% @collection.video_links.each do |vl| %>
     <div class="col-md-12 g-mb-60">
+      <div class="h4 g-font-weight-700">
+        <%= vl.title %>
+      </div>
       <div class="embed-responsive embed-responsive-16by9">
-        <iframe width="100%" src="<%= @collection.video_embed_link %>" frameborder="0" allowfullscreen=""></iframe>
+        <%= vl.link.html_safe %>
       </div>
     </div>
   <% end %>
@@ -41,8 +43,12 @@
   <!-- arts and cultrure embeds -->
   <% @collection.gac_embeds.each do |gac| %>
     <div class="col-md-12 g-mb-60">
-      <div class="h4 g-font-weight-700"><%= gac.title %></div>
-      <%= gac.embed.html_safe %>
+      <div class="h4 g-font-weight-700">
+        <%= gac.title %>
+      </div>
+      <div class="embed-responsive embed-responsive-16by9">
+        <%= gac.embed.html_safe %>
+      </div>
     </div>
   <% end %>
 

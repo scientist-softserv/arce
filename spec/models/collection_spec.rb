@@ -16,5 +16,6 @@ RSpec.describe Collection, type: :model do
 
   describe "Associations" do
     it { is_expected.to have_many(:gac_embeds) }
+    it { is_expected.to have_many(:video_links) }
   end
 end
