@@ -18,11 +18,13 @@ class CollectionsController < ApplicationController
   def new
     @collection = Collection.new
     @collection.gac_embeds.build
+    @collection.video_links.build
   end
 
   # GET /collections/1/edit
   def edit
     @collection.gac_embeds.build
+    @collection.video_links.build
   end
 
   # POST /collections
@@ -75,7 +77,8 @@ class CollectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def collection_params
       params.require(:collection).permit(:title, :content, :video_embed_link, :image, :remote_image_url, :private,
-                                         gac_embeds_attributes: [:id, :title, :embed, :_destroy])
+                                         gac_embeds_attributes: [:id, :title, :embed, :_destroy],
+                                         video_links_attributes: [:id, :title, :link, :_destroy])
     end
   # rubocop:enable Style/SymbolArray
 end
