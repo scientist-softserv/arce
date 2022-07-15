@@ -2,7 +2,7 @@
     <ul class="nav navbar-nav">
       <li><%= link_to 'Admin', admin_path %></li>
       <li>
-        <%= link_to "Commercial Requests", "https://docs.google.com/forms/d/e/1FAIpQLSdTCCGe11I1ylyIArWnPCZ6-2T1bW5Niom2bl2Ya6zaULauMA/viewform" %>
+        <%= link_to "Commercial Requests", "https://docs.google.com/forms/d/e/1FAIpQLSdTCCGe11I1ylyIArWnPCZ6-2T1bW5Niom2bl2Ya6zaULauMA/viewform", :target => "_blank" %>
       </li>
       <%= render_nav_actions do |config, action|%>
         <li><%= action %></li>
