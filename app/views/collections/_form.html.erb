@@ -18,6 +18,22 @@
   </div>
 
   <div class="form-group g-mb-20">
+    <%= form.label :banner_image, "Upload Collection Banner" %>
+    <%= form.file_field :banner_image, id: :banner_image, class: "" %>
+  </div>
+
+  <% if collection.banner_image.present? %>
+    <div class="g-mb-20 row">
+      <figure class= "col-sm-6">
+        <figcaption class="g-font-weight-700 g-mb-10">
+          Current Banner Image:
+        </figcaption>
+        <%= image_tag(collection.banner_image_url, class: "img-responsive") if collection.banner_image.present? %>
+      </figure>
+    </div>
+  <% end %>
+
+  <div class="form-group g-mb-20">
     <%= form.label :content, "Content of the Collection" %>
     <%= form.text_area :content, id: :collection_content, class: "form-control form-control-md rounded-0 tinymce", rows: 40, cols: 120,
      placeholder: "Enter Content of the Collection" %>
