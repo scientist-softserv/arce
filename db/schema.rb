@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220714162331) do
+ActiveRecord::Schema.define(version: 20220714182649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20220714162331) do
     t.datetime "updated_at", null: false
     t.string "slug"
     t.string "image"
+    t.string "banner_image"
     t.index ["slug"], name: "index_collections_on_slug", unique: true
   end
 

@@ -10,6 +10,7 @@ class Collection < ApplicationRecord
   accepts_nested_attributes_for :video_links, allow_destroy: true, reject_if: ->(attrs) { attrs['link'].blank? }
 
   mount_uploader :image, ImageUploader
+  mount_uploader :banner_image, BannerImageUploader
 
   validates :title, presence: true
 end
