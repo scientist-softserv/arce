@@ -14,8 +14,8 @@
 [
   { email: 'rob@notch8.com', password: 'testing123'},
   { email: 'akostopoulos@arce.org', password: 'arceadmin2020' },
-  { email: 'nstanke@arce.org', password: 'arceadmin2020' },
-  { email: 'tlitecky@arce.org', password: 'arceadmin2020' },
+  { email: 'dfathy@arce.org', password: 'arceadmin2020' },
+  { email: 'ffahmy@arce.org', password: 'arceadmin2020' },
   { email: 'ffeliz@arce.org', password: 'arceadmin2020' },
   { email: 'zyacoub@arce.org', password: 'arceadmin2020' }
 ].each do |set|
