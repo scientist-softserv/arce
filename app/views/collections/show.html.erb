@@ -8,18 +8,20 @@
     </h1>
   </div>
 </div>
-<div class="container">
 
-  <!-- Banner -->
-  <% if @collection.banner_image.present? %> %>
+<!-- Banner -->
+<div class="container">
+  <% if @collection.banner_image.present? %>
     <div class="col-md-12">
       <div class="g-mb-60">
         <%= image_tag(@collection.banner_image_url, class:"img-responsive")  %>
       </div>
     </div>
   <% end %>
-  <!-- End Banner -->
+</div>
+<!-- End Banner -->
 
+<div class="container">
   <!-- Search results link -->
   <section class="g-brd-around g-brd-2 g-brd-gray-light-v4 g-pa-30 g-mb-30">
     <div class="d-md-flex justify-content-md-center text-center">

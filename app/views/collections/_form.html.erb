@@ -28,6 +28,13 @@
         <figcaption class="g-font-weight-700 g-mb-10">
           Current Banner Image:
         </figcaption>
+        <label class="form-check-inline u-check g-pl-25">
+          <%= form.check_box :remove_banner_image, class: "g-hidden-xs-up g-pos-abs g-top-0 g-left-0" %> Remove banner image
+          <div class="u-check-icon-checkbox-v6 g-absolute-centered--y g-left-0">
+            <i class="fa" data-check-icon=""></i>
+          </div>
+        </label>
+        <br />
         <%= image_tag(collection.banner_image_url, class: "img-responsive") if collection.banner_image.present? %>
       </figure>
     </div>
@@ -45,10 +52,18 @@
         <figcaption class="g-font-weight-700 g-mb-10">
           Current Collection Image:
         </figcaption>
+        <label class="form-check-inline u-check g-pl-25">
+          <%= form.check_box :remove_image, class: "g-hidden-xs-up g-pos-abs g-top-0 g-left-0" %> Remove collection image
+          <div class="u-check-icon-checkbox-v6 g-absolute-centered--y g-left-0">
+            <i class="fa" data-check-icon=""></i>
+          </div>
+        </label>
+        <br />
         <%= image_tag(collection.image_url(:thumb).to_s) if collection.image.present? %>
       </figure>
     </div>
   <% end %>
+
 
   <div class="form-group g-mb-20">
     <%= form.label :image, "Upload Collection Image" %>
