@@ -1,0 +1,5 @@
+--color
+--require rails_helper
+--exclude-pattern .internal_test_app/**/*
+--format RspecJunitFormatter
+--out tmp/rspec<%= ENV["TEST_ENV_NUMBER"] %>.xml
