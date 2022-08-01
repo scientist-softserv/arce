@@ -42,6 +42,8 @@ gem 'pronto-rubocop', require: false
 gem 'puma', '~> 3.7'
 gem 'rsolr', '>= 1.0'
 gem 'rspec-rails', '~> 3.8', group: [:development, :test]
+gem "rspec", group: [:test]
+gem "rspec_junit_formatter", group: [:test]
 gem 'rubocop', require: false
 gem 'rubocop-rspec', require: false
 gem 'ruby-audio', '~> 1.6.0'
@@ -58,4 +60,3 @@ gem 'uglifier', '>= 1.3.0'
 gem 'web-console', '>= 3.3.0', group: [:development]
 gem 'whenever', require: false
 gem 'activerecord-nulldb-adapter'
-
