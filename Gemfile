@@ -23,7 +23,6 @@ gem 'friendly_id', '~> 5.4.0'
 gem "iiif-presentation", "~> 1.0"
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
-gem 'json-waveform'
 gem 'language_list'
 gem 'libxml-ruby'
 gem 'listen', '>= 3.0.5', '< 3.2', group: [:development]
@@ -46,7 +45,6 @@ gem "rspec", group: [:test]
 gem "rspec_junit_formatter", group: [:test]
 gem 'rubocop', require: false
 gem 'rubocop-rspec', require: false
-gem 'ruby-audio', '~> 1.6.0'
 gem 'sass-rails', '~> 5.0'
 gem 'sentry-raven'
 gem 'shoulda-matchers', '~> 4.5.1', group: [:development, :test]
