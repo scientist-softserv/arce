@@ -17,7 +17,9 @@
   { email: 'dfathy@arce.org', password: 'arceadmin2020' },
   { email: 'ffahmy@arce.org', password: 'arceadmin2020' },
   { email: 'ffeliz@arce.org', password: 'arceadmin2020' },
-  { email: 'zyacoub@arce.org', password: 'arceadmin2020' }
+  { email: 'zyacoub@arce.org', password: 'arceadmin2020' },
+  { email: 'aibrahim@arce.org ', password: 'arceadmin2020'},
+  { email: 'sshalaby@arce.org ', password: 'arceadmin2020'}
 ].each do |set|
   next if User.where(email: set[:email]).first
 
