@@ -9,7 +9,7 @@ RSpec/DescribedClass:
 
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   Exclude:
     - 'bin/**/*'
     - 'chart/**/*'
@@ -26,20 +26,13 @@ AllCops:
     - 'Rakefile'
     - 'app/controllers/concerns/blacklight/bookmarks.rb'
 
-Rails:
-  Enabled: true
-
-Rails/DynamicFindBy:
-  Whitelist:
-    - find_by_user_key
-
 Metrics/LineLength:
   Max: 120
   Exclude:
     - 'app/controllers/catalog_controller.rb'
 
 Layout/IndentationConsistency:
-  EnforcedStyle: rails
+  EnforcedStyle: indented_internal_methods
 
 Layout/DotPosition:
   EnforcedStyle: leading
@@ -59,13 +52,6 @@ Metrics/ClassLength:
 
 Metrics/ModuleLength:
   Max: 200
-
-Rails/HasAndBelongsToMany:
-  Exclude:
-
-Rails/LexicallyScopedActionFilter:
-  Excluce:
-    - 'app/controllers/catalog_controller.rb'
 
 Style/HashSyntax:
   Exclude:

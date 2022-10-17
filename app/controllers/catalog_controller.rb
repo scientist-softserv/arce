@@ -4,7 +4,7 @@ class CatalogController < ApplicationController
   include Blacklight::Catalog
   include Blacklight::Marc::Catalog
   before_action :setup_negative_captcha, only: [:email]
-  before_action :set_collections, only: [:index] # rubocop:disable Rails/LexicallyScopedActionFilter
+  before_action :set_collections, only: [:index]
 
   configure_blacklight do |config|
     ## Class for sending and receiving requests from a search index
@@ -225,7 +225,6 @@ class CatalogController < ApplicationController
   end
 
   # Override to add highlighing to show
-  # rubocop:disable Metrics/AbcSize
   def show
     @response, @document = fetch params[:id],
                                  :"hl.q" => current_search_session.try(:query_params).try(:[], "q"),
@@ -236,7 +235,6 @@ class CatalogController < ApplicationController
       additional_export_formats(@document, format)
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   # override from blacklight 6.12 to handle captcha
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
@@ -250,6 +248,7 @@ class CatalogController < ApplicationController
       respond_to do |format|
         format.html do
           return render "email_success", layout: false if request.xhr?
+
           redirect_to action_success_redirect_path
         end
       end
