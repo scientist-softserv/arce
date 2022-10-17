@@ -15,10 +15,12 @@ class ImagesController < ApplicationController
     preview_url = @document.first.response['docs'].first['resource_preview_t']
     preview_url = preview_url.first if preview_url.is_a?(Array)
 
+    # rubocop:disable Security/Open
     # rubocop:disable Security/JSONLoad
     # artefact holds the information you'd find in info.json.
     artefact = JSON.load(open(info_json))
     # rubocop:enable Security/JSONLoad
+    # rubocop:enable Security/Open
 
     seed = {
       '@id' => artefact['@id'],

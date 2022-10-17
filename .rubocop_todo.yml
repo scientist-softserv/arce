@@ -10,18 +10,12 @@
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
 # SupportedStyles: with_first_parameter, with_fixed_indentation
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Exclude:
     - 'app/models/arce_item.rb'
 
 # Offense count: 1
 Lint/LiteralAsCondition:
-  Exclude:
-    - 'app/models/arce_item.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/UnneededDisable:
   Exclude:
     - 'app/models/arce_item.rb'
 
@@ -41,22 +35,8 @@ Metrics/BlockNesting:
 Metrics/LineLength:
   Max: 136
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
-Rails/Blank:
-  Exclude:
-    - 'app/models/arce_item.rb'
-
 # Offense count: 1
 Rails/FilePath:
-  Exclude:
-    - 'app/models/arce_item.rb'
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
   Exclude:
     - 'app/models/arce_item.rb'
 

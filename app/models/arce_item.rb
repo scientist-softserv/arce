@@ -25,13 +25,11 @@ class ArceItem
 
   def self.client(args)
     url = args[:url] || "https://dl.library.ucla.edu/oai2/"
-    # rubocop:disable Style/HashSyntax
     OAI::Client.new url,
-      :headers => { "From" => "rob@notch8.com" },
-      :parser => 'rexml',
-      metadata_prefix: 'mods',
-      verb: 'ListRecords'
-    # rubocop:enable Style/HashSyntax
+                    :headers => { "From" => "rob@notch8.com" },
+                    :parser => 'rexml',
+                    metadata_prefix: 'mods',
+                    verb: 'ListRecords'
   end
 
   def self.fetch(args)
@@ -55,6 +53,7 @@ class ArceItem
   # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
   def self.import(args)
     return false if !args[:override] && check_for_tmp_file
+
     begin
       create_import_tmp_file
       progress = args[:progress] || true
@@ -77,9 +76,9 @@ class ArceItem
           else
             ArceItem.index_logger.info("ID is nil for #{history.inspect}")
           end
-        rescue => exception
-          Raven.capture_exception(exception)
-          ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
+        rescue => e
+          Raven.capture_exception(e)
+          ArceItem.index_logger.error("#{e.message}\n#{e.backtrace}")
         end
         if true
           yield(total) if block_given?
@@ -97,10 +96,10 @@ class ArceItem
       if args[:delete]
         remove_deleted_records(new_record_ids)
       end
-      return total
-    rescue => exception
-      Raven.capture_exception(exception)
-      ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
+      total
+    rescue => e
+      Raven.capture_exception(e)
+      ArceItem.index_logger.error("#{e.message}\n#{e.backtrace}")
     ensure
       remove_import_tmp_file
     end
@@ -113,10 +112,10 @@ class ArceItem
     # rubocop:enable Style/RedundantSelf
     history = process_record(record)
     history.index_record
-    return history
-  rescue => exception
-    Raven.capture_exception(exception)
-    ArceItem.index_logger.error("#{exception.message}\n#{exception.backtrace}")
+    history
+  rescue => e
+    Raven.capture_exception(e)
+    ArceItem.index_logger.error("#{e.message}\n#{e.backtrace}")
   end
 
   # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
@@ -135,8 +134,10 @@ class ArceItem
     if record.metadata
       record.metadata.children.each do |batch|
         next if batch.class == REXML::Text
+
         batch.children.each do |child|
           next if child.class == REXML::Text
+
           if child.attributes['displayLabel'] == 'File name'
             file_name = child.text
             history.attributes['file_name_t'] ||= []
@@ -149,6 +150,7 @@ class ArceItem
               if child.attributes['displayLabel'] == "Local ID"
                 child.children.each do |ch|
                   next if ch.class == REXML::Text
+
                   file_name = ch.text
                   history.attributes['file_name_t'] ||= []
                   if !history.attributes['file_name_t'].include?(file_name)
@@ -162,8 +164,10 @@ class ArceItem
             if child.attributes['type'] == 'host'
               child.children.each do |ch|
                 next if ch.class == REXML::Text
+
                 ch.children.each do |c|
                   next if c.class == REXML::Text
+
                   if c.name == 'title'
                     history.attributes['collection_display'] ||= c.text
                     history.attributes['collection_facet'] ||= c.text
@@ -176,8 +180,10 @@ class ArceItem
             if child.attributes['type'] == 'program'
               child.children.each do |ch|
                 next if ch.class == REXML::Text
+
                 ch.children.each do |c|
                   next if c.class == REXML::Text
+
                   if c.name == 'title'
                     history.attributes['program_title_display'] ||= c.text
                     history.attributes['program_title_t'] ||= c.text
@@ -188,8 +194,10 @@ class ArceItem
             if child.attributes['type'] == 'series'
               child.children.each do |ch|
                 next if ch.class == REXML::Text
+
                 ch.children.each do |c|
                   next if c.class == REXML::Text
+
                   if c.name == 'title'
                     history.attributes['series_title_display'] ||= c.text
                     history.attributes['series_facet'] ||= c.text
@@ -203,8 +211,10 @@ class ArceItem
             if child.attributes['type'] == 'subseries'
               child.children.each do |ch|
                 next if ch.class == REXML::Text
+
                 ch.children.each do |c|
                   next if c.class == REXML::Text
+
                   if c.name == 'title'
                     history.attributes['subseries_title_display'] ||= c.text
                     history.attributes['subseries_title_t'] ||= c.text
@@ -234,9 +244,11 @@ class ArceItem
           if child.name == 'subject'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               if ch.name == 'topic'
                 topic = ch.text.to_s.strip
                 next if topic.empty?
+
                 history.attributes['subject_topic_facet'] ||= []
                 if !history.attributes['subject_topic_facet'].include?(topic)
                   history.attributes['subject_topic_facet'] << topic
@@ -250,9 +262,11 @@ class ArceItem
                 topic = ch.text.to_s.strip
                 ch.children.each do |c|
                   next if c.class == REXML::Text
+
                   if c.name == 'namePart'
                     topic = c.text.to_s.strip
                     next if topic.empty?
+
                     # rubocop:disable Metrics/LineLength
                     history.attributes['subject_topic_facet'] ||= [] unless history.attributes['subject_topic_facet'].present?
                     # rubocop:enable Metrics/LineLength
@@ -293,9 +307,11 @@ class ArceItem
           if child.name == 'titleInfo'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               title_text = ch.text.to_s.strip
               a = title_text =~ /\p{Arabic}/
               next if !a.nil?
+
               history.attributes["title_t"] ||= []
               if !history.attributes["title_t"].include?(title_text)
                 history.attributes["title_t"] << title_text
@@ -309,9 +325,11 @@ class ArceItem
           if child.name == 'name'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               if ch.name == 'namePart'
                 creator = ch.text.to_s.strip
                 next if creator.empty?
+
                 history.attributes['creator_t'] ||= []
                 unless history.attributes['creator_t'].include?(creator)
                   history.attributes['creator_t'] << creator
@@ -322,6 +340,7 @@ class ArceItem
           if child.name == 'physicalDescription'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               extent = ch.text
               history.attributes['extent_t'] ||= []
               if !history.attributes['extent_t'].include?(extent)
@@ -353,6 +372,7 @@ class ArceItem
           if child.name == 'language'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               if ch.name == 'languageTerm' && ch.attributes['type'] == 'text'
                 history.attributes['language_t'] = ch.text
               end
@@ -371,6 +391,7 @@ class ArceItem
             end
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               history.attributes['copyright_status_t'] = ch.attributes['copyright.status']
               history.attributes['publication_status_t'] = ch.attributes['publication.status']
             end
@@ -378,6 +399,7 @@ class ArceItem
           if child.name == 'originInfo'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               if ch.attributes.empty?
                 history.attributes['date_created_t'] ||= ch.text
               elsif ch.attributes['point'].present?
@@ -400,6 +422,7 @@ class ArceItem
           if child.name == 'location'
             child.children.each do |ch|
               next if ch.class == REXML::Text
+
               if ch.name == 'physicalLocation'
                 history.attributes['repository_t'] = ch.text
               end
@@ -498,12 +521,10 @@ class ArceItem
   def self.total_records(args = {})
     url = args[:url] || "https://dl.library.ucla.edu/oai2/"
     set = args[:set] || "arce_1"
-    # rubocop:disable Style/HashSyntax
     client = OAI::Client.new url,
-      :headers => { "From" => "rob@notch8.com" },
-      :parser => 'rexml',
-      metadata_prefix: 'mods'
-    # rubocop:enable Style/HashSyntax
+                             :headers => { "From" => "rob@notch8.com" },
+                             :parser => 'rexml',
+                             metadata_prefix: 'mods'
     response = client.list_records(set: set, metadata_prefix: 'mods')
     response.doc.elements['//resumptionToken'].attributes['completeListSize'].to_i
   end
