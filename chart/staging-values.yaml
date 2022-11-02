@@ -1,0 +1,66 @@
+solr:
+  image:
+    repository: ghcr.io/scientist-softserv/arce/solr
+    tag: latest
+  imagePullSecrets:
+    - name: github-registry
+  replicaCount: 1
+
+postgresql:
+  enabled: true
+  postgresqlDatabase: arce
+  postgresqlUsername: postgres
+  # Only used when internal PG is disabled
+  # postgresqlHost: postgres
+  postgresqlPassword: $POSTGRES_PASSWORD
+  # postgresqlPort: 5432
+  persistence:
+    enabled: true
+    size: 1Gi
+
+web:
+  replicas: 2
+
+worker:
+  replicas: 1
+
+rails:
+  image:
+    repository: ghcr.io/scientist-softserv/arce
+    tag: latest
+  # If using a private registry setup access via secrets
+  imagePullSecrets:
+    - name: github-registry
+  shared:
+    storage:
+      size: 1Gi
+      className: nfs
+
+ingress:
+  enabled: true
+  hosts:
+    - staging-arce-web.notch8.cloud
+  annotations: {
+    kubernetes.io/ingress.class: "nginx",
+    nginx.ingress.kubernetes.io/proxy-body-size: "0",
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  }
+  tlsSecretName: arce-staging-tls
+
+env:
+  configmap:
+    NAME: arce
+    DATABASE_ADAPTER: postgresql
+    POSTGRES_USER: postgres
+    POSTGRES_DB: arce
+    IN_DOCKER: "true"
+    PASSENGER_APP_ENV: production
+    POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    RAILS_ENV: production
+    RAILS_LOG_TO_STDOUT: true
+    RAILS_SERVE_STATIC_FILES: true
+    SECRET_KEY_BASE: $SECRET_KEY_BASE
+    SENTRY_DSN: https://630e2c2cb1f44396b7c49868079a58c1@o1008683.ingest.sentry.io/6745021
+    SOLR_CONFIGSET_SOURCE_PATH: solr/conf
+    SOLR_CONFIGSET: blacklight-core
+    SOLR_CORE: blacklight-core
