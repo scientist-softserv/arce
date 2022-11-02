@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
+    image: ghcr.io/scientist-softserv/arce:${TAG:-latest}
     env_file:
       - .env
       - .env.development
@@ -46,7 +46,7 @@ services:
       - worker
 
   worker:
-    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG}"
+    image: ghcr.io/scientist-softserv/arce:${TAG:-latest}
     env_file:
       - .env
       - .env.development
