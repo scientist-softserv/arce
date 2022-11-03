@@ -14,5 +14,5 @@ helm upgrade \
     --timeout 15m0s \
     --namespace="$namespace" \
     --create-namespace \
-    "$release_name"
+    "$release_name" \
     chart
