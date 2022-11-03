@@ -1,31 +1,18 @@
 #!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd $DIR/../..
-
-REPO=$(basename $(git config --get remote.origin.url) | perl -pe 's/_/-/g')
-NAMESPACE=${REPO%.git}
-
-# Set to NAMESPACE the containing folder if empty (gitlib-ci)
-#   this will be the same as the github repo
-if [ -z "$NAMESPACE" ]
-then
-  NAMESPACE=$(basename $(pwd))
-fi
 
 if [ -z "$1" ] || [ -z "$2" ]
 then
-    echo './chart/bin/helm_deploy ENVIRONMENT TAG (CONFIG_FILE)'
+    echo './bin/helm_deploy RELEASE_NAME NAMESPACE'
     exit 1
 fi
+release_name="${1}"
+namespace="${2}"
 
-cd chart
-
-if [ -z "$3" ]
-then
-    CONFIG_FILE=$1-values.yaml
-else
-    CONFIG_FILE=$3
-fi
-
-helm upgrade --install --namespace $1-$NAMESPACE $1 . -f $CONFIG_FILE --set rails.image.tag=$2
-
+helm upgrade \
+    --install \
+    --atomic \
+    --timeout 15m0s \
+    --namespace="$namespace" \
+    --create-namespace \
+    "$release_name"
+    chart
