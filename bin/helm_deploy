@@ -8,12 +8,15 @@ fi
 release_name="${1}"
 namespace="${2}"
 
+DEPLOY_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce}"
+DEPLOY_TAG="${DEPLOY_TAG:-latest}"
+
 helm upgrade \
     --install \
     --atomic \
     --timeout 15m0s \
-    --set rails.image.repository \
-    --set rails.image.tag \
+    --set rails.image.repository="$DEPLOY_IMAGE" \
+    --set rails.image.tag="$DEPLOY_TAG" \
     --namespace="$namespace" \
     --create-namespace \
     "$release_name" \
