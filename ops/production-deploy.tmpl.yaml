@@ -4,7 +4,7 @@ solr:
     tag: latest
   imagePullSecrets:
     - name: github-registry
-  replicaCount: 1
+  replicas: 1
 
 postgresql:
   enabled: true

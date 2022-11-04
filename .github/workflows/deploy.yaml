@@ -17,9 +17,9 @@ on:
         default: false
 
 jobs:
-  call-workflow:
-    uses: scientist-softserv/deploy-action/.github/workflows/deploy.yaml@main
+  deploy:
+    uses: scientist-softserv/actions/.github/workflows/deploy.yaml@v0.0.1
+    secrets: inherit
     with:
       k8s-release-name: ${{ inputs.environment }}
       k8s-namespace: ${{ inputs.environment }}-arce
-    secrets: inherit
