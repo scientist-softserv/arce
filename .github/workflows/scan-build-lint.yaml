@@ -16,17 +16,17 @@ on:
 
 jobs:
   scan:
-    uses: scientist-softserv/actions/.github/workflows/gitguardian.yaml@update-to-new-actions-library
+    uses: scientist-softserv/actions/.github/workflows/gitguardian.yaml@self-hosted-runner
 
 jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@update-to-new-actions-library
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@self-hosted-runner
     with:
       worker: true
 
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.1
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@self-hosted-runner
     with:
       worker: true
       # tag: deca90d9
