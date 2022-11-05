@@ -27,6 +27,4 @@ jobs:
     uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.1
     with:
       worker: true
-      target: hyrax-base
-      workerTarget: hyrax-worker
       # tag: deca90d9
