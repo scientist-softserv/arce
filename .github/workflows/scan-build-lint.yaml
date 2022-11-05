@@ -1,4 +1,4 @@
-name: "Build Lint"
+name: "Scan Build Lint"
 on:
   push:
     branches:
