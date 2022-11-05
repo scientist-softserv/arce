@@ -15,8 +15,12 @@ on:
         default: false
 
 jobs:
+  scan:
+    uses: scientist-softserv/actions/.github/workflows/gitguardian.yaml@update-to-new-actions-library
+
+jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@main
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@update-to-new-actions-library
     with:
       worker: true
 
