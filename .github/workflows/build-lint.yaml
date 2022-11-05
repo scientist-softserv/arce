@@ -19,8 +19,6 @@ jobs:
     uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.1
     with:
       worker: true
-      target: hyrax-base
-      workerTarget: hyrax-worker
 
   lint:
     needs: build
