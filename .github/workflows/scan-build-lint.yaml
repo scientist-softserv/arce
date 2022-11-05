@@ -18,7 +18,6 @@ jobs:
   scan:
     uses: scientist-softserv/actions/.github/workflows/gitguardian.yaml@self-hosted-runner
 
-jobs:
   build:
     uses: scientist-softserv/actions/.github/workflows/build.yaml@self-hosted-runner
     with:
