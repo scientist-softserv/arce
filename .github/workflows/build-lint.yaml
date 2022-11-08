@@ -15,9 +15,6 @@ on:
         default: false
 
 jobs:
-  scan:
-    uses: scientist-softserv/actions/.github/workflows/gitguardian.yaml@self-hosted-runner
-
   build:
     uses: scientist-softserv/actions/.github/workflows/build.yaml@self-hosted-runner
     with:
@@ -25,7 +22,7 @@ jobs:
 
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@self-hosted-runner
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.1.0
     with:
       worker: true
       # tag: deca90d9
