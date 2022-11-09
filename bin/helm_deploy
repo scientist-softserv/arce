@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -10,6 +10,11 @@ fi
 release_name="${1}"
 namespace="${2}"
 
+DEPLOY_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce}"
+DEPLOY_TAG="${DEPLOY_TAG:-latest}"
+SOLR_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce/solr}"
+WORKER_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce/worker}"
+
 helm repo update
 
 helm upgrade \
@@ -18,6 +23,10 @@ helm upgrade \
     --timeout 15m0s \
     --set rails.image.repository="$DEPLOY_IMAGE" \
     --set rails.image.tag="$DEPLOY_TAG" \
+    --set worker.image.repository="$WORKER_IMAGE" \
+    --set worker.image.tag="$DEPLOY_TAG" \
+    --set solr.image.repository="$SOLR_IMAGE" \
+    --set solr.image.tag="$DEPLOY_TAG" \
     $HELM_EXTRA_ARGS \
     --namespace="$namespace" \
     --create-namespace \
