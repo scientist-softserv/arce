@@ -12,6 +12,6 @@ RUN mkdir -p $SOLR_HOME && chown -R solr:solr $SOLR_HOME
 USER solr
 ADD conf $SOLR_CONFIG_DIR/blacklight_config
 
-COPY docker-entrypoint.sh /
+COPY ./solr/docker-entrypoint.sh /
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["./solr/docker-entrypoint.sh"]
