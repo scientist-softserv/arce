@@ -19,6 +19,7 @@ jobs:
     uses: scientist-softserv/actions/.github/workflows/build.yaml@self-hosted-runner
     with:
       worker: true
+      solr: true
 
   lint:
     needs: build
