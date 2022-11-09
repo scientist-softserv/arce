@@ -11,7 +11,13 @@ services:
       - 'postgres:/var/lib/postgresql/data'
 
   solr:
-    build: solr/
+    build:
+      context: solr/
+      dockerfile: Dockerfile
+    image: ghcr.io/scientist-softserv/arce/solr:${TAG:-latest}
+    env_file:
+      - .env
+      - .env.development
     ports:
       - '8983:8983'
     environment:
