@@ -12,8 +12,8 @@ namespace="${2}"
 
 DEPLOY_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce}"
 DEPLOY_TAG="${DEPLOY_TAG:-latest}"
-SOLR_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce/solr}"
-WORKER_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce/worker}"
+SOLR_IMAGE="${SOLR_IMAGE:-ghcr.io/scientist-softserv/arce/solr}"
+WORKER_IMAGE="${WORKER_IMAGE:-ghcr.io/scientist-softserv/arce/worker}"
 
 helm repo update
 
