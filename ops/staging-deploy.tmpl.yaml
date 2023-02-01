@@ -3,7 +3,7 @@ solr:
     repository: ghcr.io/scientist-softserv/arce/solr
     tag: latest
   imagePullSecrets:
-    - name: github-registry
+    - name: github
   replicaCount: 1
 
 postgresql:
@@ -30,7 +30,7 @@ rails:
     tag: latest
   # If using a private registry setup access via secrets
   imagePullSecrets:
-    - name: github-registry
+    - name: github
   shared:
     storage:
       size: 1Gi
