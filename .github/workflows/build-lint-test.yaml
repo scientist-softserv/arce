@@ -20,6 +20,7 @@ jobs:
     secrets: inherit
     with:
       platforms: "linux/amd64"
+      solr: true
       worker: true
   test:
     needs: build

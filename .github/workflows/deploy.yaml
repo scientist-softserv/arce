@@ -22,4 +22,5 @@ jobs:
     with:
       k8s-release-name: ${{ inputs.environment }}
       k8s-namespace: ${{ inputs.environment }}-arce
+      solr: true
     secrets: inherit
