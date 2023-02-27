@@ -1,5 +1,6 @@
 name: "Build Test Lint"
-on:
+run-name: Build Test Lint of ${{ github.ref_name }} by @${{ github.actor }}
+on: 
   push:
     branches:
       - main
