@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: worker
 spec:
-  replicas: {{ .Values.worker.replicas }}
+  replicas: {{ .Values.worker.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "app.name" . }}
@@ -31,6 +31,50 @@ spec:
       imagePullSecrets:
         {{ toYaml .Values.rails.imagePullSecrets }}
       {{- end }}
+      initContainers:
+        - name: load-solr-config
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "app.rails-env.name" . }}-env
+            - secretRef:
+                name: {{ template "app.rails-env.name" . }}
+            {{- if .Values.solrExistingSecret }}
+            - secretRef:
+                name: {{ .Values.solrExistingSecret }}
+            {{- end }}
+          command:
+            - sh
+            - -c
+            - >
+              bin/solrcloud-upload-configset.sh /app/blacklight/solr/conf &&
+              bin/solrcloud-assign-configset.sh
+        - name: setup-db
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "app.rails-env.name" . }}-env
+            - secretRef:
+                name: {{ template "app.rails-env.name" . }}
+            {{- if .Values.solrExistingSecret }}
+            - secretRef:
+                name: {{ .Values.solrExistingSecret }}
+            {{- end }}
+            {{- if .Values.postgresExistingSecret }}
+            - secretRef:
+                name: {{ .Values.postgresExistingSecret }}
+            {{- end }}
+            {{- if .Values.ebscoExistingSecret }}
+            - secretRef:
+                name: {{ .Values.ebscoExistingSecret }}
+            {{- end }}
+          command:
+            - sh
+            - -c
+            - >
+              bin/db-wait.sh $POSTGRES_HOST:$POSTGRES_PORT bundle exec rake db:prepare
       volumes:
         - name: shared
           persistentVolumeClaim:

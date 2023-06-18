@@ -1,6 +1,6 @@
 name: "Build Test Lint"
 run-name: Build Test Lint of ${{ github.ref_name }} by @${{ github.actor }}
-on: 
+on:
   push:
     branches:
       - main
@@ -17,22 +17,21 @@ on:
 
 jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.6
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.13
     secrets: inherit
     with:
       platforms: "linux/amd64"
-      solr: true
       worker: true
   # commenting out as the actions "if [ -d solr ]" finds the folder
   # but does not have the solr-cloud-configset.sh file and tests fail
   # due to configuration issues, will need to update the action.
-  # test:
-  #   needs: build
-  #   uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.6
-  #   with:
-  #     worker: true
+  test:
+    needs: build
+    uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.13
+    with:
+      worker: true
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.6
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.13
     with:
       worker: true

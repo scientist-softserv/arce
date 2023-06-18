@@ -1,32 +1,14 @@
 version: '2.2'
 services:
-  postgres:
-    image: postgres
-    env_file:
-      - .env
-      - .env.development
-    ports:
-      - "5432"
-    volumes:
-      - 'postgres:/var/lib/postgresql/data'
-
-  solr:
-    build: solr/
-    ports:
-      - '8983:8983'
-    environment:
-      - SOLR_HEAP=4g
-    volumes:
-      - solr:/solr_home
-
-  web:
+  web: &app
     build:
       context: .
-      dockerfile: Dockerfile
-    image: ghcr.io/scientist-softserv/arce:${TAG:-latest}
+      target: web
+      cache_from:
+        - "${REGISTRY_HOST}${REGISTRY_URI}:${TAG:-latest}"
+    image: "${REGISTRY_HOST}${REGISTRY_URI}:${TAG:-latest}"
     env_file:
       - .env
-      - .env.development
     volumes:
       - .:/home/app/webapp
     # Keep the stdin open, so we can attach to our app container's process
@@ -36,9 +18,9 @@ services:
     tty: true
     ports:
       - "${DOCKER_PORTS}"
-      - "8000:80"
+      - '8000:80'
     environment:
-      - VIRTUAL_HOST=arce.docker
+      - VIRTUAL_HOST=arce.test
       - VIRTUAL_PORT=80
     depends_on:
       - postgres
@@ -46,16 +28,37 @@ services:
       - worker
 
   worker:
-    image: ghcr.io/scientist-softserv/arce:${TAG:-latest}
+    <<: *app
     env_file:
       - .env
-      - .env.development
     volumes:
       - .:/home/app/webapp
     command: bin/delayed_job run
     depends_on:
       - postgres
       - solr
+
+  postgres:
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - "5432"
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+  solr:
+    build:
+      context: ./solr
+      target: solr
+    ports:
+      - '8983:8983'
+    environment:
+      - SOLR_HEAP=4g
+      - SOLR_HOME=/solr_home
+      - SOLR_CONFIG_DIR=/solr_conf
+    volumes:
+      - solr:/solr_home
 
 volumes:
   postgres:
