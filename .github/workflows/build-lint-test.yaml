@@ -30,6 +30,8 @@ jobs:
     uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.13
     with:
       worker: true
+      confdir: "/home/app/webapp/solr/conf"
+
   lint:
     needs: build
     uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.13

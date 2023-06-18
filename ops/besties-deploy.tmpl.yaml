@@ -40,6 +40,7 @@ ingress:
 env:
   configmap:
     NAME: arce
+    CONFDIR: "/home/app/webapp/solr/conf"
     DATABASE_ADAPTER: postgresql
     IN_DOCKER: "true"
     MAIL_ADDRESS: smtp.sendgrid.net
