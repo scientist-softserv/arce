@@ -17,23 +17,19 @@ on:
 
 jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.13
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.14
     secrets: inherit
     with:
       platforms: "linux/amd64"
-      worker: true
-  # commenting out as the actions "if [ -d solr ]" finds the folder
-  # but does not have the solr-cloud-configset.sh file and tests fail
-  # due to configuration issues, will need to update the action.
+      webTarget: web
+      workerTarget: worker
   test:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.13
+    uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.14
     with:
-      worker: true
-      confdir: "/home/app/webapp/solr/conf"
-
+      workerTarget: worker
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.13
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.14
     with:
-      worker: true
+      workerTarget: worker
