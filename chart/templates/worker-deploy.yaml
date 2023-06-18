@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
     component: worker
 spec:
-  replicas: {{ .Values.worker.replicaCount }}
+  replicas: {{ .Values.worker.replicas }}
   selector:
     matchLabels:
       app: {{ template "app.name" . }}
