@@ -1,5 +1,5 @@
 name: "Deploy"
-Deploy (${{ github.ref_name }} -> ${{ inputs.environment }}) by @${{ github.actor }}
+run-name: Deploy (${{ github.ref_name }} -> ${{ inputs.environment }}) by @${{ github.actor }}
 on:
   workflow_dispatch:
     inputs:
@@ -19,10 +19,6 @@ on:
         default: false
 
 jobs:
-  call-workflow:
-    uses: scientist-softserv/actions/.github/workflows/deploy.yaml@v0.0.6
-    with:
-      k8s-release-name: ${{ inputs.environment }}
-      k8s-namespace: ${{ inputs.environment }}-arce
-      solr: true
+  deploy:
+    uses: scientist-softserv/actions/.github/workflows/deploy.yaml@v0.0.13
     secrets: inherit
