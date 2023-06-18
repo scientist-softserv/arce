@@ -28,6 +28,7 @@ jobs:
     uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.14
     with:
       workerTarget: worker
+      setup_db_cmd: "RAILS_ENV=test PASSENGER_APP_ENV=test"
   lint:
     needs: build
     uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.14
