@@ -4,6 +4,15 @@ web:
 worker:
   replicas: 1
 
+solr:
+  enabled: false
+  password: $SOLR_ADMIN_PASSWORD
+
+externalSolrHost: solr-headless.solr
+externalSolrUser: admin
+externalSolrCollection: arce-besties
+externalSolrPassword: $SOLR_ADMIN_PASSWORD
+
 postgresql:
   enabled: true
   postgresqlDatabase: arce
@@ -63,3 +72,4 @@ env:
     SOLR_CONFIGSET: blacklight-core
     SOLR_CONFIGSET_SOURCE_PATH: solr/conf
     SOLR_CORE: blacklight-core
+    SOLR_URL: http://admin:$SOLR_ADMIN_PASSWORD@solr-headless.solr:8983/solr/

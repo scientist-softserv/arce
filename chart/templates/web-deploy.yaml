@@ -33,8 +33,8 @@ spec:
       {{- end }}
       initContainers:
         - name: load-solr-config
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.rails.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ template "app.rails-env.name" . }}
@@ -51,8 +51,8 @@ spec:
               bin/solrcloud-upload-configset.sh /home/app/webapp/solr/conf &&
               bin/solrcloud-assign-configset.sh
         - name: setup-db
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.rails.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ template "app.rails-env.name" . }}
