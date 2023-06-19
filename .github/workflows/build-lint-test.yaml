@@ -29,7 +29,7 @@ jobs:
     with:
       workerTarget: worker
       setup_db_cmd: "RAILS_ENV=test PASSENGER_APP_ENV=test"
-      rspec_cmd:  "gem install semaphore_test_boosters -v 2.6.0 && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+      rspec_cmd:  "bundle exex rspec"
   lint:
     needs: build
     uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.14
