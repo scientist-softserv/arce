@@ -37,9 +37,9 @@ spec:
           imagePullPolicy: {{ .Values.rails.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ template "app.rails-env.name" . }}-env
+                name: {{ template "app.rails-env.name" . }}-cm
             - secretRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-secret
             {{- if .Values.solrExistingSecret }}
             - secretRef:
                 name: {{ .Values.solrExistingSecret }}
@@ -48,16 +48,16 @@ spec:
             - sh
             - -c
             - >
-              bin/solrcloud-upload-configset.sh /app/blacklight/solr/conf &&
-              bin/solrcloud-assign-configset.sh
+              solrcloud-upload-configset.sh /home/app/webapp/solr/conf &&
+              solrcloud-assign-configset.sh
         - name: setup-db
           image: "{{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.rails.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ template "app.rails-env.name" . }}-env
+                name: {{ template "app.rails-env.name" . }}-cm
             - secretRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-secret
             {{- if .Values.solrExistingSecret }}
             - secretRef:
                 name: {{ .Values.solrExistingSecret }}
@@ -73,8 +73,7 @@ spec:
           command:
             - sh
             - -c
-            - >
-              bin/db-wait.sh $POSTGRES_HOST:$POSTGRES_PORT bundle exec rake db:prepare
+            - db-migrate-seed.sh
       volumes:
         - name: shared
           persistentVolumeClaim:
@@ -102,6 +101,6 @@ spec:
             - "bin/delayed_job run"
           envFrom:
             - configMapRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-cm
             - secretRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-secret

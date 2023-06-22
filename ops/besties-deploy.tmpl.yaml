@@ -61,7 +61,7 @@ env:
     MAIL_TLS: "true"
     MAIL_USER: apikey
     PASSENGER_APP_ENV: production
-    POSTGRES_DB: arce
+    POSTGRES_DB: arce-besties
     POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     POSTGRES_USER: postgres
     RAILS_ENV: production
@@ -69,7 +69,12 @@ env:
     RAILS_SERVE_STATIC_FILES: true
     SECRET_KEY_BASE: $SECRET_KEY_BASE
     SENTRY_DSN: https://630e2c2cb1f44396b7c49868079a58c1@o1008683.ingest.sentry.io/6745021
-    SOLR_CONFIGSET: blacklight-core
+    SOLR_CONFIGSET_NAME: arce-besties
     SOLR_CONFIGSET_SOURCE_PATH: solr/conf
     SOLR_CORE: blacklight-core
+    SOLR_PORT: "8983"
     SOLR_URL: http://admin:$SOLR_ADMIN_PASSWORD@solr-headless.solr:8983/solr/
+    # POSTGRES_HOST: arce-besties-postgresql
+    # SOLR_ADMIN_USER: admin # in template
+    # SOLR_COLLECTION_NAME: arce-besties # in template
+    # SOLR_HOST: solr-headless.solr # in template

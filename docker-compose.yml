@@ -57,10 +57,10 @@ services:
     build:
       context: ./solr
       target: solr
+    env_file:
+      - .env
     environment:
       - SOLR_HEAP=4g
-      - SOLR_HOME=/solr_home
-      - SOLR_CONFIG_DIR=/solr_conf
     volumes:
       - solr:/solr_home
     ports:
