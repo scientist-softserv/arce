@@ -1,10 +1,17 @@
+web:
+  replicas: 1
+
+worker:
+  replicas: 1
+
 solr:
+  replicas: 1
+  enabled: false
   image:
     repository: ghcr.io/scientist-softserv/arce/solr
     tag: latest
   imagePullSecrets:
-    - name: github-registry
-  replicaCount: 1
+    - name: github
 
 postgresql:
   enabled: true
@@ -18,36 +25,32 @@ postgresql:
     enabled: true
     size: 2Gi
 
-web:
-  replicas: 3
-
-worker:
-  replicas: 1
-
 rails:
   image:
     repository: ghcr.io/scientist-softserv/arce
     tag: latest
   imagePullSecrets:
-    - name: github-registry
+    - name: github
   shared:
     storage:
       size: 4Gi
-      className: nfs
+      className: efs-sc
 
 ingress:
   enabled: true
   hosts:
-    - arce-web.notch8.cloud
+    - arce-production.notch8.cloud
   annotations: {
     kubernetes.io/ingress.class: "nginx",
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0",
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   }
-  tlsSecretName: notch8cloud
+  tlsSecretName: arce-prod-tls
 
 env:
   configmap:
     NAME: arce
+    CONFDIR: "/home/app/webapp/solr/conf"
     DATABASE_ADAPTER: postgresql
     IN_DOCKER: "true"
     MAIL_ADDRESS: smtp.sendgrid.net
@@ -67,6 +70,6 @@ env:
     RAILS_SERVE_STATIC_FILES: true
     SECRET_KEY_BASE: $SECRET_KEY_BASE
     SENTRY_DSN: https://630e2c2cb1f44396b7c49868079a58c1@o1008683.ingest.sentry.io/6745021
-    SOLR_CONFIGSET: blacklight-core
     SOLR_CONFIGSET_SOURCE_PATH: solr/conf
+    SOLR_CONFIGSET: blacklight-core
     SOLR_CORE: blacklight-core
