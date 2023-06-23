@@ -17,7 +17,7 @@ on:
 
 jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@updates-to-v14
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.14
     secrets: inherit
     with:
       platforms: 'linux/amd64'
@@ -26,7 +26,7 @@ jobs:
       solrTarget: solr
   test:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/test.yaml@updates-to-v14
+    uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.14
     with:
       confdir: '/home/app/webapp/solr/conf'
       webTarget: web
@@ -36,7 +36,7 @@ jobs:
       rspec_cmd: 'bundle exec rspec'
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@updates-to-v14
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.14
     with:
       webTarget: web
       workerTarget: worker
