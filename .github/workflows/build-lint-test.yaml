@@ -32,7 +32,7 @@ jobs:
       webTarget: web
       workerTarget: worker
       solrTarget: solr
-      setup_db_cmd: 'RAILS_ENV=test PASSENGER_APP_ENV=test'
+      setup_db_cmd: 'RAILS_ENV=test PASSENGER_APP_ENV=test bundle exec rails db:create db:migrate db:test:prepare'
       rspec_cmd: 'bundle exec rspec'
   lint:
     needs: build
