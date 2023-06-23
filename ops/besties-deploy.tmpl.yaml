@@ -12,10 +12,6 @@ solr:
     tag: latest
   imagePullSecrets:
     - name: github
-externalSolrHost: solr-headless.solr
-externalSolrUser: admin
-externalSolrCollection: arce-besties
-externalSolrPassword: $SOLR_ADMIN_PASSWORD
 
 postgresql:
   enabled: true
