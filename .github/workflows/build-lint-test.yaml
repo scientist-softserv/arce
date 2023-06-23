@@ -1,4 +1,4 @@
-name: "Build Test Lint"
+name: 'Build Test Lint'
 run-name: Build Test Lint of ${{ github.ref_name }} by @${{ github.actor }}
 on:
   push:
@@ -17,22 +17,27 @@ on:
 
 jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.14
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@updates-to-v14
     secrets: inherit
     with:
-      platforms: "linux/amd64"
+      platforms: 'linux/amd64'
       webTarget: web
       workerTarget: web
       solrTarget: solr
   test:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.14
+    uses: scientist-softserv/actions/.github/workflows/test.yaml@updates-to-v14
     with:
-      workerTarget: worker
-      setup_db_cmd: "RAILS_ENV=test PASSENGER_APP_ENV=test"
-      rspec_cmd:  "bundle exec rspec"
+      confdir: '/home/app/webapp/solr/conf'
+      webTarget: web
+      workerTarget: web
+      solrTarget: solr
+      setup_db_cmd: 'RAILS_ENV=test PASSENGER_APP_ENV=test'
+      rspec_cmd:  'bundle exec rspec'
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.14
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@updates-to-v14
     with:
+      webTarget: web
       workerTarget: web
+      solrTarget: solr
