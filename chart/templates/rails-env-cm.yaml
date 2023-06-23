@@ -5,9 +5,6 @@ metadata:
   name: {{ template "app.rails-env.name" . }}-cm
 data:
   POSTGRES_HOST: {{ template "app.postgres.name" . }}
-  SOLR_ADMIN_USER: {{ .Values.externalSolrUser }}
-  SOLR_COLLECTION_NAME: {{ .Values.externalSolrCollection }}
-  SOLR_HOST: {{ .Values.externalSolrHost }}
 {{- range $key, $value := .Values.env.configmap }}
   {{ $key }}: "{{ $value }}"
 {{- end }}

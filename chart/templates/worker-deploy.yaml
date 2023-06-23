@@ -66,10 +66,6 @@ spec:
             - secretRef:
                 name: {{ .Values.postgresExistingSecret }}
             {{- end }}
-            {{- if .Values.ebscoExistingSecret }}
-            - secretRef:
-                name: {{ .Values.ebscoExistingSecret }}
-            {{- end }}
           command:
             - sh
             - -c
