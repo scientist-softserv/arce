@@ -19,7 +19,7 @@ externalSolrPassword: $SOLR_ADMIN_PASSWORD
 
 postgresql:
   enabled: true
-  postgresqlDatabase: arce
+  postgresqlDatabase: arce-besties
   postgresqlUsername: postgres
   # Only used when internal PG is disabled
   # postgresqlHost: postgres
