@@ -31,45 +31,6 @@ spec:
       imagePullSecrets:
         {{ toYaml .Values.rails.imagePullSecrets }}
       {{- end }}
-      initContainers:
-        - name: load-solr-config
-          image: "{{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.rails.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ template "app.rails-env.name" . }}-cm
-            - secretRef:
-                name: {{ template "app.rails-env.name" . }}-secret
-            {{- if .Values.solrExistingSecret }}
-            - secretRef:
-                name: {{ .Values.solrExistingSecret }}
-            {{- end }}
-          command:
-            - sh
-            - -c
-            - >
-              solrcloud-upload-configset.sh /home/app/webapp/solr/conf &&
-              solrcloud-assign-configset.sh
-        - name: setup-db
-          image: "{{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.rails.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ template "app.rails-env.name" . }}-cm
-            - secretRef:
-                name: {{ template "app.rails-env.name" . }}-secret
-            {{- if .Values.solrExistingSecret }}
-            - secretRef:
-                name: {{ .Values.solrExistingSecret }}
-            {{- end }}
-            {{- if .Values.postgresExistingSecret }}
-            - secretRef:
-                name: {{ .Values.postgresExistingSecret }}
-            {{- end }}
-          command:
-            - sh
-            - -c
-            - db-migrate-seed.sh
       volumes:
         - name: shared
           persistentVolumeClaim:

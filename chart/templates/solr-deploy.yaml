@@ -2,63 +2,56 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "app.web.name" . }}
+  name: {{ template "app.solr.name" . }}
   labels:
     app: {{ template "app.name" . }}
     chart: {{ template "app.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: web
+    component: solr
 spec:
-  replicas: {{ .Values.web.replicas }}
+  replicas: {{ .Values.solr.replicas }}
   selector:
     matchLabels:
       app: {{ template "app.name" . }}
       release: {{ .Release.Name }}
-      component: web
+      component: solr
   template:
     metadata:
       labels:
         app: {{ template "app.name" . }}
         release: {{ .Release.Name }}
-        component: web
+        component: solr
       annotations:
         checksum/rails-env-cm: {{ include (print $.Template.BasePath "/rails-env-cm.yaml") . | sha256sum }}
         checksum/rails-env-secret: {{ include (print $.Template.BasePath "/rails-env-secret.yaml") . | sha256sum }}
     spec:
       restartPolicy: Always
-      {{- if .Values.rails.imagePullSecrets }}
+      {{- if .Values.solr.imagePullSecrets }}
       imagePullSecrets:
-        {{ toYaml .Values.rails.imagePullSecrets }}
+        {{ toYaml .Values.solr.imagePullSecrets }}
       {{- end }}
       volumes:
         - name: shared
           persistentVolumeClaim:
             claimName: {{ template "app.rails-env.name" . }}-shared
       containers:
-        - name: web
-          image: {{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag }}
+        - name: solr
+          image: {{ .Values.solr.image.repository }}:{{ .Values.solr.image.tag }}
           imagePullPolicy: IfNotPresent
           # Use sub-path for individual folders
           volumeMounts:
-            - mountPath: /home/app/webapp/public/system
+            - mountPath: /solr_home
               name: shared
-              subPath: system
-          resources:
-            requests:
-              memory: "1Gi"
-              cpu: "250m"
-            limits:
-              memory: "2Gi"
-              cpu: "1000m"
+              subPath: solr
           readinessProbe:
             tcpSocket:
-              port: 80
+              port: 8983
             initialDelaySeconds: 30
             periodSeconds: 10
           livenessProbe:
             tcpSocket:
-              port: 80
+              port: 8983
             initialDelaySeconds: 60
             periodSeconds: 120
           envFrom:

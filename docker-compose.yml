@@ -57,6 +57,7 @@ services:
     build:
       context: ./solr
       target: solr
+    image: ghcr.io/scientist-softserv/arce/solr:${TAG:-latest}
     env_file:
       - .env
     environment:
