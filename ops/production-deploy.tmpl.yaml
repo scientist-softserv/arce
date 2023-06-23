@@ -1,8 +1,10 @@
-web:
-  replicas: 3
-
-worker:
-  replicas: 1
+solr:
+  image:
+    repository: ghcr.io/scientist-softserv/arce/solr
+    tag: latest
+  imagePullSecrets:
+    - name: github-registry
+  replicaCount: 1
 
 postgresql:
   enabled: true
@@ -16,26 +18,32 @@ postgresql:
     enabled: true
     size: 2Gi
 
+web:
+  replicas: 3
+
+worker:
+  replicas: 1
+
 rails:
   image:
     repository: ghcr.io/scientist-softserv/arce
     tag: latest
   imagePullSecrets:
-    - name: github
+    - name: github-registry
   shared:
     storage:
       size: 4Gi
-      className: efs-sc
+      className: nfs
 
 ingress:
   enabled: true
   hosts:
-    - arce-production.notch8.cloud
+    - arce-web.notch8.cloud
   annotations: {
     kubernetes.io/ingress.class: "nginx",
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
   }
-  tlsSecretName: arce-production-tls
+  tlsSecretName: notch8cloud
 
 env:
   configmap:

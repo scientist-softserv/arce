@@ -22,7 +22,7 @@ jobs:
     with:
       platforms: 'linux/amd64'
       webTarget: web
-      workerTarget: web
+      workerTarget: worker
       solrTarget: solr
   test:
     needs: build
@@ -30,14 +30,14 @@ jobs:
     with:
       confdir: '/home/app/webapp/solr/conf'
       webTarget: web
-      workerTarget: web
+      workerTarget: worker
       solrTarget: solr
       setup_db_cmd: 'RAILS_ENV=test PASSENGER_APP_ENV=test'
-      rspec_cmd:  'bundle exec rspec'
+      rspec_cmd: 'bundle exec rspec'
   lint:
     needs: build
     uses: scientist-softserv/actions/.github/workflows/lint.yaml@updates-to-v14
     with:
       webTarget: web
-      workerTarget: web
+      workerTarget: worker
       solrTarget: solr

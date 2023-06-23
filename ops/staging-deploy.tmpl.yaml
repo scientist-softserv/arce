@@ -1,3 +1,23 @@
+solr:
+  image:
+    repository: ghcr.io/scientist-softserv/arce/solr
+    tag: latest
+  imagePullSecrets:
+    - name: github
+  replicaCount: 1
+
+postgresql:
+  enabled: true
+  postgresqlDatabase: arce
+  postgresqlUsername: postgres
+  # Only used when internal PG is disabled
+  # postgresqlHost: postgres
+  postgresqlPassword: $POSTGRES_PASSWORD
+  # postgresqlPort: 5432
+  persistence:
+    enabled: true
+    size: 1Gi
+
 web:
   replicas: 2
 
@@ -14,24 +34,12 @@ rails:
   shared:
     storage:
       size: 1Gi
-      className: efs-sc
-
-postgresql:
-  enabled: true
-  postgresqlDatabase: arce
-  postgresqlUsername: postgres
-  # Only used when internal PG is disabled
-  # postgresqlHost: postgres
-  postgresqlPassword: $POSTGRES_PASSWORD
-  # postgresqlPort: 5432
-  persistence:
-    enabled: true
-    size: 1Gi
+      className: nfs
 
 ingress:
   enabled: true
   hosts:
-    - arce-staging.notch8.cloud
+    - staging-arce-web.notch8.cloud
   annotations: {
     kubernetes.io/ingress.class: "nginx",
     nginx.ingress.kubernetes.io/proxy-body-size: "0",
