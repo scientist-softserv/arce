@@ -32,8 +32,8 @@ jobs:
       webTarget: web
       workerTarget: worker
       solrTarget: solr
+      setup_solr_cmd: '/opt/solr/bin/solr create -c "blacklight-core" -d "/solr_conf/blacklight_config"'
       setup_db_cmd: 'RAILS_ENV=test PASSENGER_APP_ENV=test bundle exec rails db:create db:migrate db:test:prepare'
-      setup_solr_cmd: 'docker-compose up solr && /opt/solr/bin/solr create -c "blacklight-core" -d "/solr_conf/blacklight_config"'
       rspec_cmd: 'bundle exec rspec'
   lint:
     needs: build
