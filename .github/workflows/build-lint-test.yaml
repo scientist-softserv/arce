@@ -1,6 +1,6 @@
-name: "Build Test Lint"
+name: 'Build Test Lint'
 run-name: Build Test Lint of ${{ github.ref_name }} by @${{ github.actor }}
-on: 
+on:
   push:
     branches:
       - main
@@ -17,22 +17,28 @@ on:
 
 jobs:
   build:
-    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.6
+    uses: scientist-softserv/actions/.github/workflows/build.yaml@v0.0.14
     secrets: inherit
     with:
-      platforms: "linux/amd64"
-      solr: true
-      worker: true
-  # commenting out as the actions "if [ -d solr ]" finds the folder
-  # but does not have the solr-cloud-configset.sh file and tests fail
-  # due to configuration issues, will need to update the action.
-  # test:
-  #   needs: build
-  #   uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.6
-  #   with:
-  #     worker: true
+      platforms: 'linux/amd64'
+      webTarget: web
+      workerTarget: worker
+      solrTarget: solr
+  test:
+    needs: build
+    uses: scientist-softserv/actions/.github/workflows/test.yaml@v0.0.14
+    with:
+      confdir: '/home/app/webapp/solr/conf'
+      webTarget: web
+      workerTarget: worker
+      solrTarget: solr
+      setup_solr_cmd: ''
+      setup_db_cmd: 'RAILS_ENV=test PASSENGER_APP_ENV=test bundle exec rails db:create db:migrate db:test:prepare'
+      rspec_cmd: 'bundle exec rspec'
   lint:
     needs: build
-    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.6
+    uses: scientist-softserv/actions/.github/workflows/lint.yaml@v0.0.14
     with:
-      worker: true
+      webTarget: web
+      workerTarget: worker
+      solrTarget: solr

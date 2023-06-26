@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby25:1.0.19
+FROM phusion/passenger-ruby25:1.0.19 as web
 
 RUN echo 'Downloading Packages' && \
     rm /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt && \
@@ -8,6 +8,7 @@ RUN echo 'Downloading Packages' && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get update -qq && \
+    apt-get update --fix-missing && \
     apt-get upgrade -y ca-certificates && \
     apt-get install -y  \
       build-essential \
@@ -61,3 +62,5 @@ RUN /sbin/setuser app bash -l -c " \
     NODE_ENV=production DB_ADAPTER=nulldb bundle exec rake assets:precompile"
 
 CMD ["/sbin/my_init"]
+
+FROM web as worker

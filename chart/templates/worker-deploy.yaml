@@ -36,7 +36,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "app.rails-env.name" . }}-shared
       containers:
-        - name: web
+        - name: worker
           image: {{ .Values.rails.image.repository }}:{{ .Values.rails.image.tag }}
           imagePullPolicy: IfNotPresent
           # Use sub-path for individual folders
@@ -58,6 +58,6 @@ spec:
             - "bin/delayed_job run"
           envFrom:
             - configMapRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-cm
             - secretRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-secret

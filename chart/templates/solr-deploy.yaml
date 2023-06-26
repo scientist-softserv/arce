@@ -8,7 +8,7 @@ metadata:
     chart: {{ template "app.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: solr 
+    component: solr
 spec:
   replicas: {{ .Values.solr.replicas }}
   selector:
@@ -41,7 +41,7 @@ spec:
           imagePullPolicy: IfNotPresent
           # Use sub-path for individual folders
           volumeMounts:
-            - mountPath: /solr_home 
+            - mountPath: /solr_home
               name: shared
               subPath: solr
           readinessProbe:
@@ -56,6 +56,6 @@ spec:
             periodSeconds: 120
           envFrom:
             - configMapRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-cm
             - secretRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-secret

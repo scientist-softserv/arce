@@ -63,6 +63,6 @@ spec:
             periodSeconds: 120
           envFrom:
             - configMapRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-cm
             - secretRef:
-                name: {{ template "app.rails-env.name" . }}
+                name: {{ template "app.rails-env.name" . }}-secret

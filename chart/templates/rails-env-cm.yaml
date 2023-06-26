@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "app.rails-env.name" . }}
+  name: {{ template "app.rails-env.name" . }}-cm
 data:
   POSTGRES_HOST: {{ template "app.postgres.name" . }}
   SOLR_BASE_URL: http://{{ template "app.solr.name" . }}:8983/solr

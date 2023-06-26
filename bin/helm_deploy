@@ -5,10 +5,12 @@ then
     echo './bin/helm_deploy RELEASE_NAME NAMESPACE'
     exit 1
 fi
+
 release_name="${1}"
 namespace="${2}"
 
 DEPLOY_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce}"
+SOLR_IMAGE="${SOLR_IMAGE:-ghcr.io/scientist-softserv/arce/solr}"
 DEPLOY_TAG="${DEPLOY_TAG:-latest}"
 
 helm upgrade \
@@ -17,6 +19,9 @@ helm upgrade \
     --timeout 15m0s \
     --set rails.image.repository="$DEPLOY_IMAGE" \
     --set rails.image.tag="$DEPLOY_TAG" \
+    --set solr.image.repository="$SOLR_IMAGE" \
+    --set solr.image.tag="$DEPLOY_TAG" \
+    $HELM_EXTRA_ARGS \
     --namespace="$namespace" \
     --create-namespace \
     "$release_name" \
