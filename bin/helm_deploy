@@ -15,19 +15,29 @@ DEPLOY_TAG="${DEPLOY_TAG:-latest}"
 
 environment=${release_name#*-}  # Extracting the environment value after "-"
 deploy_file="${environment}-deploy"
-ENVCONFIG="./.env.${environment}"
 
-echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
-echo $ENVCONFIG_FILE | base64 -d > $ENVCONFIG;
+ENV_FILE="./.env.${environment}"
+ENCRYPTED_ENV_FILE="./.env.${environment}.enc"
+DECRYPTED_ENV_FILE="./.env.${environment}.dec"
 
-if [[ -n $environment ]]; then
-    DOLLAR=$ envsubst <"ops/${deploy_file}.tmpl.yaml" >"ops/${deploy_file}.yaml"
-fi
+cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
+cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
+
+while IFS='=' read -r key value; do
+  export "$key=${value//\"/}"
+  echo "Exported: $key=${value//\"/}"
+done < <(grep -v '^#' "$DECRYPTED_ENV_FILE")
+
+DOLLAR=$ envsubst <"ops/${deploy_file}.tmpl.yaml" >"ops/${deploy_file}.yaml"
+
+HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
 
 helm upgrade \
     --install \
     --atomic \
     --timeout 15m0s \
+    --dry-run \
+    --debug \
     --set rails.image.repository="$DEPLOY_IMAGE" \
     --set rails.image.tag="$DEPLOY_TAG" \
     --set solr.image.repository="$SOLR_IMAGE" \
