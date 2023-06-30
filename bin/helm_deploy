@@ -37,20 +37,19 @@ if [ -f "$ENV_FILE" ]; then
   # DEPLOY_TAG= <-------------------------------------- SET ME
 else
   # FOR GitHub ACTIONS DEPLOY
-  # Set ENCRYPTED_ENV_FILE in GitHub Environment Secret
+  # Set ENCRYPTED_ENV_FILE in GitHub environment variable
   # section of project repo after copying the .env.${environment}
   # file to your project you can then get the ENCRYPTED_ENV_FILE
   # value by running: cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE",
   # in your terminal locally to get the value needed to set in GitHub
-  touch "$DECRYPTED_ENV_FILE"
-  echo "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
+  echo "$ENCRYPTED_ENV_FILE" | base64 -d > .env.${environment}.dec
 fi
 
 # Take the env file and export each key value pair
 # so we can use it with envsubst in our deploy
 while IFS='=' read -r key value; do
   export "$key=${value//\"/}"
-done < <(grep -v '^#' "$DECRYPTED_ENV_FILE")
+done < <(grep -v '^#' ".env.${environment}.dec")
 
 DOLLAR=$ envsubst <"ops/${deploy_file}.tmpl.yaml" >"ops/${deploy_file}.yaml"
 
