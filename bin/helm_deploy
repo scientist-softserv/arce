@@ -20,36 +20,33 @@ ENV_FILE="./.env.${environment}"
 ENCRYPTED_ENV_FILE="./.env.${environment}.enc"
 DECRYPTED_ENV_FILE="./.env.${environment}.dec"
 
-# FOR LOCAL DEPLOY SET DEPLOY TAG
+# FOR LOCAL DEPLOY
 # run ./bin/helm_deploy RELEASE_NAME NAMESPACE
 # If we are deploying locally we will have the
-# .env.${environment} file, get this from 1Password
+# .env.${environment} file locally or in 1Password
 if [ -f "$ENV_FILE" ]; then
   # remove our previous tests
   rm -rf "./.env.${environment}.enc"
   rm -rf "./.env.${environment}.dec"
   rm -rf "ops/${deploy_file}.yaml"
 
-  # set our env file for use with the deploy
   cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
   cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 
-  # set the values file
   HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
-  # DEPLOY_TAG= <-------- DONT FORGET TO SET ME
+  # DEPLOY_TAG= <-------------------------------------- SET ME
+else
+  # FOR GitHub ACTIONS DEPLOY
+  # Set ENCRYPTED_ENV_FILE in GitHub Environment Secret
+  # section of project repo after copying the .env.${environment}
+  # file to your project you can then get the ENCRYPTED_ENV_FILE
+  # value by running: cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE",
+  # in your terminal locally to get the value needed to set in GitHub
+  cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 fi
-
-# FOR GitHub ACTIONS DEPLOY SET ENCRYPTED_ENV_FILE in
-# GitHub Environment Secret section of project repo after
-# copying the .env.${environment} file to your project
-# you can then get the ENCRYPTED_ENV_FILE value with a
-# cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
-# in your terminal locally to set in GitHub
-cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 
 # Take the env file and export each key value pair
 # so we can use it with envsubst in our deploy
-# without this we would not be able to work
 while IFS='=' read -r key value; do
   export "$key=${value//\"/}"
 done < <(grep -v '^#' "$DECRYPTED_ENV_FILE")
