@@ -19,21 +19,19 @@ deploy_file="${environment}-deploy"
 ENV_FILE="./.env.${environment}"
 ENCRYPTED_ENV_FILE=".env.${environment}.enc"
 DECRYPTED_ENV_FILE=".env.${environment}.dec"
+
 # FOR LOCAL DEPLOY
 # run ./bin/helm_deploy RELEASE_NAME NAMESPACE
 # If we are deploying locally we will have the
 # .env.${environment} file locally or in 1Password
 if [ -f "$ENV_FILE" ]; then
-  # remove our previous tests
-  rm -rf ".env.${environment}.enc"
-  rm -rf ".env.${environment}.dec"
-  rm -rf "ops/${deploy_file}.yaml"
 
   cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
   cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 
   HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
-  # DEPLOY_TAG= <-------------------------------------- SET ME
+  # DEPLOY_TAG= <------------------------------- SET DEPLOY TAG
+  # DRY_RUN_DEBUG="--dry-run --debug" <--------- UNCOMMENT TO ENABLE
 else
   # FOR GitHub ACTIONS DEPLOY
   # Set ENCRYPTED_ENV_FILE in GitHub environment variable
@@ -41,15 +39,15 @@ else
   # file to your project you can then get the ENCRYPTED_ENV_FILE
   # value by running: cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE",
   # in your terminal locally to get the value needed to set in GitHub
-  echo "$ENCRYPTED_ENV_FILE" > ".env.${environment}.enc"
-  cat "$ENCRYPTED_ENV_FILE" | base64 -d > ".env.${environment}.dec"
+  # echo "$ENCRYPTED_ENV_FILE" > ".env.${environment}.enc"
+  echo "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 fi
 
 # Take the env file and export each key value pair
 # so we can use it with envsubst in our deploy
 while IFS='=' read -r key value; do
   export "$key=${value//\"/}"
-done < <(grep -v '^#' ".env.${environment}.dec")
+done < <(grep -v '^#' "$DECRYPTED_ENV_FILE")
 
 DOLLAR=$ envsubst <"ops/${deploy_file}.tmpl.yaml" >"ops/${deploy_file}.yaml"
 
@@ -57,13 +55,12 @@ helm upgrade \
     --install \
     --atomic \
     --timeout 15m0s \
-    --dry-run \
-    --debug \
     --set rails.image.repository="$DEPLOY_IMAGE" \
     --set rails.image.tag="$DEPLOY_TAG" \
     --set solr.image.repository="$SOLR_IMAGE" \
     --set solr.image.tag="$DEPLOY_TAG" \
     $HELM_EXTRA_ARGS \
+    $DRY_RUN_DEBUG \
     --namespace="$namespace" \
     --create-namespace \
     "$release_name" \
