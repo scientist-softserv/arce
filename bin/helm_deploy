@@ -39,8 +39,6 @@ helm upgrade \
     --install \
     --atomic \
     --timeout 15m0s \
-    --dry-run \
-    --debug \
     --set rails.image.repository="$DEPLOY_IMAGE" \
     --set rails.image.tag="$DEPLOY_TAG" \
     --set solr.image.repository="$SOLR_IMAGE" \
