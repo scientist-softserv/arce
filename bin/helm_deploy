@@ -42,7 +42,7 @@ else
   # file to your project you can then get the ENCRYPTED_ENV_FILE
   # value by running: cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE",
   # in your terminal locally to get the value needed to set in GitHub
-  cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
+  echo "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 fi
 
 # Take the env file and export each key value pair
