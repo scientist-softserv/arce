@@ -45,7 +45,7 @@ fi
 # you can then get the ENCRYPTED_ENV_FILE value with a
 # cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
 # in your terminal locally to set in GitHub
-echo "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
+cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 
 # Take the env file and export each key value pair
 # so we can use it with envsubst in our deploy
