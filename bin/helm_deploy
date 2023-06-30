@@ -19,7 +19,6 @@ deploy_file="${environment}-deploy"
 ENV_FILE="./.env.${environment}"
 ENCRYPTED_ENV_FILE=".env.${environment}.enc"
 DECRYPTED_ENV_FILE=".env.${environment}.dec"
-
 # FOR LOCAL DEPLOY
 # run ./bin/helm_deploy RELEASE_NAME NAMESPACE
 # If we are deploying locally we will have the
@@ -42,7 +41,8 @@ else
   # file to your project you can then get the ENCRYPTED_ENV_FILE
   # value by running: cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE",
   # in your terminal locally to get the value needed to set in GitHub
-  echo "$ENCRYPTED_ENV_FILE" | base64 -d > .env.${environment}.dec
+  echo "$ENCRYPTED_ENV_FILE" > ".env.${environment}.enc"
+  cat "$ENCRYPTED_ENV_FILE" | base64 -d > ".env.${environment}.dec"
 fi
 
 # Take the env file and export each key value pair
