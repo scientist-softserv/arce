@@ -20,7 +20,10 @@ ENV_FILE="./.env.${environment}"
 ENCRYPTED_ENV_FILE="./.env.${environment}.enc"
 DECRYPTED_ENV_FILE="./.env.${environment}.dec"
 
+if [ -f "$ENV_FILE" ]; then
 cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
+fi
+
 cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 
 while IFS='=' read -r key value; do
