@@ -17,8 +17,8 @@ environment=${release_name#*-}
 deploy_file="${environment}-deploy"
 
 ENV_FILE="./.env.${environment}"
-ENCRYPTED_ENV_FILE="./.env.${environment}.enc"
-DECRYPTED_ENV_FILE="./.env.${environment}.dec"
+ENCRYPTED_ENV_FILE=".env.${environment}.enc"
+DECRYPTED_ENV_FILE=".env.${environment}.dec"
 
 # FOR LOCAL DEPLOY
 # run ./bin/helm_deploy RELEASE_NAME NAMESPACE
@@ -26,8 +26,8 @@ DECRYPTED_ENV_FILE="./.env.${environment}.dec"
 # .env.${environment} file locally or in 1Password
 if [ -f "$ENV_FILE" ]; then
   # remove our previous tests
-  rm -rf "./.env.${environment}.enc"
-  rm -rf "./.env.${environment}.dec"
+  rm -rf ".env.${environment}.enc"
+  rm -rf ".env.${environment}.dec"
   rm -rf "ops/${deploy_file}.yaml"
 
   cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE"
@@ -42,6 +42,7 @@ else
   # file to your project you can then get the ENCRYPTED_ENV_FILE
   # value by running: cat "$ENV_FILE" | base64 > "$ENCRYPTED_ENV_FILE",
   # in your terminal locally to get the value needed to set in GitHub
+  touch "$DECRYPTED_ENV_FILE"
   echo "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
 fi
 
@@ -57,6 +58,8 @@ helm upgrade \
     --install \
     --atomic \
     --timeout 15m0s \
+    --dry-run \
+    --debug \
     --set rails.image.repository="$DEPLOY_IMAGE" \
     --set rails.image.tag="$DEPLOY_TAG" \
     --set solr.image.repository="$SOLR_IMAGE" \
