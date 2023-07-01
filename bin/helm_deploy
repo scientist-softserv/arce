@@ -17,11 +17,6 @@ environment=${release_name#*-}
 deploy_file="${environment}-deploy"
 
 ENV_FILE="./.env.${environment}"
-ENCRYPTED_ENV_FILE=".env.${environment}.enc"
-# DECRYPTED_ENV_FILE=".env.${environment}.dec"
-# if there is not a env file like in ci
-# create the file and then echo the
-# ENCRYPTED_ENV_FILE and shovel it into the file
 
 if [ ! -f "$ENV_FILE" ]; then
   # if there is not an env.staging file
@@ -30,14 +25,14 @@ if [ ! -f "$ENV_FILE" ]; then
   # cat the ENCRYPTED_ENV_FILE value set in github
   # and decrypt & it and shovel it into the ENV_FILE
   cat "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
+  # now we have an unencrypted env file
+else
+  # there is already an env file locally
+  # set the helm extra args for local
+  HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
+  DEPLOY_TAG=Set_me_with_ghcr_sha
+  DRY_RUN_DEBUG="--dry-run --debug"
 fi
-
-# cat "$ENCRYPTED_ENV_FILE" | base64 -d > "$DECRYPTED_ENV_FILE"
-
-HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
-# DEPLOY_TAG= <------------------------------- SET DEPLOY TAG
-DRY_RUN_DEBUG="--dry-run --debug"
-
 
 # Take the env file and export each key value pair
 # so we can use it with envsubst in our deploy
