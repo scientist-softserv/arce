@@ -30,7 +30,6 @@ fi
 # so we can use it with envsubst in our deploy
 while IFS='=' read -r key value; do
   export "$key=${value//\"/}"
-  echo "$key=${value//\"/}"
 done < <(grep -v '^#' "$ENV_FILE")
 
 DOLLAR=$ envsubst <"ops/${deploy_file}.tmpl.yaml" >"ops/${deploy_file}.yaml"
