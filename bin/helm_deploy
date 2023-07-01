@@ -24,7 +24,8 @@ if [ ! -f "$ENV_FILE" ]; then
   touch "./.env.${environment}"
   # cat the ENCRYPTED_ENV_FILE value set in github
   # and decrypt & it and shovel it into the ENV_FILE
-  cat "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
+  # cat "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
+  echo "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
   # now we have an unencrypted env file
 else
   # there is already an env file locally
