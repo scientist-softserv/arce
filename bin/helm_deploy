@@ -12,27 +12,18 @@ DEPLOY_IMAGE="${DEPLOY_IMAGE:-ghcr.io/scientist-softserv/arce}"
 SOLR_IMAGE="${SOLR_IMAGE:-ghcr.io/scientist-softserv/arce/solr}"
 DEPLOY_TAG="${DEPLOY_TAG:-latest}"
 
-# Extracting the environment value after "-"
 environment=${release_name#*-}
 deploy_file="${environment}-deploy"
 
 ENV_FILE="./.env.${environment}"
 
 if [ ! -f "$ENV_FILE" ]; then
-  # if there is not an env.staging file
-  # create the blank file
   touch "./.env.${environment}"
-  # cat the ENCRYPTED_ENV_FILE value set in github
-  # and decrypt & it and shovel it into the ENV_FILE
-  # cat "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
   echo "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
-  # now we have an unencrypted env file
 else
-  # there is already an env file locally
-  # set the helm extra args for local
   HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
-  DEPLOY_TAG=Set_me_with_ghcr_sha
-  DRY_RUN_DEBUG="--dry-run --debug"
+  # DEPLOY_TAG=Set_me_with_ghcr_sha
+  # DRY_RUN_DEBUG="--dry-run --debug"
 fi
 
 # Take the env file and export each key value pair
