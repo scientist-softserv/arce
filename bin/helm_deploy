@@ -19,7 +19,7 @@ ENV_FILE="./.env.${environment}"
 
 if [ ! -f "$ENV_FILE" ]; then
   touch "./.env.${environment}"
-  echo "$ENCRYPTED_ENV_FILE" | base64 -d > "./.env.${environment}"
+  echo "$ENCODED_ENV_FILE" | base64 -d > "./.env.${environment}"
 else
   HELM_EXTRA_ARGS="--values ops/${deploy_file}.yaml"
   # DEPLOY_TAG=Set_me_with_ghcr_sha
