@@ -21,6 +21,7 @@
 /public/packs-test
 /node_modules
 public/packs/*
+public/assets/*
 .DS_Store
 .env.*
 .env.*

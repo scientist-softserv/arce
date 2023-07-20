@@ -24,22 +24,22 @@ class ArceItem
   end
 
   def self.client(args)
-    url = args[:url] || "https://dl.library.ucla.edu/oai2/"
+    url = args[:url] || "https://digital.library.ucla.edu/catalog/oai/"
     OAI::Client.new url,
                     :headers => { "From" => "rob@notch8.com" },
                     :parser => 'rexml',
-                    metadata_prefix: 'mods',
+                    metadata_prefix: 'mods_arce',
                     verb: 'ListRecords'
   end
 
   def self.fetch(args)
-    set = args[:set] || "arce_1"
-    response = client(args).list_records(set: set, metadata_prefix: 'mods')
+    set = args[:set] || "oai_set_ssim:arce"
+    response = client(args).list_records(set: set, metadata_prefix: 'mods_arce')
     response
   end
 
   def self.get(args)
-    response = client(args).get_record(identifier: args[:identifier], metadata_prefix: 'mods')
+    response = client(args).get_record(identifier: args[:identifier], metadata_prefix: 'mods_arce')
     response
   end
 
@@ -125,9 +125,11 @@ class ArceItem
     end
 
     # rubocop:disable Metrics/LineLength
-    history = ArceItem.find_or_new(record.header.identifier.split(':').last) # Digest::MD5.hexdigest(record.header.identifier).to_i(16))
+    record_id = record.header.identifier.split(':').last[1..-1].gsub('/', '-')
+    history = ArceItem.find_or_new(record_id)
     # rubocop:enable Metrics/LineLength
-    history.attributes['id_t'] = record.header.identifier.split(':').last
+    history.attributes['id_t'] = record_id
+    
     if record.header.datestamp
       history.attributes[:timestamp] = Time.parse(record.header.datestamp)
     end
@@ -137,29 +139,6 @@ class ArceItem
 
         batch.children.each do |child|
           next if child.class == REXML::Text
-
-          if child.attributes['displayLabel'] == 'File name'
-            file_name = child.text
-            history.attributes['file_name_t'] ||= []
-            if !history.attributes['file_name_t'].include?(file_name)
-              history.attributes['file_name_t'] << file_name
-            end
-          end
-          if child.name == 'identifier'
-            if child.attributes['type'] == 'local'
-              if child.attributes['displayLabel'] == "Local ID"
-                child.children.each do |ch|
-                  next if ch.class == REXML::Text
-
-                  file_name = ch.text
-                  history.attributes['file_name_t'] ||= []
-                  if !history.attributes['file_name_t'].include?(file_name)
-                    history.attributes['file_name_t'] << file_name
-                  end
-                end
-              end
-            end
-          end
           if child.name == 'relatedItem'
             if child.attributes['type'] == 'host'
               child.children.each do |ch|
@@ -167,12 +146,13 @@ class ArceItem
 
                 ch.children.each do |c|
                   next if c.class == REXML::Text
-
+                  collections_to_skip = ["Africa Collections", "Middle East & North Africa Collections"]
                   if c.name == 'title'
-                    history.attributes['collection_display'] ||= c.text
-                    history.attributes['collection_facet'] ||= c.text
-                    history.attributes['collection_sort'] ||= c.text
-                    history.attributes['collection_t'] ||= c.text
+                    byebug
+                    history.attributes['collection_display'] = c.text unless collections_to_skip.include?(c.text)
+                    history.attributes['collection_facet'] = c.text unless collections_to_skip.include?(c.text)
+                    history.attributes['collection_sort'] = c.text unless collections_to_skip.include?(c.text)
+                    history.attributes['collection_t'] = c.text unless collections_to_skip.include?(c.text)
                   end
                 end
               end
@@ -191,6 +171,31 @@ class ArceItem
                 end
               end
             end
+
+            if child.attributes['otherType'] == 'relatedTo'
+              child.children.each do |ch|
+                next if ch.class == REXML::Text
+
+                ch.children.each do |c|
+                  next if c.class == REXML::Text
+                  history.attributes['related_items_display'] ||= []
+                  history.attributes['related_items_t'] ||= []
+                  if c.name == 'title'
+                    related_items = c.text
+                    related_items.gsub("digital.library.ucla.edu/catalog/ark:", "archives.arce.org/catalog/")
+                    # https://digital.library.ucla.edu/catalog/ark:/21198/z1bc8zr8
+                    # http://arce.test/catalog/%2F21198%2Fz1kh5nht
+                    if !history.attributes['related_items_t'].include?(related_items)
+                      history.attributes['related_items_t'] << related_items
+                    end
+                    if !history.attributes['related_items_display'].include?(related_items)
+                      history.attributes['related_items_display'] << related_items
+                    end
+                  end
+                end
+              end
+            end
+
             if child.attributes['type'] == 'series'
               child.children.each do |ch|
                 next if ch.class == REXML::Text

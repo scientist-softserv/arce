@@ -1,7 +1,7 @@
 <div class="container text-center g-mb-20">
   <iframe
     class="universal-viewer-iframe"
-    src="<%= request&.base_url %>/uv/uv.html#?manifest=<%= riiif_manifest_url(id: @document.id) %>"
+    src="<%= request&.base_url %>/uv/uv.html#?manifest=<%= @document['resource_url_t'].first %> "
     width="640"
     height="480"
     allowfullscreen
