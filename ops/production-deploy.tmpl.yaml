@@ -1,5 +1,5 @@
 web:
-  replicas: 1
+  replicas: 2
   resources:
     limits:
       memory: "4Gi"
@@ -20,6 +20,14 @@ worker:
 
 solr:
   replicas: 1
+  resources:
+    limits:
+      memory: "8Gi"
+      cpu: "400m"
+    requests:
+      memory: "4Gi"
+      cpu: "200m"
+
   enabled: false
   image:
     repository: ghcr.io/scientist-softserv/arce/solr
