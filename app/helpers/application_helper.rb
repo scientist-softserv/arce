@@ -18,7 +18,7 @@ module ApplicationHelper
     options[:field] # the field to render
     options[:value] # the value of the field
 
-    link_to options[:value].first, options[:value].first, target: '_blank'
+    link_to(options[:value].first, options[:value].first, target: "_blank", rel: "noopener noreferrer")
   end
 
   def link_to_add_gac_fields(name, form, association)
