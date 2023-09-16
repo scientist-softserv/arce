@@ -1,4 +1,14 @@
 web:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+              - {{ template "app.web.name" . }}
+        topologyKey: "kubernetes.io/hostname"
   replicas: 2
   resources:
     limits:
@@ -9,6 +19,16 @@ web:
       cpu: "200m"
 
 worker:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+              - {{ template "app.worker.name" . }}
+        topologyKey: "kubernetes.io/hostname"
   replicas: 1
   resources:
     limits:
@@ -19,6 +39,16 @@ worker:
       cpu: "50m"
 
 solr:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+              - {{ template "app.solr.name" . }}
+        topologyKey: "kubernetes.io/hostname"
   replicas: 1
   resources:
     limits:

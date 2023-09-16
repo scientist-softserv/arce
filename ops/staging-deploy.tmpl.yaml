@@ -1,4 +1,14 @@
 solr:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+              - {{ template "app.solr.name" . }}
+        topologyKey: "kubernetes.io/hostname"
   image:
     repository: ghcr.io/scientist-softserv/arce/solr
     tag: latest
@@ -19,9 +29,29 @@ postgresql:
     size: 1Gi
 
 web:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+              - {{ template "app.web.name" . }}
+        topologyKey: "kubernetes.io/hostname"
   replicas: 2
 
 worker:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+              - {{ template "app.worker.name" . }}
+        topologyKey: "kubernetes.io/hostname"
   replicas: 1
 
 rails:
